@@ -2347,6 +2347,22 @@ function lihatDetail(noSurat, fromDashboard = false) {
     }
   }
 
+  let photosHtml = '';
+  if (req.photos && req.photos.length > 0) {
+    photosHtml = `
+      <div style="margin-top:14px; padding-top:10px; border-top:1px dashed var(--border-color);">
+        <div style="font-size:11.5px; font-weight:700; margin-bottom:8px; color:var(--primary);">📷 LAMPIRAN FOTO (KLIK UNTUK BUKA FILE DRIVE):</div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          ${req.photos.map((pUrl, idx) => `
+            <a href="${pUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-header); border:1px solid var(--primary); padding:6px 12px; border-radius:8px; color:var(--primary); font-size:12px; text-decoration:none; font-weight:700; transition:.2s;">
+              <span class="material-symbols-rounded" style="font-size:16px;">open_in_new</span> FOTO #${idx + 1}
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   msgBox.innerHTML = `
     ${headerInfoHtml}
     <div class="popupTableScroll">
@@ -2367,6 +2383,7 @@ function lihatDetail(noSurat, fromDashboard = false) {
         </tbody>
       </table>
     </div>
+    ${photosHtml}
     ${bottomActionsHtml}
   `;
 
