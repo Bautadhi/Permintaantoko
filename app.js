@@ -1554,7 +1554,7 @@ function hapusRow(btn) {
   if (container.children.length === 0) tambahRow();
 }
 
-function kompresiFoto(file, maxDimension = 480, quality = 0.40) {
+function kompresiFoto(file, maxDimension = 360, quality = 0.25) {
   return new Promise((resolve) => {
     if (!file || !file.type.startsWith('image/')) {
       resolve('');
@@ -1612,7 +1612,7 @@ async function previewFoto(event) {
   for (const file of files) {
     if (currentPhotos.length < 5) {
       try {
-        const compressedData = await kompresiFoto(file, 480, 0.40);
+        const compressedData = await kompresiFoto(file, 360, 0.25);
         if (compressedData) {
           currentPhotos.push(compressedData);
         }
