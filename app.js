@@ -494,8 +494,6 @@ function startCentralCloudSyncEngine() {
 }
 
 async function pullCentralCloudDB() {
-  if (isPushingCloud) return;
-
   const targetUrl = GOOGLE_SHEET_WEBAPP_URL || PUBLIC_CLOUD_DB_URL;
 
   try {
@@ -510,7 +508,7 @@ async function pullCentralCloudDB() {
     }
 
     const data = await res.json();
-    if (!data || isPushingCloud) return;
+    if (!data) return;
 
     const dataHash = JSON.stringify(data);
     if (dataHash === lastCloudSyncHash) return;
@@ -1556,7 +1554,7 @@ function hapusRow(btn) {
   if (container.children.length === 0) tambahRow();
 }
 
-function kompresiFoto(file, maxDimension = 650, quality = 0.55) {
+function kompresiFoto(file, maxDimension = 480, quality = 0.40) {
   return new Promise((resolve) => {
     if (!file || !file.type.startsWith('image/')) {
       resolve('');
@@ -1614,7 +1612,7 @@ async function previewFoto(event) {
   for (const file of files) {
     if (currentPhotos.length < 5) {
       try {
-        const compressedData = await kompresiFoto(file, 650, 0.55);
+        const compressedData = await kompresiFoto(file, 480, 0.40);
         if (compressedData) {
           currentPhotos.push(compressedData);
         }
@@ -2666,10 +2664,18 @@ function loadTTD() {
   }
 }
 
+let fastChatInterval = null;
+
 // LIVE CHAT WIDGET
 function bukaBantuan() {
   document.getElementById('helpButton').style.display = 'none';
   document.getElementById('popupBantuan').classList.add('show');
+
+  // Activate 300ms Sub-second Fast Chat Sync
+  pullCentralCloudDB();
+  if (!fastChatInterval) {
+    fastChatInterval = setInterval(pullCentralCloudDB, 300);
+  }
 
   const chatList = document.getElementById('chatList');
   const chatBody = document.getElementById('chatBody');
@@ -2697,6 +2703,10 @@ function bukaBantuan() {
 function tutupBantuan() {
   document.getElementById('popupBantuan').classList.remove('show');
   document.getElementById('helpButton').style.display = 'flex';
+  if (fastChatInterval) {
+    clearInterval(fastChatInterval);
+    fastChatInterval = null;
+  }
   cekUnreadNotif();
 }
 
