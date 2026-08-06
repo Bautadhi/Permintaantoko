@@ -1652,6 +1652,9 @@ function bukaMainApp() {
   isAdminChat = typeof isServiceTSMUser === 'function' ? isServiceTSMUser() : (isAdmin || currentUser.category === 'SERVICE');
 
   pindahHalaman('dashboardPage');
+  if (typeof setupBottomMenuAutoHide === 'function') {
+    setupBottomMenuAutoHide();
+  }
 
   setTimeout(() => {
     if (typeof aturTampilanLonceng === 'function') {
@@ -1849,12 +1852,52 @@ function updateBottomMenuHighlight(pageId) {
   });
 }
 
+let lastScrollTopPosition = 0;
+
+function setupBottomMenuAutoHide() {
+  const bottomMenu = document.getElementById('bottomMenu');
+  if (!bottomMenu) return;
+
+  const handleScroll = (e) => {
+    const target = e.target || document.documentElement;
+    if (!target) return;
+
+    const scrollTop = target.scrollTop || window.scrollY || 0;
+    const scrollHeight = target.scrollHeight || document.documentElement.scrollHeight || 0;
+    const clientHeight = target.clientHeight || window.innerHeight || 0;
+
+    // Check if scrolled near the bottom (within 20px of the last row)
+    const isAtBottom = (scrollTop + clientHeight >= scrollHeight - 20);
+    const isScrollingDown = (scrollTop > lastScrollTopPosition && scrollTop > 30);
+
+    if (isAtBottom) {
+      // REACHED THE VERY LAST ROW OF DATA -> SLIDE DOWN & HIDE BOTTOM MENU!
+      bottomMenu.classList.add('hide-bottom-menu');
+    } else if (!isScrollingDown || scrollTop < 25) {
+      // SCROLLED BACK UP -> SHOW BOTTOM MENU AGAIN!
+      bottomMenu.classList.remove('hide-bottom-menu');
+    }
+
+    lastScrollTopPosition = scrollTop;
+  };
+
+  // Attach scroll listeners to all scroll containers
+  document.querySelectorAll('.page, .page.active, .tableWrap, body').forEach(el => {
+    el.removeEventListener('scroll', handleScroll);
+    el.addEventListener('scroll', handleScroll, { passive: true });
+  });
+
+  window.removeEventListener('scroll', handleScroll);
+  window.addEventListener('scroll', handleScroll, { passive: true });
+}
+
 function pindahHalaman(pageId, pushHistory = true) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById(pageId);
   if (target) target.classList.add('active');
 
   updateBottomMenuHighlight(pageId);
+  setupBottomMenuAutoHide();
 
   if (pushHistory && pageId !== 'loginPage') {
     try {
@@ -1985,10 +2028,10 @@ function loadDashboard() {
     tr.title = `KLIK BARIS INI UNTUK MEMBUKA PERMINTAAN #${r.noSurat}`;
     tr.onclick = () => bukaDetailDariDashboard(r.noSurat);
     tr.innerHTML = `
-      <td style="white-space:nowrap;">${formatDateDDMMYYYYString(r.tanggal)}</td>
-      <td style="font-weight:700; color:var(--primary);">${r.noSurat}</td>
-      <td>${r.toko} <small style="color:var(--primary);">(${r.area})</small></td>
-      <td style="text-align:center;">${getBadgeStatus(r)}</td>
+      <td style="width: 18%; text-align: left; white-space: nowrap;">${formatDateDDMMYYYYString(r.tanggal)}</td>
+      <td style="width: 32%; text-align: left; font-weight: 700; color: var(--primary);">${r.noSurat}</td>
+      <td style="width: 30%; text-align: left;">${r.toko} <small style="color: var(--primary);">(${r.area})</small></td>
+      <td style="width: 20%; text-align: center;">${getBadgeStatus(r)}</td>
     `;
     lastDataContainer.appendChild(tr);
   });

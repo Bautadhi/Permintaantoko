@@ -199,22 +199,22 @@
         </div>
       </div>
 
-      <!-- TITLE DATA DASHBOARD DI LUAR KOTAK (LEBIH BESAR & MENARIK DENGAN IKON) -->
-      <h3 id="dashboardRecentTitle" style="margin: -2px 0 4px 2px !important; font-size: 18px !important; font-weight: 900 !important; color: var(--text-main); text-align: left !important; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px;">
+      <!-- TITLE DATA DASHBOARD DI LUAR KOTAK (DI ATAS TABEL) -->
+      <h3 id="dashboardRecentTitle" style="margin: 6px 0 8px 2px !important; font-size: 18px !important; font-weight: 900 !important; color: var(--text-main); text-align: left !important; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px;">
         <span class="material-symbols-rounded" style="color: var(--primary); font-size: 22px;">format_list_bulleted</span>
         PERMINTAAN PENDING
       </h3>
 
-      <!-- 1 CARD BOX KHUSUS TABEL DASHBOARD FULL SCREEN FIT -->
-      <div id="detailDashboard" class="box box-full" style="padding: 0 !important; overflow: hidden !important; border-radius: 14px !important;">
-        <div class="tableWrap" style="margin: 0 !important; padding: 0 !important; width: 100% !important; min-width: 100% !important; height: 100% !important;">
-          <table class="dashboardTable" style="width: 100% !important; min-width: 100% !important;">
+      <!-- TABEL DASHBOARD TANPA CARD (LANGSUNG TERHUBUNG KE HALAMAN) -->
+      <div id="detailDashboard" class="tableWrap" style="background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 0 22px 0 !important;">
+        <div class="tableWrap">
+          <table class="dashboardTable">
             <thead>
               <tr>
-                <th>TANGGAL</th>
-                <th>NO SURAT</th>
-                <th>NAMA TOKO</th>
-                <th style="text-align: center;">STATUS</th>
+                <th style="width: 18%; text-align: left;">TANGGAL</th>
+                <th style="width: 32%; text-align: left;">NO SURAT</th>
+                <th style="width: 30%; text-align: left;">NAMA TOKO</th>
+                <th style="width: 20%; text-align: center;">STATUS</th>
               </tr>
             </thead>
             <tbody id="lastData">

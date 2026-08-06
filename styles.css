@@ -246,7 +246,7 @@ body {
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   box-sizing: border-box !important;
-  padding-bottom: 75px !important;
+  padding-bottom: 160px !important;
 }
 
 #riwayatPage {
@@ -887,7 +887,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .cardStat {
-  flex: 1 1 calc(25% - 10px) !important;
+  flex: 1 1 calc((100% - 30px) / 4) !important;
   min-width: 170px !important;
   position: relative;
   display: flex;
@@ -1046,9 +1046,12 @@ input:focus, select:focus, textarea:focus {
   max-height: none !important;
   flex: 0 0 auto !important;
   display: block !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   margin-bottom: 22px !important;
-  padding: 14px 14px 0px 14px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   box-sizing: border-box !important;
   width: 100% !important;
   max-width: 100% !important;
@@ -1062,17 +1065,19 @@ input:focus, select:focus, textarea:focus {
   color: var(--text-main) !important;
 }
 
-/* RECENT DATA LIST ON DASHBOARD - WRAPS TIGHTLY AROUND TABLE */
+/* RECENT DATA LIST ON DASHBOARD - SMOOTH VERTICAL & HORIZONTAL SCROLLING WITH STICKY HEADER */
 #detailDashboard .tableWrap {
   flex: 0 0 auto !important;
   height: auto !important;
-  max-height: none !important;
+  max-height: calc(100vh - 270px) !important;
   width: 100% !important;
+  display: block !important;
   overflow-x: auto !important;
-  overflow-y: visible !important;
+  overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
   border: none !important;
-  border-radius: 0 !important;
+  border-radius: 8px !important;
   background: transparent !important;
   box-shadow: none !important;
   margin: 0 !important;
@@ -1093,21 +1098,29 @@ input:focus, select:focus, textarea:focus {
 .dashboardTable th,
 .dashboardTable td {
   padding: 10px 12px !important;
-  text-align: left !important;
-  border-bottom: 1px solid var(--table-border) !important;
   vertical-align: middle !important;
   box-sizing: border-box !important;
   white-space: nowrap !important;
-  word-break: keep-all !important;
 }
 
 .dashboardTable th {
   background: var(--bg-header) !important;
   color: var(--text-muted) !important;
   font-weight: 700 !important;
-  position: relative !important;
   border-bottom: 2px solid var(--border-color) !important;
-  white-space: nowrap !important;
+  text-transform: uppercase !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+
+.dashboardTable td {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.dashboardTable tr:last-child td {
+  border-bottom: none !important;
 }
 
 .dashboardTable td {
@@ -1507,39 +1520,83 @@ input:focus, select:focus, textarea:focus {
   background: none !important;
 }
 
-/* BOTTOM NAVIGATION BAR */
+/* DYNAMIC THEME-MATCHED COMPACT FULL-WIDTH BOTTOM NAVIGATION BAR */
 #bottomMenu {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 68px;
-  background: var(--bg-box);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 -5px 20px rgba(0,0,0,.15);
-  border-top: 1px solid var(--border-color);
-  z-index: 999;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 52px !important;
+  background: var(--bg-box) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  display: flex !important;
+  justify-content: space-around !important;
+  align-items: center !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  border-top: 1px solid var(--border-color) !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  padding: 0 4px !important;
+  box-sizing: border-box !important;
+  transform: translateY(0) !important;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, background 0.3s ease, border-color 0.3s ease !important;
+  opacity: 1 !important;
+}
+
+#bottomMenu.hide-bottom-menu {
+  transform: translateY(150%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 #bottomMenu button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 11px;
-  width: 20%;
-  height: 100%;
-  transition: .25s;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  flex: 1 !important;
+  height: 100% !important;
+  padding: 4px 0 !important;
+  border-radius: 12px !important;
+  transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease !important;
 }
 
-#bottomMenu button:hover { color: var(--primary); }
-#bottomMenu button .material-symbols-rounded { font-size: 24px; margin-bottom: 2px; }
+#bottomMenu button:hover,
+#bottomMenu button.active {
+  color: var(--primary) !important;
+}
+
+#bottomMenu button.active {
+  background: var(--bg-header) !important;
+  font-weight: 700 !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+#bottomMenu button .material-symbols-rounded {
+  font-size: 20px !important;
+  margin-bottom: 1px !important;
+  transition: transform 0.2s ease !important;
+}
+
+#bottomMenu button.active .material-symbols-rounded {
+  transform: scale(1.15) !important;
+  color: var(--primary) !important;
+}
+
+
 
 /* SLIGHTLY SMALLER POPUP BOXES */
 .popupOverlay, .popupAkun, .popupTTD {
@@ -2596,11 +2653,15 @@ button.btnKembali {
   }
 
   .stats {
-    gap: 12px !important;
+    gap: 10px !important;
     margin: 8px 0 12px 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .cardStat {
+    flex: 1 1 calc((100% - 10px) / 2) !important;
+    min-width: 140px !important;
     padding: 12px 14px !important;
     min-height: 78px !important;
     height: 82px !important;
@@ -2648,7 +2709,7 @@ button.btnKembali {
 
   .page, .page.active, #dashboardPage, #riwayatPage, #masterDbPage, #userManagementPage {
     padding-top: 10px !important;
-    padding-bottom: 20px !important;
+    padding-bottom: 100px !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
     width: 100% !important;
@@ -2660,6 +2721,7 @@ button.btnKembali {
 
   #dashboardPage {
     padding-top: 2px !important;
+    padding-bottom: 100px !important;
   }
 
   @media (max-width: 1150px) {
@@ -2676,28 +2738,32 @@ button.btnKembali {
     }
 
     #detailDashboard {
-      max-height: calc(100vh - 380px) !important;
+      height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
     }
   }
 
   #detailDashboard {
     padding: 0 !important;
-    border-radius: 14px !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     margin-top: 0 !important;
-    margin-bottom: 85px !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-    max-height: calc(100vh - 380px) !important;
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
+    margin-bottom: 22px !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+    box-sizing: border-box !important;
   }
 
   #dashboardRecentTitle {
-    padding: 0 2px !important;
-    margin-top: -2px !important;
-    margin-bottom: 4px !important;
-    font-size: 17px !important;
+    margin: 6px 0 8px 2px !important;
+    font-size: 18px !important;
     font-weight: 900 !important;
     color: var(--text-main) !important;
     display: flex !important;
@@ -2708,17 +2774,28 @@ button.btnKembali {
 
   #detailDashboard .tableWrap {
     width: 100% !important;
+    display: block !important;
     margin: 0 !important;
     border: none !important;
-    border-radius: 0 !important;
+    border-radius: 8px !important;
     background: transparent !important;
     box-shadow: none !important;
     box-sizing: border-box !important;
-    flex: 1 !important;
-    min-height: 0 !important;
-    max-height: 100% !important;
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: calc(100vh - 250px) !important;
     overflow-y: auto !important;
     overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+  }
+
+  .dashboardTable {
+    width: 100% !important;
+    min-width: 580px !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
   }
 
   .dashboardTable th,
@@ -2850,6 +2927,7 @@ button.btnKembali {
 #userManagementPage {
   padding-left: 12px !important;
   padding-right: 12px !important;
+  padding-bottom: 160px !important;
   width: 100% !important;
   max-width: 100% !important;
   margin-left: auto !important;
