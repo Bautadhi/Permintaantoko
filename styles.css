@@ -1233,7 +1233,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* DETAIL DATA / RIWAYAT TABLE STYLING - EXACT MATCH WITH DASHBOARD TABLE BORDERS */
-.historyTable, .detailTable2, #tableMasterDb, #tableUserMgmt {
+.historyTable, #tableMasterDb, #tableUserMgmt {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
@@ -2744,12 +2744,10 @@ button.btnKembali {
   }
 
   /* MOBILE HP POPUP DETAIL TABLE: DIRECT STRETCH ON MAIN POPUP CARD WITHOUT INNER CARD WRAPPER */
-  #popupDetail .popupBoxDetail,
-  .popupBoxDetail {
-    width: calc(100vw - 2mm) !important;
-    max-width: calc(100vw - 2mm) !important;
-    margin-left: 1mm !important;
-    margin-right: 1mm !important;
+  #popupDetail .popupBoxDetail {
+    width: calc(100vw - 10px) !important;
+    max-width: calc(100vw - 10px) !important;
+    margin: 0 auto !important;
     padding: 0 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
@@ -2760,31 +2758,22 @@ button.btnKembali {
     padding: 12px 12px !important;
   }
 
-  #popupDetail .popupContent {
-    padding: 8px 8px !important;
+  #popupDetail .popupContent,
+  #popupDetail #popupMessage {
+    padding: 0 !important;
+    margin: 0 !important;
     box-sizing: border-box !important;
   }
 
   #popupDetail .popupTableScroll {
     width: 100% !important;
-    margin-top: 6px !important;
-    margin-bottom: 6px !important;
+    margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
     padding: 0 !important;
     overflow-x: auto !important;
-  }
-
-  #popupDetail .detailTable2 {
-    width: 100% !important;
-    min-width: 100% !important;
-    border-collapse: collapse !important;
-  }
-
-  #popupDetail .popupDetailActions {
-    padding: 8px 4px !important;
   }
 
   /* MOBILE HP PDF VIEW RESPONSIVE SIZING & FIT */
@@ -2976,11 +2965,11 @@ div.rowHighlightOrange {
 }
 
 /* ==========================================================================
-   POPUP DETAIL ITEM STYLING (SINGLE CARD FULL-WIDTH TABLE MATCHING DASHBOARD)
+   POPUP DETAIL ITEM STYLING (ZERO INNER CARD - DIRECT EMBEDDED TABLE)
    ========================================================================== */
 #popupDetail .popupBoxDetail,
 .popupOverlay #popupDetail .popupBoxDetail {
-  width: 760px !important;
+  width: 780px !important;
   max-width: calc(100vw - 16px) !important;
   margin: 0 auto !important;
   padding: 0 !important;
@@ -2995,12 +2984,18 @@ div.rowHighlightOrange {
   padding: 14px 16px !important;
   margin: 0 !important;
   border-radius: 0 !important;
+  border-bottom: 1px solid var(--border-color) !important;
 }
 
-#popupDetail .popupContent {
+#popupDetail .popupContent,
+#popupDetail #popupMessage {
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 #popupDetail .popupTableScroll {
@@ -3011,22 +3006,29 @@ div.rowHighlightOrange {
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
+  outline: none !important;
   overflow-x: auto !important;
 }
 
+#popupDetail table,
 #popupDetail .detailTable2,
-.popupTableScroll .detailTable2 {
+.popupTableScroll .detailTable2,
+table.detailTable2 {
   width: 100% !important;
   min-width: 100% !important;
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+  outline: none !important;
   background: transparent !important;
   border-collapse: collapse !important;
   margin: 0 !important;
+  padding: 0 !important;
 }
 
-#popupDetail .detailTable2 th {
+#popupDetail table th,
+#popupDetail .detailTable2 th,
+.popupTableScroll .detailTable2 th {
   background: var(--bg-header) !important;
   color: var(--text-muted) !important;
   font-weight: 800 !important;
@@ -3036,19 +3038,27 @@ div.rowHighlightOrange {
   border-bottom: 2px solid var(--border-color) !important;
   border-left: none !important;
   border-right: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   text-transform: uppercase !important;
 }
 
-#popupDetail .detailTable2 td {
+#popupDetail table td,
+#popupDetail .detailTable2 td,
+.popupTableScroll .detailTable2 td {
   padding: 10px 12px !important;
   font-size: 12px !important;
+  border-top: none !important;
   border-bottom: 1px solid var(--border-color) !important;
   border-left: none !important;
   border-right: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   background: transparent !important;
   color: var(--text-main) !important;
 }
 
+#popupDetail table tr:last-child td,
 #popupDetail .detailTable2 tr:last-child td {
   border-bottom: none !important;
 }
@@ -3057,6 +3067,8 @@ div.rowHighlightOrange {
   padding: 12px 16px !important;
   margin: 0 !important;
   border-top: 1px solid var(--border-color) !important;
+  background: transparent !important;
+  border-radius: 0 !important;
 }
 
 @media (max-width: 768px) {
@@ -3068,14 +3080,26 @@ div.rowHighlightOrange {
     border-radius: 14px !important;
   }
 
-  #popupDetail .detailTable2 th {
-    padding: 8px 6px !important;
-    font-size: 10.5px !important;
+  #popupDetail .popupContent,
+  #popupDetail #popupMessage {
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  #popupDetail .detailTable2 td {
+  #popupDetail .detailTable2 th,
+  #popupDetail table th {
+    padding: 8px 6px !important;
+    font-size: 10.5px !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  #popupDetail .detailTable2 td,
+  #popupDetail table td {
     padding: 8px 6px !important;
     font-size: 11px !important;
+    border-left: none !important;
+    border-right: none !important;
   }
 
   #popupDetail .popupDetailActions {

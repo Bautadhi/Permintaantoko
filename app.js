@@ -1577,13 +1577,36 @@ function fillLogin(u, p) {
 
 function logout() {
   showConfirm('YAKIN INGIN KELUAR DARI APLIKASI?', () => {
+    const rememberMeChecked = document.getElementById('rememberMe')?.checked;
+    const rememberedCreds = rememberMeChecked ? appStorage.getItem(STORE_REMEMBER_LOGIN_CREDS_KEY) : null;
+
     currentUser = null;
-    appStorage.removeItem(SESSION_KEY);
-    
-    // TIDAK MENGHAPUS CREDS JIKA USER MEMANG PERNAH MENYIMPAN INGAT SANDI, ATAU SESUAIKAN DENGAN FORM
-    const remEl = document.getElementById('rememberMe');
-    if (!remEl || !remEl.checked) {
-      appStorage.removeItem(STORE_REMEMBER_LOGIN_CREDS_KEY);
+
+    // HAPUS SEMUA CACHE & PENYIMPANAN LOKAL PADA SAAT LOGOUT
+    try {
+      if (typeof appStorage !== 'undefined' && appStorage.clear) {
+        appStorage.clear();
+      }
+      try { localStorage.clear(); } catch (e) {}
+      try { sessionStorage.clear(); } catch (e) {}
+
+      // MEMBERSIHKAN BROWSER CACHE STORAGE API
+      if ('caches' in window) {
+        caches.keys().then(keys => {
+          keys.forEach(k => caches.delete(k));
+        }).catch(e => console.warn(e));
+      }
+    } catch (err) {
+      console.warn('[CLEAR CACHE LOGOUT NOTICE]:', err);
+    }
+
+    // KEMBALIKAN INGAT SAYA JIKA USER CENTANG REMEMBER ME
+    if (rememberedCreds) {
+      try {
+        appStorage.setItem(STORE_REMEMBER_LOGIN_CREDS_KEY, rememberedCreds);
+        localStorage.setItem(STORE_REMEMBER_LOGIN_CREDS_KEY, rememberedCreds);
+      } catch (e) {}
+    } else {
       const uEl = document.getElementById('username');
       const pEl = document.getElementById('password');
       if (uEl) uEl.value = '';
@@ -1602,7 +1625,7 @@ function logout() {
     pindahHalaman('loginPage');
     if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
     
-    showNotif('BERHASIL LOGOUT', 'success');
+    showNotif('BERHASIL LOGOUT & MEMBERSIHKAN CACHE!', 'success');
   });
 }
 
@@ -2005,28 +2028,44 @@ function getBadgeStatus(r) {
   return `<span>${st}</span>`;
 }
 
+function updateStoreDropdownOptions(selectedStoreName = '') {
+  const tokoSelect = document.getElementById('toko');
+  if (!tokoSelect || !currentUser) return;
+
+  const currentVal = selectedStoreName || tokoSelect.value;
+  tokoSelect.innerHTML = '';
+
+  if (currentUser.category === 'TOKO') {
+    tokoSelect.innerHTML = `<option value="${currentUser.fullName}">${currentUser.fullName} (${currentUser.area})</option>`;
+  } else {
+    const allStores = getStoresFromDB();
+    const areaStores = (currentUser.category === 'DM' || currentUser.area === 'ALL') 
+      ? allStores 
+      : allStores.filter(s => s && s.area === currentUser.area);
+
+    if (areaStores.length > 0) {
+      areaStores.forEach(s => {
+        const isSelected = (currentVal && String(s.fullName).toUpperCase() === String(currentVal).toUpperCase()) ? 'selected' : '';
+        tokoSelect.innerHTML += `<option value="${s.fullName}" ${isSelected}>${s.fullName} (${s.area || currentUser.area})</option>`;
+      });
+    } else {
+      tokoSelect.innerHTML = `<option value="INPUT TOKO.....">INPUT TOKO..... (${currentUser.area})</option>`;
+    }
+  }
+
+  if (currentVal && Array.from(tokoSelect.options).some(o => o.value.toUpperCase() === currentVal.toUpperCase())) {
+    tokoSelect.value = currentVal;
+  }
+}
+window.updateStoreDropdownOptions = updateStoreDropdownOptions;
+
 function loadForm() {
   const tglEl = document.getElementById('tanggal');
   if (tglEl && !tglEl.value) {
     tglEl.value = getFormattedDateDDMMYYYY();
   }
 
-  const tokoSelect = document.getElementById('toko');
-  if (tokoSelect && tokoSelect.options.length === 0) {
-    if (currentUser.category === 'TOKO') {
-      tokoSelect.innerHTML = `<option value="${currentUser.fullName}">${currentUser.fullName} (${currentUser.area})</option>`;
-    } else {
-      const users = getUsersFromDB();
-      const stores = users.filter(u => u.category === 'TOKO' && u.area === currentUser.area);
-      if (stores.length > 0) {
-        stores.forEach(s => {
-          tokoSelect.innerHTML += `<option value="${s.fullName}">${s.fullName} (${s.area})</option>`;
-        });
-      } else {
-        tokoSelect.innerHTML = `<option value="TOKO SINAR ABADI">TOKO SINAR ABADI (${currentUser.area})</option>`;
-      }
-    }
-  }
+  updateStoreDropdownOptions();
 
   const containerTambahToko = document.getElementById('containerTambahToko');
   if (containerTambahToko) {
@@ -4700,7 +4739,7 @@ function hapusMultiUser() {
   const usernamesStr = selectedUsers.map(u => u.username).join(', ');
 
   showConfirm(`YAKIN INGIN MENGHAPUS ${selectedUsers.length} USER TERPILIH? (${usernamesStr})`, () => {
-    showLoading('MENGHAPUS USER & TOKO TERPILIH DARI DATABASE...');
+    showLoading('MENGHAPUS USER & TOKO TERPILIH...');
     setTimeout(async () => {
       try {
         const delUsers = JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]');
@@ -4748,14 +4787,14 @@ function hapusMultiUser() {
         }
 
         hideLoading();
-        showNotif(`BERHASIL MENGHAPUS ${selectedUsers.length} USER & TOKO TERPILIH DARI DATABASE!`, 'success');
+        showNotif(`BERHASIL MENGHAPUS ${selectedUsers.length} USER & TOKO TERPILIH!`, 'success');
         if (typeof loadUsersManagement === 'function') loadUsersManagement();
         if (typeof loadForm === 'function') loadForm();
         if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
       } catch (err) {
         hideLoading();
         console.error('[HAPUS MULTI USER ERROR]:', err);
-        showNotif('TERJADI KESALAHAN SAAT MENGHAPUS USER DARI DATABASE!', 'error');
+        showNotif('TERJADI KESALAHAN SAAT MENGHAPUS USER!', 'error');
       }
     }, 400);
   });
@@ -4922,7 +4961,7 @@ function simpanUserData() {
     pushCentralCloudDB();
   }
 
-  showNotif(`USER ${fullName} (${username}) BERHASIL DISIMPAN & DISINKRONKAN KE FIREBASE!`, 'success');
+  showNotif(`USER ${fullName} (${username}) BERHASIL DISIMPAN!`, 'success');
 
   tutupUserModal();
   loadUsersManagement();
@@ -5418,7 +5457,7 @@ function simpanTokoBaru() {
     return;
   }
 
-  showLoading('MENYIMPAN TOKO BARU KE DATABASE CLOUD...');
+  showLoading('MENYIMPAN TOKO BARU...');
   setTimeout(async () => {
     try {
       const storeKey = `${namaToko}_${currentUser.area}`;
@@ -5485,15 +5524,15 @@ function simpanTokoBaru() {
       }
 
       hideLoading();
-      showNotif(`TOKO '${namaToko}' BERHASIL DITAMBAHKAN & DISINKRONKAN KE DATABASE CLOUD!`, 'success');
+      showNotif(`TOKO '${namaToko}' BERHASIL DITAMBAHKAN!`, 'success');
       if (inputEl) inputEl.value = '';
       if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
-      if (typeof loadForm === 'function') loadForm();
+      if (typeof updateStoreDropdownOptions === 'function') updateStoreDropdownOptions(namaToko);
       if (typeof loadUsersManagement === 'function') loadUsersManagement();
     } catch (err) {
       hideLoading();
       console.error('[SIMPAN TOKO ERROR]:', err);
-      showNotif('GAGAL MENYIMPAN TOKO KE DATABASE CLOUD!', 'error');
+      showNotif('GAGAL MENYIMPAN TOKO!', 'error');
     }
   }, 300);
 }
@@ -5505,7 +5544,7 @@ function hapusTokoCustom(id) {
   const storeArea = store ? store.area : currentUser.area;
 
   showConfirm(`HAPUS TOKO '${name}' DARI DAFTAR & DATABASE ADMIN?`, () => {
-    showLoading('MENGHAPUS TOKO DARI DATABASE CLOUD...');
+    showLoading('MENGHAPUS TOKO...');
     setTimeout(async () => {
       try {
         const localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
@@ -5543,14 +5582,14 @@ function hapusTokoCustom(id) {
         }
 
         hideLoading();
-        showNotif(`TOKO '${name}' BERHASIL DIHAPUS DARI CLOUD DATABASE!`, 'info');
+        showNotif(`TOKO '${name}' BERHASIL DIHAPUS!`, 'info');
         if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
-        if (typeof loadForm === 'function') loadForm();
+        if (typeof updateStoreDropdownOptions === 'function') updateStoreDropdownOptions();
         if (typeof loadUsersManagement === 'function') loadUsersManagement();
       } catch (err) {
         hideLoading();
         console.error('[HAPUS TOKO ERROR]:', err);
-        showNotif('GAGAL MENGHAPUS TOKO DARI CLOUD DATABASE!', 'error');
+        showNotif('GAGAL MENGHAPUS TOKO!', 'error');
       }
     }, 300);
   });
