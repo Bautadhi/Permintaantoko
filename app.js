@@ -3473,24 +3473,22 @@ function lihatDetail(noSurat, fromDashboard = false) {
 
   msgBox.innerHTML = `
     ${headerInfoHtml}
-    <div class="detailTableContainer">
-      <table class="detailTable2">
-        <thead>
-          <tr>
-            <th style="width:45px; text-align:center;">NO</th>
-            <th>TYPE</th>
-            <th>SERI</th>
-            <th>PERMINTAAN</th>
-            ${isDus ? '<th>NO SN DUS</th>' : ''}
-            <th>ALASAN</th>
-            <th style="width:55px; text-align:center;">QTY</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${itemsHtml}
-        </tbody>
-      </table>
-    </div>
+    <table class="detailTable2">
+      <thead>
+        <tr>
+          <th style="width:45px; text-align:center;">NO</th>
+          <th>TYPE</th>
+          <th>SERI</th>
+          <th>PERMINTAAN</th>
+          ${isDus ? '<th>NO SN DUS</th>' : ''}
+          <th>ALASAN</th>
+          <th style="width:55px; text-align:center;">QTY</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${itemsHtml}
+      </tbody>
+    </table>
     ${bottomActionsHtml}
   `;
 

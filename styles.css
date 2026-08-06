@@ -3417,7 +3417,8 @@ div.rowHighlightOrange {
   flex-direction: column !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
-  flex: 1 1 auto !important;
+  flex: 0 1 auto !important;
+  height: auto !important;
   min-height: 0 !important;
   max-height: calc(84vh - 120px) !important;
 }
@@ -3467,21 +3468,6 @@ div.rowHighlightOrange {
   color: #0f172a !important;
 }
 
-.detailTableContainer {
-  width: 100% !important;
-  height: auto !important;
-  max-height: calc(82vh - 170px) !important;
-  overflow-y: auto !important;
-  overflow-x: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border-top: none !important;
-  border-bottom: 1px solid #e2e8f0 !important;
-  background: #ffffff !important;
-  flex: 0 1 auto !important;
-  box-sizing: border-box !important;
-}
-
 /* FLAT NON-3D TABLE & AUTO-FIT COMPACT ROW HEIGHT FOR #popupMessage */
 #popupMessage table,
 #popupMessage .detailTable2,
@@ -3489,6 +3475,7 @@ div.rowHighlightOrange {
 .detailTable2 {
   width: 100% !important;
   min-width: 100% !important;
+  height: auto !important;
   table-layout: auto !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
@@ -3498,6 +3485,7 @@ div.rowHighlightOrange {
   box-shadow: none !important;
   text-shadow: none !important;
   filter: none !important;
+  flex: 0 0 auto !important;
 }
 
 #popupMessage table thead,
@@ -3521,7 +3509,7 @@ div.rowHighlightOrange {
   font-weight: 600 !important;
   font-size: 12px !important;
   letter-spacing: 0.3px !important;
-  padding: 5px 12px !important;
+  padding: 6px 14px !important;
   height: auto !important;
   line-height: 1.2 !important;
   border: none !important;
@@ -3555,7 +3543,7 @@ div.rowHighlightOrange {
 #popupMessage .detailTable2 td,
 #popupDetail table.detailTable2 td,
 .detailTable2 td {
-  padding: 5px 12px !important;
+  padding: 6px 14px !important;
   height: auto !important;
   line-height: 1.2 !important;
   font-size: 12px !important;
@@ -3602,8 +3590,8 @@ div.rowHighlightOrange {
 
 #popupDetail .popupDetailActions,
 .popupDetailActions {
-  padding: 8px 16px 2mm 16px !important;
-  margin: 0 0 2mm 0 !important;
+  padding: 8px 16px 18px 16px !important;
+  margin: 0 0 18px 0 !important;
   border-top: 1px solid #e2e8f0 !important;
   background: #f8fafc !important;
   border-radius: 0 0 14px 14px !important;
