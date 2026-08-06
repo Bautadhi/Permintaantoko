@@ -1862,18 +1862,20 @@ function setupBottomMenuAutoHide() {
     const target = e.target || document.documentElement;
     if (!target) return;
 
-    const scrollTop = target.scrollTop || window.scrollY || 0;
-    const scrollHeight = target.scrollHeight || document.documentElement.scrollHeight || 0;
-    const clientHeight = target.clientHeight || window.innerHeight || 0;
+    const scrollTop = target.scrollTop !== undefined ? target.scrollTop : (window.scrollY || 0);
+    const scrollHeight = target.scrollHeight !== undefined ? target.scrollHeight : (document.documentElement.scrollHeight || 0);
+    const clientHeight = target.clientHeight !== undefined ? target.clientHeight : (window.innerHeight || 0);
 
-    // Check if scrolled near the bottom (within 20px of the last row)
-    const isAtBottom = (scrollTop + clientHeight >= scrollHeight - 20);
-    const isScrollingDown = (scrollTop > lastScrollTopPosition && scrollTop > 30);
+    if (scrollHeight <= clientHeight + 5) return;
+
+    // Check if scrolled near the bottom (within 25px of the end of scrollable area)
+    const isAtBottom = (scrollTop + clientHeight >= scrollHeight - 25);
+    const isScrollingDown = (scrollTop > lastScrollTopPosition && scrollTop > 15);
 
     if (isAtBottom) {
-      // REACHED THE VERY LAST ROW OF DATA -> SLIDE DOWN & HIDE BOTTOM MENU!
+      // REACHED END OF DATA -> SLIDE DOWN & HIDE BOTTOM MENU BAR!
       bottomMenu.classList.add('hide-bottom-menu');
-    } else if (!isScrollingDown || scrollTop < 25) {
+    } else if (!isScrollingDown || scrollTop < 20) {
       // SCROLLED BACK UP -> SHOW BOTTOM MENU AGAIN!
       bottomMenu.classList.remove('hide-bottom-menu');
     }
@@ -1881,8 +1883,8 @@ function setupBottomMenuAutoHide() {
     lastScrollTopPosition = scrollTop;
   };
 
-  // Attach scroll listeners to all scroll containers
-  document.querySelectorAll('.page, .page.active, .tableWrap, body').forEach(el => {
+  // Attach scroll listeners to all scroll containers dynamically
+  document.querySelectorAll('.page, .page.active, .tableWrap, body, html, #app, #riwayatPage, #dashboardPage').forEach(el => {
     el.removeEventListener('scroll', handleScroll);
     el.addEventListener('scroll', handleScroll, { passive: true });
   });

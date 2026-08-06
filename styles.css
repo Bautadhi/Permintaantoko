@@ -242,11 +242,11 @@ body {
 
 .page.active {
   display: block;
-  height: calc(100vh - 65px) !important;
+  height: calc(100vh - 56px) !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   box-sizing: border-box !important;
-  padding-bottom: 160px !important;
+  padding-bottom: 56px !important;
 }
 
 #riwayatPage {
@@ -1065,10 +1065,11 @@ input:focus, select:focus, textarea:focus {
   color: var(--text-main) !important;
 }
 
-/* RECENT DATA LIST ON DASHBOARD - SMOOTH VERTICAL & HORIZONTAL SCROLLING WITH STICKY HEADER */
+/* RECENT DATA LIST ON DASHBOARD - FIXED FULL HEIGHT DOWNWARDS WITH STICKY HEADER & SCROLL */
 #detailDashboard .tableWrap {
   flex: 0 0 auto !important;
-  height: auto !important;
+  height: calc(100vh - 270px) !important;
+  min-height: calc(100vh - 270px) !important;
   max-height: calc(100vh - 270px) !important;
   width: 100% !important;
   display: block !important;
@@ -1103,16 +1104,20 @@ input:focus, select:focus, textarea:focus {
   white-space: nowrap !important;
 }
 
-.dashboardTable th {
-  background: var(--bg-header) !important;
-  color: var(--text-muted) !important;
+.dashboardTable th,
+.dashboardTable thead th {
+  background: var(--primary) !important;
+  color: #ffffff !important;
   font-weight: 700 !important;
-  border-bottom: 2px solid var(--border-color) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.5px !important;
   text-transform: uppercase !important;
   position: sticky !important;
   top: 0 !important;
-  z-index: 20 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+  z-index: 999 !important;
+  border: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 .dashboardTable td {
@@ -1442,6 +1447,27 @@ input:focus, select:focus, textarea:focus {
 }
 
 #riwayatPage .box,
+#riwayatPage .box-full,
+#riwayatPage .riwayatContent {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+}
+
+#riwayatPage h3 {
+  margin: 4px 0 14px 0 !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  color: var(--text-main) !important;
+  text-align: center !important;
+  letter-spacing: 0.5px !important;
+}
+
 #masterDbPage .box {
   height: auto !important;
   min-height: auto !important;
@@ -1449,47 +1475,85 @@ input:focus, select:focus, textarea:focus {
   padding-bottom: 0 !important;
 }
 
-.tableWrap,
-#riwayatPage .tableWrap,
-#masterDbPage .tableWrap {
-  width: 100% !important;
+#riwayatPage .riwayatContent {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
   height: auto !important;
-  max-height: none !important;
-  margin-bottom: 0 !important;
+}
+
+#riwayatPage .tableWrap {
+  width: 100% !important;
+  display: block !important;
+  position: relative !important;
+  height: calc(100vh - 170px) !important;
+  max-height: calc(100vh - 170px) !important;
   overflow-x: auto !important;
-  border-radius: 12px;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tableWrap {
+  width: 100% !important;
+  display: block !important;
+  position: relative !important;
+  height: auto !important;
+  max-height: calc(100vh - 220px) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
+  border-radius: 12px !important;
 }
 
 .historyTable {
-  width: 100%;
+  width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  background: var(--bg-box);
-  font-size: 13px;
-  color: var(--text-main);
-  table-layout: auto;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 13px !important;
+  color: var(--text-main) !important;
+  table-layout: auto !important;
   margin-bottom: 0 !important;
 }
 
 .historyTable thead {
   position: sticky !important;
   top: 0 !important;
-  z-index: 30 !important;
+  z-index: 999 !important;
 }
 
 .historyTable th,
-.historyTable thead th {
+.historyTable thead th,
+#riwayatPage .historyTable th,
+#riwayatPage .historyTable thead th {
   position: sticky !important;
   top: 0 !important;
-  z-index: 30 !important;
+  z-index: 999 !important;
   background: var(--primary) !important;
   color: #ffffff !important;
-  padding: 12px 10px;
-  text-align: left;
-  white-space: nowrap;
-  font-size: 12px;
-  border-bottom: 2px solid var(--border-color) !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2) !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  padding: 11px 12px !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
 }
 
 /* NORMAL AUTO-FIT AKSI COLUMN (UNLOCKED HORIZONTALLY) */
@@ -2709,7 +2773,7 @@ button.btnKembali {
 
   .page, .page.active, #dashboardPage, #riwayatPage, #masterDbPage, #userManagementPage {
     padding-top: 10px !important;
-    padding-bottom: 100px !important;
+    padding-bottom: 56px !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
     width: 100% !important;
@@ -2721,7 +2785,7 @@ button.btnKembali {
 
   #dashboardPage {
     padding-top: 2px !important;
-    padding-bottom: 100px !important;
+    padding-bottom: 56px !important;
   }
 
   @media (max-width: 1150px) {
@@ -2782,9 +2846,9 @@ button.btnKembali {
     box-shadow: none !important;
     box-sizing: border-box !important;
     flex: 0 0 auto !important;
-    height: auto !important;
-    min-height: auto !important;
-    max-height: calc(100vh - 250px) !important;
+    height: calc(100vh - 260px) !important;
+    min-height: calc(100vh - 260px) !important;
+    max-height: calc(100vh - 260px) !important;
     overflow-y: auto !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
