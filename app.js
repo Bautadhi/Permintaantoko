@@ -1638,9 +1638,9 @@ function bukaMainApp() {
   
   if (typeof initAllDraggableButtons === 'function') initAllDraggableButtons();
 
-  const isAdmin = (
-    currentUser.category === 'ADMIN' ||
-    (currentUser.username && currentUser.username.toUpperCase() === 'ADMIN')
+  const isAdmin = currentUser && (
+    (currentUser.category && String(currentUser.category).toUpperCase() === 'ADMIN') ||
+    (currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN')
   );
   
   const btnUserNav = document.getElementById('btnUserNav');
@@ -1828,7 +1828,21 @@ function getCurrentActivePageId() {
   return activeEl ? activeEl.id : 'dashboardPage';
 }
 
+function updateAdminNavVisibility() {
+  const isAdmin = currentUser && (
+    (currentUser.category && String(currentUser.category).toUpperCase() === 'ADMIN') ||
+    (currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN')
+  );
+
+  const btnUserNav = document.getElementById('btnUserNav');
+  const btnMasterDbNav = document.getElementById('btnMasterDbNav');
+
+  if (btnUserNav) btnUserNav.style.display = isAdmin ? 'flex' : 'none';
+  if (btnMasterDbNav) btnMasterDbNav.style.display = isAdmin ? 'flex' : 'none';
+}
+
 function updateBottomMenuHighlight(pageId) {
+  updateAdminNavVisibility();
   const bottomNav = document.getElementById('bottomMenu');
   if (!bottomNav) return;
 
@@ -1857,43 +1871,23 @@ let lastScrollTopPosition = 0;
 function setupBottomMenuAutoHide() {
   const bottomMenu = document.getElementById('bottomMenu');
   if (!bottomMenu) return;
-
-  const handleScroll = (e) => {
-    const target = e.target || document.documentElement;
-    if (!target) return;
-
-    const scrollTop = target.scrollTop !== undefined ? target.scrollTop : (window.scrollY || 0);
-    const scrollHeight = target.scrollHeight !== undefined ? target.scrollHeight : (document.documentElement.scrollHeight || 0);
-    const clientHeight = target.clientHeight !== undefined ? target.clientHeight : (window.innerHeight || 0);
-
-    if (scrollHeight <= clientHeight + 5) return;
-
-    // Check if scrolled near the bottom (within 25px of the end of scrollable area)
-    const isAtBottom = (scrollTop + clientHeight >= scrollHeight - 25);
-    const isScrollingDown = (scrollTop > lastScrollTopPosition && scrollTop > 15);
-
-    if (isAtBottom) {
-      // REACHED END OF DATA -> SLIDE DOWN & HIDE BOTTOM MENU BAR!
-      bottomMenu.classList.add('hide-bottom-menu');
-    } else if (!isScrollingDown || scrollTop < 20) {
-      // SCROLLED BACK UP -> SHOW BOTTOM MENU AGAIN!
-      bottomMenu.classList.remove('hide-bottom-menu');
-    }
-
-    lastScrollTopPosition = scrollTop;
-  };
-
-  // Attach scroll listeners to all scroll containers dynamically
-  document.querySelectorAll('.page, .page.active, .tableWrap, body, html, #app, #riwayatPage, #dashboardPage').forEach(el => {
-    el.removeEventListener('scroll', handleScroll);
-    el.addEventListener('scroll', handleScroll, { passive: true });
-  });
-
-  window.removeEventListener('scroll', handleScroll);
-  window.addEventListener('scroll', handleScroll, { passive: true });
+  bottomMenu.classList.remove('hide-bottom-menu');
+  bottomMenu.style.display = 'flex';
 }
 
 function pindahHalaman(pageId, pushHistory = true) {
+  updateAdminNavVisibility();
+
+  const isAdmin = currentUser && (
+    (currentUser.category && String(currentUser.category).toUpperCase() === 'ADMIN') ||
+    (currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN')
+  );
+
+  if ((pageId === 'masterDbPage' || pageId === 'userManagementPage') && !isAdmin) {
+    pindahHalaman('dashboardPage', false);
+    return;
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById(pageId);
   if (target) target.classList.add('active');

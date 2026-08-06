@@ -249,6 +249,19 @@ body {
   padding-bottom: 56px !important;
 }
 
+section#riwayatPage.page.active,
+section#masterDbPage.page.active,
+#riwayatPage.active,
+#masterDbPage.active {
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - 65px) !important;
+  max-height: calc(100vh - 65px) !important;
+  overflow: hidden !important;
+  overflow-y: hidden !important;
+  padding-bottom: 0 !important;
+}
+
 #riwayatPage {
   padding-left: 4px !important;
   padding-right: 4px !important;
@@ -1068,9 +1081,9 @@ input:focus, select:focus, textarea:focus {
 /* RECENT DATA LIST ON DASHBOARD - FIXED FULL HEIGHT DOWNWARDS WITH STICKY HEADER & SCROLL */
 #detailDashboard .tableWrap {
   flex: 0 0 auto !important;
-  height: calc(100vh - 270px) !important;
-  min-height: calc(100vh - 270px) !important;
-  max-height: calc(100vh - 270px) !important;
+  height: calc(100vh - 310px) !important;
+  min-height: calc(100vh - 310px) !important;
+  max-height: calc(100vh - 310px) !important;
   width: 100% !important;
   display: block !important;
   overflow-x: auto !important;
@@ -1082,18 +1095,27 @@ input:focus, select:focus, textarea:focus {
   background: transparent !important;
   box-shadow: none !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 0 35px 0 !important;
   position: relative !important;
+  box-sizing: border-box !important;
 }
 
-/* STRENGTHENED STYLING FOR DASHBOARD TABLE (HTML TABLE WITH THEAD & TBODY) */
+/* STRENGTHENED STYLING FOR DASHBOARD TABLE (HTML TABLE WITH THEAD & TBODY) WITH FIXED STICKY HEADER */
 .dashboardTable {
   width: 100% !important;
-  border-collapse: collapse !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
   font-size: 12.5px !important;
   color: var(--text-main) !important;
   table-layout: auto !important;
   margin: 0 !important;
+}
+
+.dashboardTable thead,
+.dashboardTable thead tr {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
 }
 
 .dashboardTable th,
@@ -1116,7 +1138,7 @@ input:focus, select:focus, textarea:focus {
   top: 0 !important;
   z-index: 999 !important;
   border: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
   text-shadow: none !important;
 }
 
@@ -1264,21 +1286,25 @@ input:focus, select:focus, textarea:focus {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: 10px !important;
-  overflow: hidden !important;
+  border: none !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
 }
 
 .historyTable th, #tableMasterDb th, #tableUserMgmt th {
-  background: var(--bg-header) !important;
-  color: var(--text-muted) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  background: var(--primary) !important;
+  color: #ffffff !important;
   font-weight: 700 !important;
-  text-align: center !important;
+  text-align: left !important;
   border-right: none !important;
   border-left: none !important;
   border-bottom: 2px solid var(--table-border) !important;
   padding: 10px 14px !important;
   white-space: nowrap !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 
 .historyTable td, #tableMasterDb td, #tableUserMgmt td {
@@ -1289,8 +1315,9 @@ input:focus, select:focus, textarea:focus {
   color: var(--text-main) !important;
 }
 
-.historyTable tr:last-child td, #tableMasterDb tr:last-child td, #tableUserMgmt tr:last-child td {
+.historyTable tr:last-child td, #tableMasterDb tr:last-child td, #tableUserMgmt tr:last-child td, .dashboardTable tr:last-child td, .detailTable2 tr:last-child td {
   border-bottom: none !important;
+  padding-bottom: 32px !important;
 }
 
 .historyTable tbody tr:hover, #tableMasterDb tbody tr:hover, #tableUserMgmt tbody tr:hover {
@@ -1377,33 +1404,50 @@ input:focus, select:focus, textarea:focus {
 
 /* FROZEN TOP SECTION FOR DETAIL DATA / RIWAYAT PAGE & MASTER DB PAGE (DOWNLOAD EXCEL & SEARCH FIXED AT TOP) */
 #riwayatPage,
-#masterDbPage {
+#masterDbPage,
+#riwayatPage.active,
+#masterDbPage.active,
+section#riwayatPage.page.active,
+section#masterDbPage.page.active {
   display: none;
   flex-direction: column !important;
   height: calc(100vh - 65px) !important;
+  max-height: calc(100vh - 65px) !important;
   overflow: hidden !important;
-  padding-bottom: 8px !important;
+  overflow-y: hidden !important;
+  padding-bottom: 0 !important;
   box-sizing: border-box !important;
 }
 
 #riwayatPage.active,
-#masterDbPage.active {
+#masterDbPage.active,
+section#riwayatPage.page.active,
+section#masterDbPage.page.active {
   display: flex !important;
+  overflow: hidden !important;
+  overflow-y: hidden !important;
 }
 
 #riwayatPage .box,
-#masterDbPage .box {
+#masterDbPage .box,
+#riwayatPage .riwayatContent {
   flex: 1 !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
+  height: 100% !important;
+  max-height: 100% !important;
   min-height: 0 !important;
   margin-bottom: 0 !important;
-  padding: 16px 14px !important;
+  padding: 4px 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 #riwayatPage .box > h3,
 #masterDbPage .box > h3,
+#riwayatPage h3,
 #riwayatPage .searchToolbar,
 #masterDbPage .searchToolbar,
 #masterDbPage .box > div:first-child {
@@ -1413,22 +1457,51 @@ input:focus, select:focus, textarea:focus {
 #riwayatPage .tableWrap,
 #masterDbPage .tableWrap {
   flex: 1 !important;
-  min-height: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: calc(100vh - 235px) !important;
+  min-height: calc(100vh - 235px) !important;
+  max-height: calc(100vh - 235px) !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
   border: 1px solid var(--border-color) !important;
   border-radius: 10px !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+  padding-bottom: 28px !important;
 }
 
-#riwayatPage .historyTable th,
-#masterDbPage .historyTable th {
+.tableWrap table thead,
+.tableWrap table thead tr,
+.historyTable thead,
+.historyTable thead tr,
+#riwayatPage .historyTable thead,
+#riwayatPage .historyTable thead tr,
+#masterDbPage .historyTable thead,
+#masterDbPage .historyTable thead tr {
   position: sticky !important;
   top: 0 !important;
-  z-index: 10 !important;
-  background: var(--bg-header) !important;
-  color: var(--text-muted) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  z-index: 99999 !important;
+}
+
+.tableWrap table th,
+.tableWrap table thead th,
+#riwayatPage .historyTable th,
+#riwayatPage .historyTable thead th,
+#masterDbPage .historyTable th,
+#masterDbPage .historyTable thead th,
+.historyTable th,
+.historyTable thead th {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  outline: 1px solid var(--primary) !important;
 }
 
 /* SEARCH & HISTORY TABLE */
@@ -1446,19 +1519,6 @@ input:focus, select:focus, textarea:focus {
   padding: 10px 14px;
 }
 
-#riwayatPage .box,
-#riwayatPage .box-full,
-#riwayatPage .riwayatContent {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-}
-
 #riwayatPage h3 {
   margin: 4px 0 14px 0 !important;
   font-size: 18px !important;
@@ -1468,49 +1528,18 @@ input:focus, select:focus, textarea:focus {
   letter-spacing: 0.5px !important;
 }
 
-#masterDbPage .box {
-  height: auto !important;
-  min-height: auto !important;
-  max-height: none !important;
-  padding-bottom: 0 !important;
-}
-
-#riwayatPage .riwayatContent {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  height: auto !important;
-}
-
-#riwayatPage .tableWrap {
-  width: 100% !important;
-  display: block !important;
-  position: relative !important;
-  height: calc(100vh - 170px) !important;
-  max-height: calc(100vh - 170px) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  touch-action: pan-x pan-y !important;
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
 .tableWrap {
   width: 100% !important;
   display: block !important;
   position: relative !important;
-  height: auto !important;
+  height: calc(100vh - 220px) !important;
   max-height: calc(100vh - 220px) !important;
   overflow-x: auto !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-x pan-y !important;
   border-radius: 12px !important;
+  box-sizing: border-box !important;
 }
 
 .historyTable {
@@ -1615,9 +1644,9 @@ input:focus, select:focus, textarea:focus {
 }
 
 #bottomMenu.hide-bottom-menu {
-  transform: translateY(150%) !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 #bottomMenu button {
@@ -2426,10 +2455,29 @@ input:focus, select:focus, textarea:focus {
     border-radius: 10px;
   }
 
-  .historyTable th, .historyTable td {
-    padding: 8px 10px;
-    font-size: 11.5px;
-    white-space: nowrap;
+  .historyTable thead,
+  .historyTable thead tr {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
+  }
+
+  .historyTable th,
+  .historyTable thead th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    padding: 8px 10px !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
+  }
+
+  .historyTable td {
+    padding: 8px 10px !important;
+    font-size: 11.5px !important;
+    white-space: nowrap !important;
   }
 
   .popupBox, .popupBoxDetail, .confirmBox, .popupNotif, .rejectBoxPopup, .akunBox, .ttdBox {
@@ -2640,21 +2688,12 @@ input:focus, select:focus, textarea:focus {
     flex-direction: column !important;
 }
 
-/* HARDWARE ACCELERATION FIX TO PREVENT MOBILE SCREEN FLICKERING ON SCROLL */
+/* HARDWARE ACCELERATION FIX TO PREVENT MOBILE SCREEN FLICKERING ON SCROLL (EXCLUDING STICKY CONTAINERS) */
 #app,
-.page,
-.page.active,
-#dashboardPage,
-#detailDashboard,
-.tableWrap,
-#lastData,
 .lastItem,
-.lastHeader,
 .box {
-  -webkit-backface-visibility: hidden !important;
-  backface-visibility: hidden !important;
-  -webkit-transform: translate3d(0,0,0) !important;
-  transform: translate3d(0,0,0) !important;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .lastItem {
@@ -2707,13 +2746,17 @@ button.btnKembali {
 
 /* DESKTOP / PC VIEW (MIN-WIDTH 769PX): COMPACT ELEGANT SCALE & HEIGHT ADJUSTMENT */
 @media(min-width: 769px) {
-  /* UNIFIED DASHBOARD TABLE HEADER & DATA (SCROLL TOGETHER AS 1 SINGLE COMBINED UNIT) */
+  /* STICKY DASHBOARD TABLE HEADER */
   #detailDashboard .lastHeader,
-  .lastHeader {
-    position: relative !important;
-    top: auto !important;
-    z-index: 1 !important;
-    box-shadow: none !important;
+  .lastHeader,
+  .dashboardTable thead,
+  .dashboardTable thead th,
+  .dashboardTable th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
   }
 
   .stats {
@@ -2771,7 +2814,7 @@ button.btnKembali {
     opacity: 0.12 !important;
   }
 
-  .page, .page.active, #dashboardPage, #riwayatPage, #masterDbPage, #userManagementPage {
+  .page, .page.active, #dashboardPage, #userManagementPage {
     padding-top: 10px !important;
     padding-bottom: 56px !important;
     padding-left: 12px !important;
@@ -2780,6 +2823,20 @@ button.btnKembali {
     max-width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #riwayatPage, #masterDbPage, section#riwayatPage.page.active, section#masterDbPage.page.active {
+    padding-top: 10px !important;
+    padding-bottom: 0 !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    overflow-y: hidden !important;
+    height: calc(100vh - 65px) !important;
+    max-height: calc(100vh - 65px) !important;
     box-sizing: border-box !important;
   }
 
@@ -2859,7 +2916,15 @@ button.btnKembali {
     width: 100% !important;
     min-width: 580px !important;
     table-layout: auto !important;
-    border-collapse: collapse !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+  }
+
+  .dashboardTable thead,
+  .dashboardTable thead tr {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
   }
 
   .dashboardTable th,
@@ -2879,11 +2944,14 @@ button.btnKembali {
   }
 
   #detailDashboard .lastHeader,
-  .lastHeader {
-    position: relative !important;
-    top: auto !important;
-    z-index: 1 !important;
-    box-shadow: none !important;
+  .lastHeader,
+  .dashboardTable thead th,
+  .dashboardTable th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
+    background: var(--primary) !important;
+    color: #ffffff !important;
   }
 
   .lastHeader, .lastItem {
@@ -2931,6 +2999,7 @@ button.btnKembali {
 
   #popupDetail .popupTableScroll {
     width: 100% !important;
+    max-height: 55vh !important;
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
@@ -2938,6 +3007,8 @@ button.btnKembali {
     box-shadow: none !important;
     padding: 0 !important;
     overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   /* MOBILE HP PDF VIEW RESPONSIVE SIZING & FIT */
@@ -2986,12 +3057,24 @@ button.btnKembali {
 .page,
 .page.active,
 #dashboardPage,
-#riwayatPage,
-#masterDbPage,
 #userManagementPage {
   padding-left: 12px !important;
   padding-right: 12px !important;
   padding-bottom: 160px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+#riwayatPage,
+#masterDbPage,
+#riwayatPage.active,
+#masterDbPage.active {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  padding-bottom: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   margin-left: auto !important;
@@ -3190,15 +3273,25 @@ table.detailTable2 {
   box-shadow: none !important;
   outline: none !important;
   background: transparent !important;
-  border-collapse: collapse !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+#popupDetail table thead,
+#popupDetail table thead tr,
+#popupDetail .detailTable2 thead,
+.popupTableScroll .detailTable2 thead {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
 }
 
 #popupDetail table th,
 #popupDetail .detailTable2 th,
 .popupTableScroll .detailTable2 th {
-  background: var(--bg-header) !important;
+  background: var(--bg-box) !important;
   color: var(--text-muted) !important;
   font-weight: 800 !important;
   font-size: 11.5px !important;
@@ -3208,8 +3301,11 @@ table.detailTable2 {
   border-left: none !important;
   border-right: none !important;
   border-radius: 0 !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important;
   text-transform: uppercase !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 999 !important;
 }
 
 #popupDetail table td,
@@ -3256,7 +3352,12 @@ table.detailTable2 {
   }
 
   #popupDetail .detailTable2 th,
-  #popupDetail table th {
+  #popupDetail table th,
+  .popupTableScroll .detailTable2 th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999 !important;
+    background: var(--bg-box) !important;
     padding: 8px 6px !important;
     font-size: 10.5px !important;
     border-left: none !important;
