@@ -3265,7 +3265,7 @@ function lihatDetail(noSurat, fromDashboard = false) {
   if (!msgBox) return;
 
   let headerInfoHtml = `
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid var(--border-color); padding-bottom:10px; margin-bottom:14px; font-size:13px; color:var(--text-main); flex-wrap:wrap; gap:8px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding: 14px 16px 12px 16px; margin: 0; font-size:13px; color:var(--text-main); flex-wrap:wrap; gap:8px;">
       <div style="text-align:left;">NO SURAT : <span style="color:var(--primary); font-weight:bold;">${req.noSurat}</span></div>
       <span style="user-select:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
       <div style="text-align:right;">TOKO : <span style="font-weight:bold;">${req.toko}</span></div>

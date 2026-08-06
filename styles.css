@@ -2954,3 +2954,111 @@ div.rowHighlightOrange {
 #viewerImage:active {
   cursor: grabbing;
 }
+
+/* ==========================================================================
+   POPUP DETAIL ITEM STYLING (SINGLE CARD FULL-WIDTH TABLE MATCHING DASHBOARD)
+   ========================================================================== */
+#popupDetail .popupBoxDetail,
+.popupOverlay #popupDetail .popupBoxDetail {
+  width: 760px !important;
+  max-width: calc(100vw - 16px) !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25) !important;
+  background: var(--bg-box) !important;
+}
+
+#popupDetail .popupHeader {
+  padding: 14px 16px !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+#popupDetail .popupContent {
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#popupDetail .popupTableScroll {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow-x: auto !important;
+}
+
+#popupDetail .detailTable2,
+.popupTableScroll .detailTable2 {
+  width: 100% !important;
+  min-width: 100% !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-collapse: collapse !important;
+  margin: 0 !important;
+}
+
+#popupDetail .detailTable2 th {
+  background: var(--bg-header) !important;
+  color: var(--text-muted) !important;
+  font-weight: 800 !important;
+  font-size: 11.5px !important;
+  padding: 10px 12px !important;
+  border-top: 1px solid var(--border-color) !important;
+  border-bottom: 2px solid var(--border-color) !important;
+  border-left: none !important;
+  border-right: none !important;
+  text-transform: uppercase !important;
+}
+
+#popupDetail .detailTable2 td {
+  padding: 10px 12px !important;
+  font-size: 12px !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: transparent !important;
+  color: var(--text-main) !important;
+}
+
+#popupDetail .detailTable2 tr:last-child td {
+  border-bottom: none !important;
+}
+
+#popupDetail .popupDetailActions {
+  padding: 12px 16px !important;
+  margin: 0 !important;
+  border-top: 1px solid var(--border-color) !important;
+}
+
+@media (max-width: 768px) {
+  #popupDetail .popupBoxDetail,
+  .popupOverlay #popupDetail .popupBoxDetail {
+    width: calc(100vw - 10px) !important;
+    max-width: calc(100vw - 10px) !important;
+    margin: 0 auto !important;
+    border-radius: 14px !important;
+  }
+
+  #popupDetail .detailTable2 th {
+    padding: 8px 6px !important;
+    font-size: 10.5px !important;
+  }
+
+  #popupDetail .detailTable2 td {
+    padding: 8px 6px !important;
+    font-size: 11px !important;
+  }
+
+  #popupDetail .popupDetailActions {
+    padding: 10px 12px !important;
+  }
+}
