@@ -1040,13 +1040,15 @@ input:focus, select:focus, textarea:focus {
 }
 
 #detailDashboard {
-  flex: 1 !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  flex: none !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
-  margin-bottom: 0 !important;
+  margin-bottom: 22px !important;
   padding: 14px 14px !important;
-  min-height: 0 !important;
 }
 
 #detailDashboard #dashboardRecentTitle {
@@ -2968,9 +2970,13 @@ div.rowHighlightOrange {
    POPUP DETAIL ITEM STYLING (ZERO INNER CARD - DIRECT EMBEDDED TABLE)
    ========================================================================== */
 #popupDetail .popupBoxDetail,
-.popupOverlay #popupDetail .popupBoxDetail {
+.popupOverlay #popupDetail .popupBoxDetail,
+.popupBoxDetail {
   width: 780px !important;
   max-width: calc(100vw - 16px) !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: 92vh !important;
   margin: 0 auto !important;
   padding: 0 !important;
   border-radius: 16px !important;
