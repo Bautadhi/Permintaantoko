@@ -1638,18 +1638,10 @@ function bukaMainApp() {
   
   if (typeof initAllDraggableButtons === 'function') initAllDraggableButtons();
 
-  const isAdmin = currentUser && (
-    (currentUser.category && String(currentUser.category).toUpperCase() === 'ADMIN') ||
-    (currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN')
-  );
-  
-  const btnUserNav = document.getElementById('btnUserNav');
-  const btnMasterDbNav = document.getElementById('btnMasterDbNav');
+  updateAdminNavVisibility();
+  const isAdmin = checkIsAdminUser();
 
-  if (btnUserNav) btnUserNav.style.display = isAdmin ? 'flex' : 'none';
-  if (btnMasterDbNav) btnMasterDbNav.style.display = isAdmin ? 'flex' : 'none';
-
-  isAdminChat = typeof isServiceTSMUser === 'function' ? isServiceTSMUser() : (isAdmin || currentUser.category === 'SERVICE');
+  isAdminChat = typeof isServiceTSMUser === 'function' ? isServiceTSMUser() : (isAdmin || (currentUser && currentUser.category === 'SERVICE'));
 
   pindahHalaman('dashboardPage');
   if (typeof setupBottomMenuAutoHide === 'function') {
@@ -1828,17 +1820,38 @@ function getCurrentActivePageId() {
   return activeEl ? activeEl.id : 'dashboardPage';
 }
 
+function checkIsAdminUser() {
+  if (!currentUser) return false;
+  const category = (currentUser.category || currentUser.kategori || currentUser.role || '').toString().trim().toUpperCase();
+  const username = (currentUser.username || '').toString().trim().toUpperCase();
+  return category === 'ADMIN' || username === 'ADMIN';
+}
+
 function updateAdminNavVisibility() {
-  const isAdmin = currentUser && (
-    (currentUser.category && String(currentUser.category).toUpperCase() === 'ADMIN') ||
-    (currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN')
-  );
+  const isAdmin = checkIsAdminUser();
 
   const btnUserNav = document.getElementById('btnUserNav');
   const btnMasterDbNav = document.getElementById('btnMasterDbNav');
 
-  if (btnUserNav) btnUserNav.style.display = isAdmin ? 'flex' : 'none';
-  if (btnMasterDbNav) btnMasterDbNav.style.display = isAdmin ? 'flex' : 'none';
+  if (btnUserNav) {
+    if (isAdmin) {
+      btnUserNav.style.setProperty('display', 'flex', 'important');
+      btnUserNav.classList.remove('hidden-admin-btn');
+    } else {
+      btnUserNav.style.setProperty('display', 'none', 'important');
+      btnUserNav.classList.add('hidden-admin-btn');
+    }
+  }
+
+  if (btnMasterDbNav) {
+    if (isAdmin) {
+      btnMasterDbNav.style.setProperty('display', 'flex', 'important');
+      btnMasterDbNav.classList.remove('hidden-admin-btn');
+    } else {
+      btnMasterDbNav.style.setProperty('display', 'none', 'important');
+      btnMasterDbNav.classList.add('hidden-admin-btn');
+    }
+  }
 }
 
 function updateBottomMenuHighlight(pageId) {
@@ -1878,12 +1891,7 @@ function setupBottomMenuAutoHide() {
 function pindahHalaman(pageId, pushHistory = true) {
   updateAdminNavVisibility();
 
-  const isAdmin = currentUser && (
-    (currentUser.category && String(currentUser.category).toUpperCase() === 'ADMIN') ||
-    (currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN')
-  );
-
-  if ((pageId === 'masterDbPage' || pageId === 'userManagementPage') && !isAdmin) {
+  if ((pageId === 'masterDbPage' || pageId === 'userManagementPage') && !checkIsAdminUser()) {
     pindahHalaman('dashboardPage', false);
     return;
   }
@@ -2016,17 +2024,16 @@ function loadDashboard() {
     }
 
     const tr = document.createElement('tr');
-    tr.className = `${isOrangeRow ? 'rowHighlightOrange' : (isWaitingDM ? 'rowWaitingDmBlink' : '')}`;
-    if (isBoldRow) {
-      tr.style.fontWeight = '800';
+    if (shouldRowBlinkRed(r)) {
+      tr.className = 'blink-row-red';
     }
     tr.style.cursor = 'pointer';
     tr.title = `KLIK BARIS INI UNTUK MEMBUKA PERMINTAAN #${r.noSurat}`;
     tr.onclick = () => bukaDetailDariDashboard(r.noSurat);
     tr.innerHTML = `
       <td style="width: 18%; text-align: left; white-space: nowrap;">${formatDateDDMMYYYYString(r.tanggal)}</td>
-      <td style="width: 32%; text-align: left; font-weight: 700; color: var(--primary);">${r.noSurat}</td>
-      <td style="width: 30%; text-align: left;">${r.toko} <small style="color: var(--primary);">(${r.area})</small></td>
+      <td style="width: 32%; text-align: left;">${r.noSurat}</td>
+      <td style="width: 30%; text-align: left;">${r.toko} <small>(${r.area})</small></td>
       <td style="width: 20%; text-align: center;">${getBadgeStatus(r)}</td>
     `;
     lastDataContainer.appendChild(tr);
@@ -2037,34 +2044,48 @@ function bukaDetailDariDashboard(noSurat) {
   lihatDetail(noSurat, true);
 }
 
+function shouldRowBlinkRed(r) {
+  if (!r || !currentUser) return false;
+  const cat = String(currentUser.category || currentUser.kategori || currentUser.role || '').trim().toUpperCase();
+  const username = String(currentUser.username || '').trim().toUpperCase();
+  const isAdm = cat === 'ADMIN' || username === 'ADMIN';
+
+  const isWaitingService = (r.status === 'PENDING' && !r.serviceApprove);
+  const isWaitingDM = (r.status === 'PENDING' && r.serviceApprove);
+
+  if ((cat === 'SERVICE' || isAdm) && isWaitingService) return true;
+  if ((cat === 'DM' || isAdm) && isWaitingDM) return true;
+
+  return false;
+}
+
 function getBadgeStatus(r) {
   if (typeof r === 'string') {
-    if (r === 'DONE') return '<span>SUDAH DIPENUHI</span>';
-    return `<span>${r}</span>`;
+    if (r === 'DONE') return 'SUDAH DIPENUHI';
+    if (r === 'APPROVE') return 'DISETUJUI';
+    if (r === 'REJECT') return 'DITOLAK';
+    if (r === 'PENDING') return 'PENDING';
+    return r;
   }
 
-  if (!r) return '<span>-</span>';
+  if (!r) return '-';
 
-  const role = currentUser ? String(currentUser.category || '').toUpperCase() : '';
-  const isAdm = role === 'ADMIN' || (currentUser && currentUser.username && String(currentUser.username).toUpperCase() === 'ADMIN');
   const st = r.status;
   const serviceAppv = r.serviceApprove;
 
-  if (st === 'DONE') return '<span>SUDAH DIPENUHI</span>';
-  if (st === 'REJECT') return '<span>DITOLAK</span>';
-  if (st === 'APPROVE') return '<span>DISETUJUI</span>';
+  if (st === 'DONE') return 'SUDAH DIPENUHI';
+  if (st === 'REJECT') return 'DITOLAK';
+  if (st === 'APPROVE') return 'DISETUJUI';
 
   if (st === 'PENDING') {
     if (!serviceAppv) {
-      const isServiceBold = (role === 'SERVICE' || isAdm) ? 'font-weight:900 !important; font-size:13.5px !important; letter-spacing:0.5px;' : '';
-      return `<span style="${isServiceBold}">TUNGGU SERVICE</span>`;
+      return 'TUNGGU SERVICE';
     } else {
-      const isDmBold = (role === 'DM' || isAdm) ? 'font-weight:900 !important; font-size:13.5px !important; letter-spacing:0.5px;' : '';
-      return `<span style="${isDmBold}">TUNGGU DM</span>`;
+      return 'TUNGGU DM';
     }
   }
 
-  return `<span>${st}</span>`;
+  return st || '-';
 }
 
 function updateStoreDropdownOptions(selectedStoreName = '') {
@@ -2818,19 +2839,17 @@ function filterRiwayat() {
     }
 
     const tr = document.createElement('tr');
-    if (isOrangeRow) {
-      tr.className = 'rowHighlightOrange';
-    } else if (isWaitingDM) {
-      tr.className = 'rowWaitingDmBlink';
+    if (shouldRowBlinkRed(r)) {
+      tr.className = 'blink-row-red';
     }
     tr.innerHTML = `
       <td><div style="display:flex; gap:4px; align-items:center;">${aksi}</div></td>
       <td style="white-space:nowrap;">${formatDateDDMMYYYYString(r.tanggal)}</td>
-      <td style="font-weight:600; color:var(--primary);">${r.noSurat}</td>
-      <td>${r.toko} <div style="font-size:11px; color:var(--text-muted);">${r.area}</div></td>
-      <td style="white-space:nowrap; font-size:13px; font-family:inherit; color:var(--text-main); font-weight:normal;">${r.jenis || 'DEFAULT'}</td>
+      <td>${r.noSurat}</td>
+      <td>${r.toko} <div style="font-size:11px; opacity:0.8;">${r.area}</div></td>
+      <td style="white-space:nowrap;">${r.jenis || 'DEFAULT'}</td>
       <td>${getBadgeStatus(r)}</td>
-      <td style="word-break:break-word; white-space:normal; color:var(--text-main);">${r.catatan || '-'}</td>
+      <td style="word-break:break-word; white-space:normal;">${r.catatan || '-'}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -3343,10 +3362,9 @@ function lihatDetail(noSurat, fromDashboard = false) {
   if (!msgBox) return;
 
   let headerInfoHtml = `
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding: 14px 16px 12px 16px; margin: 0; font-size:13px; color:var(--text-main); flex-wrap:wrap; gap:8px;">
-      <div style="text-align:left;">NO SURAT : <span style="color:var(--primary); font-weight:bold;">${req.noSurat}</span></div>
-      <span style="user-select:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-      <div style="text-align:right;">TOKO : <span style="font-weight:bold;">${req.toko}</span></div>
+    <div class="detailHeaderInfo" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; justify-content: flex-start !important; align-items: center !important; gap: 2cm !important; padding: 10px 18px !important; margin-top: 2mm !important; margin-bottom: 0 !important; border-bottom: 1px solid #e2e8f0 !important; font-size: 13px !important; color: #0f172a !important; background: #ffffff !important; width: 100% !important; box-sizing: border-box !important; white-space: nowrap !important;">
+      <div class="noSuratWrap" style="text-align: left !important; white-space: nowrap !important; flex-shrink: 0 !important;">NO SURAT : <span class="noSuratVal" style="color: var(--primary) !important; font-weight: 700 !important;">${req.noSurat}</span></div>
+      <div class="tokoWrap" style="text-align: left !important; white-space: nowrap !important; flex-shrink: 0 !important; margin-left: 0 !important;">TOKO : <span class="tokoVal" style="font-weight: 700 !important; color: #0f172a !important;">${req.toko}</span></div>
     </div>
   `;
 
@@ -3455,7 +3473,7 @@ function lihatDetail(noSurat, fromDashboard = false) {
 
   msgBox.innerHTML = `
     ${headerInfoHtml}
-    <div class="popupTableScroll">
+    <div class="detailTableContainer">
       <table class="detailTable2">
         <thead>
           <tr>
@@ -5072,6 +5090,9 @@ function loadMasterDbTable() {
     }).join('');
 
     const tr = document.createElement('tr');
+    if (shouldRowBlinkRed(r)) {
+      tr.className = 'blink-row-red';
+    }
     tr.innerHTML = `
       <td style="text-align:center;"><input type="checkbox" class="masterDbCheckbox" value="${r.noSurat}" onchange="updateMultiMasterDbBtnState()" style="cursor:pointer; width:16px; height:16px;"></td>
       <td style="font-weight:600; color:var(--primary);">${r.noSurat}</td>
@@ -5360,10 +5381,16 @@ function prosesBukaAkun() {
   }
 
   const isToko = (currentUser.category === 'TOKO');
+  const isAdmin = currentUser && (currentUser.category === 'ADMIN' || (currentUser.username && currentUser.username.toUpperCase() === 'ADMIN'));
   
   const menuKelolaTokoAkun = document.getElementById('menuKelolaTokoAkun');
   if (menuKelolaTokoAkun) {
     menuKelolaTokoAkun.style.display = isToko ? 'none' : 'block';
+  }
+
+  const adminWrap = document.getElementById('adminHapusNotifWrap');
+  if (adminWrap) {
+    adminWrap.style.display = isAdmin ? 'block' : 'none';
   }
 
   const modal = document.getElementById('popupAkun');
@@ -5989,3 +6016,259 @@ function hapusSemuaDataLokal() {
     }, 800);
   });
 }
+
+// =============================================================================
+// GLOBAL KEYBOARD NAVIGATION:
+// 1. DASHBOARD & RIWAYAT / DETAIL DATA -> ARROW UP/DOWN & PAGE UP/DOWN SCROLLS TABLE
+// 2. INPUT DATA FORM -> ARROW KEYS NAVIGATE ALL COLUMNS & ROWS, ENTER MOVES TO NEXT FIELD
+// =============================================================================
+function setupGlobalKeyboardNavigation() {
+  document.addEventListener('keydown', (e) => {
+    const activeEl = document.activeElement;
+    const isInput = activeEl && (
+      activeEl.tagName === 'INPUT' ||
+      activeEl.tagName === 'SELECT' ||
+      activeEl.tagName === 'TEXTAREA'
+    );
+
+    // -------------------------------------------------------------------------
+    // CASE A: INSIDE INPUT FORM -> ARROW KEYS NAVIGATE COLUMNS/ROWS & ENTER MOVES TO NEXT FIELD
+    // -------------------------------------------------------------------------
+    if (isInput) {
+      // 1. ENTER KEY: MOVE TO NEXT INPUT FIELD (OR AUTOMATICALLY ADD NEW ROW IF AT END OF FORM)
+      if (e.key === 'Enter') {
+        // Skip textareas if user wants new line
+        if (activeEl.tagName === 'TEXTAREA' && !e.ctrlKey && !e.shiftKey) {
+          return;
+        }
+
+        e.preventDefault();
+
+        // Login form submit handling
+        if (activeEl.id === 'username' || activeEl.id === 'password') {
+          if (typeof window.prosesLogin === 'function') window.prosesLogin();
+          return;
+        }
+
+        const formContainer = activeEl.closest('#detailContainer') || activeEl.closest('form') || activeEl.closest('.formWrap') || activeEl.closest('#popupDetail') || document;
+        const allInputs = Array.from(formContainer.querySelectorAll('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'));
+        const currIndex = allInputs.indexOf(activeEl);
+
+        if (currIndex !== -1 && currIndex < allInputs.length - 1) {
+          const nextEl = allInputs[currIndex + 1];
+          nextEl.focus();
+          if (typeof nextEl.select === 'function' && nextEl.tagName === 'INPUT') nextEl.select();
+        } else if (activeEl.closest('.detailRow')) {
+          // If at the last input of the last row in Input Data, automatically add new row!
+          if (typeof tambahRow === 'function') {
+            tambahRow();
+            setTimeout(() => {
+              const rows = document.querySelectorAll('#detailContainer .detailRow');
+              if (rows.length > 0) {
+                const lastRow = rows[rows.length - 1];
+                const firstInput = lastRow.querySelector('input');
+                if (firstInput) {
+                  firstInput.focus();
+                  if (typeof firstInput.select === 'function') firstInput.select();
+                }
+              }
+            }, 60);
+          }
+        }
+        return;
+      }
+
+      // 2. ARROW KEYS NAVIGATION IN INPUT ROWS & COLUMNS
+      const row = activeEl.closest('.detailRow');
+      if (row) {
+        const container = row.parentElement;
+        const allRows = Array.from(container.querySelectorAll('.detailRow'));
+        const rowIndex = allRows.indexOf(row);
+        const rowInputs = Array.from(row.querySelectorAll('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'));
+        const colIndex = rowInputs.indexOf(activeEl);
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (rowIndex < allRows.length - 1) {
+            const nextRow = allRows[rowIndex + 1];
+            const nextRowInputs = Array.from(nextRow.querySelectorAll('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'));
+            const targetInput = nextRowInputs[colIndex] !== undefined ? nextRowInputs[colIndex] : nextRowInputs[nextRowInputs.length - 1];
+            if (targetInput) {
+              targetInput.focus();
+              if (typeof targetInput.select === 'function' && targetInput.tagName === 'INPUT') targetInput.select();
+            }
+          }
+          return;
+        }
+
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (rowIndex > 0) {
+            const prevRow = allRows[rowIndex - 1];
+            const prevRowInputs = Array.from(prevRow.querySelectorAll('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'));
+            const targetInput = prevRowInputs[colIndex] !== undefined ? prevRowInputs[colIndex] : prevRowInputs[prevRowInputs.length - 1];
+            if (targetInput) {
+              targetInput.focus();
+              if (typeof targetInput.select === 'function' && targetInput.tagName === 'INPUT') targetInput.select();
+            }
+          }
+          return;
+        }
+
+        if (e.key === 'ArrowRight') {
+          const isText = activeEl.type === 'text' || activeEl.type === 'search';
+          const isAtEnd = !isText || activeEl.selectionEnd === activeEl.value.length;
+          if (isAtEnd) {
+            if (colIndex < rowInputs.length - 1) {
+              e.preventDefault();
+              const nextInput = rowInputs[colIndex + 1];
+              nextInput.focus();
+              if (typeof nextInput.select === 'function' && nextInput.tagName === 'INPUT') nextInput.select();
+            } else if (rowIndex < allRows.length - 1) {
+              e.preventDefault();
+              const nextRow = allRows[rowIndex + 1];
+              const firstInput = nextRow.querySelector('input');
+              if (firstInput) {
+                firstInput.focus();
+                if (typeof firstInput.select === 'function') firstInput.select();
+              }
+            }
+          }
+          return;
+        }
+
+        if (e.key === 'ArrowLeft') {
+          const isText = activeEl.type === 'text' || activeEl.type === 'search';
+          const isAtStart = !isText || activeEl.selectionStart === 0;
+          if (isAtStart) {
+            if (colIndex > 0) {
+              e.preventDefault();
+              const prevInput = rowInputs[colIndex - 1];
+              prevInput.focus();
+              if (typeof prevInput.select === 'function' && prevInput.tagName === 'INPUT') prevInput.select();
+            } else if (rowIndex > 0) {
+              e.preventDefault();
+              const prevRow = allRows[rowIndex - 1];
+              const prevRowInputs = Array.from(prevRow.querySelectorAll('input'));
+              const lastInput = prevRowInputs[prevRowInputs.length - 1];
+              if (lastInput) {
+                lastInput.focus();
+                if (typeof lastInput.select === 'function') lastInput.select();
+              }
+            }
+          }
+          return;
+        }
+      }
+
+      return;
+    }
+
+    // -------------------------------------------------------------------------
+    // CASE B: OUTSIDE INPUT FORM (DASHBOARD, RIWAYAT/DETAIL DATA, MASTER DB)
+    // ARROW UP / ARROW DOWN & PAGE UP / PAGE DOWN SCROLL THE ACTIVE TABLE!
+    // -------------------------------------------------------------------------
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'PageDown' || e.key === 'PageUp') {
+      let scrollTarget = null;
+      
+      const popupDetail = document.getElementById('popupDetail');
+      if (popupDetail && popupDetail.style.display !== 'none' && popupDetail.offsetWidth > 0) {
+        scrollTarget = popupDetail.querySelector('.popupTableScroll') || popupDetail.querySelector('.popupContent') || popupDetail.querySelector('#popupMessage');
+      }
+
+      if (!scrollTarget) {
+        const activePage = document.querySelector('.pageSection.active') || document.querySelector('.page.active');
+        if (activePage) {
+          scrollTarget = activePage.querySelector('.tableWrap') || activePage.querySelector('.popupTableScroll');
+        }
+      }
+
+      if (!scrollTarget) {
+        scrollTarget = document.querySelector('.tableWrap');
+      }
+
+      if (scrollTarget) {
+        e.preventDefault();
+        const step = (e.key === 'PageDown' || e.key === 'PageUp') ? 260 : 60;
+        const direction = (e.key === 'ArrowDown' || e.key === 'PageDown') ? 1 : -1;
+        scrollTarget.scrollTop += (step * direction);
+      }
+    }
+  });
+}
+
+// INITIALIZE GLOBAL KEYBOARD NAVIGATION
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupGlobalKeyboardNavigation);
+} else {
+  setupGlobalKeyboardNavigation();
+}
+
+async function hapusSemuaNotifFirebaseDanLokal() {
+  const isUserAdmin = currentUser && (currentUser.category === 'ADMIN' || (currentUser.username && currentUser.username.toUpperCase() === 'ADMIN'));
+  if (!isUserAdmin) {
+    showNotif('FITUR HANYA DAPAT DIAKSES OLEH ADMIN!', 'error');
+    return;
+  }
+
+  showConfirm('YAKIN INGIN MENGHAPUS SEMUA NOTIFIKASI & CHAT DI DATABASE FIREBASE DAN SEMUA PERANGKAT?\n\n(Semua notifikasi dan pesan chat di cloud Firebase & lokal semua perangkat akan dibersihkan total!)', async () => {
+    showLoading('MENGHAPUS SEMUA NOTIFIKASI & CHAT DATABASE...');
+
+    try {
+      appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify([]));
+      appStorage.setItem(CHAT_DB_KEY, JSON.stringify([]));
+      appStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([]));
+      appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([]));
+
+      if (dbFirestore) {
+        try {
+          await dbFirestore.collection('app_settings').doc('config').set({
+            notifications: [],
+            chatMessages: [],
+            chatRooms: [],
+            clearNotifsSignal: Date.now(),
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        } catch (e) {
+          console.warn('Firestore Clear Notifs Error:', e);
+        }
+      }
+
+      if (dbRealtime) {
+        try {
+          await dbRealtime.ref('notifications').set([]);
+          await dbRealtime.ref('chat_messages').set([]);
+          await dbRealtime.ref('chat_rooms').set([]);
+          await dbRealtime.ref('settings/clear_notifs_signal').set(Date.now());
+        } catch (e) {
+          console.warn('Realtime DB Clear Notifs Error:', e);
+        }
+      }
+
+      if (supabase) {
+        try {
+          await supabase.from('notifications').delete().neq('id', '0');
+          await supabase.from('chat_messages').delete().neq('id', '0');
+          await supabase.from('chat_rooms').delete().neq('id', '0');
+        } catch (e) {
+          console.warn('Supabase Clear Notifs Error:', e);
+        }
+      }
+
+      if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+      if (typeof loadNotificationList === 'function') loadNotificationList();
+      
+      const chatBody = document.getElementById('chatMessagesBody');
+      if (chatBody) chatBody.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">BELUM ADA PESAN CHAT</div>';
+
+      hideLoading();
+      showNotif('SEMUA NOTIFIKASI & CHAT DI DATABASE FIREBASE SERTA SEMUA PERANGKAT BERHASIL DIHAPUS!', 'success');
+    } catch (err) {
+      hideLoading();
+      console.error('Gagal menghapus notifikasi cloud:', err);
+      showNotif('GAGAL MENGHAPUS NOTIFIKASI DATABASE: ' + err.message, 'error');
+    }
+  });
+}
+
+window.hapusSemuaNotifFirebaseDanLokal = hapusSemuaNotifFirebaseDanLokal;

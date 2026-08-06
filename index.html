@@ -51,10 +51,12 @@
         <button type="button" onclick="tutupNotificationModal()" style="background: none; border: none; color: #ef4444 !important; font-size: 24px; font-weight: 900; cursor: pointer; line-height: 1;" title="TUTUP">&times;</button>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px;">
-        <div style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase;"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; gap: 8px;">
         <button type="button" style="background: none; border: none; color: var(--primary); font-size: 11.5px; font-weight: 700; cursor: pointer; text-decoration: underline;" onclick="markAllNotifAsRead()">
           TANDAI SEMUA SUDAH DIBACA
+        </button>
+        <button type="button" class="btnAdminOnly" id="btnHapusSemuaNotifFirebase" style="background: #dc2626; color: #ffffff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: 4px;" onclick="hapusSemuaNotifFirebaseDanLokal()" title="HAPUS SEMUA NOTIF & CHAT DATABASE FIREBASE & LOKAL">
+          <span class="material-symbols-rounded" style="font-size: 15px;">delete_sweep</span> HAPUS DATABASE
         </button>
       </div>
 
@@ -639,6 +641,12 @@
         </button>
       </div>
 
+      <div id="adminHapusNotifWrap" style="margin-top: 10px; display: none;">
+        <button type="button" class="btnDanger" style="width: 100%; justify-content: center; height: 42px; background: #dc2626; color: #ffffff; font-weight: 700; border-radius: 10px; border: none; display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);" onclick="tutupAkun(); hapusSemuaNotifFirebaseDanLokal();">
+          <span class="material-symbols-rounded">delete_sweep</span> HAPUS SEMUA NOTIF & CHAT (DATABASE FIREBASE & SEMUA PERANGKAT)
+        </button>
+      </div>
+
       <!-- 2 EQUAL BUTTONS: REFRESH WEB & GANTI TEMA -->
       <div style="margin-top: 10px; margin-bottom: 12px; display: flex; gap: 8px; width: 100%;">
         <button type="button" onclick="location.reload()" title="REFRESH HALAMAN WEB" style="flex: 1; height: 40px; padding: 8px; border-radius: 10px; border: 1px solid var(--border-color); background: #0284c7; color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap;">
@@ -771,9 +779,9 @@
     <div class="popupBoxDetail">
       <div class="popupHeader">
         <span id="popupTitle">DETAIL PERMINTAAN</span>
-        <button type="button" class="popupClose" onclick="closeDetail()" style="color: #ef4444 !important; font-weight: 900 !important; font-size: 26px !important; text-shadow: 0 0 6px rgba(239, 68, 68, 0.5);">&times;</button>
+        <button type="button" class="popupClose" onclick="closeDetail()" style="color: #ffffff !important; font-weight: 700 !important; font-size: 24px !important; border: none !important; background: transparent !important;">&times;</button>
       </div>
-      <div class="popupContent" id="popupMessage">
+      <div id="popupMessage">
         <!-- Content Injected Dynamically -->
       </div>
     </div>

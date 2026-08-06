@@ -427,23 +427,36 @@ section#masterDbPage.page.active,
 }
 
 /* CHAT WIDGET POPUP - PENDEKKAN TINGGI POPUP BANTUAN SAJA (380PX) */
-.popupBantuan {
+.popupBantuan,
+#helpModal,
+.chatBox,
+#chatWindow {
   position: fixed;
   bottom: 90px;
   right: 20px;
-  z-index: 99999;
+  z-index: 9999999 !important;
   display: none;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
 }
 
-.popupBantuan.show {
-  display: block;
-  animation: fade .25s ease-out;
+.popupBantuan.show,
+#helpModal.show,
+#chatWindow.show {
+  display: block !important;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  opacity: 1 !important;
 }
 
-.chatBox {
-  width: 350px;
-  max-width: 92vw;
-  height: 380px !important;
+.chatBox,
+#helpModal .chatBox,
+.popupBantuan .chatBox {
+  width: 440px !important;
+  max-width: calc(100vw - 24px) !important;
+  height: 390px !important;
   background: var(--bg-box);
   border-radius: 18px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.3);
@@ -451,6 +464,9 @@ section#masterDbPage.page.active,
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
 }
 
 .chatHeader {
@@ -1080,10 +1096,10 @@ input:focus, select:focus, textarea:focus {
 
 /* RECENT DATA LIST ON DASHBOARD - FIXED FULL HEIGHT DOWNWARDS WITH STICKY HEADER & SCROLL */
 #detailDashboard .tableWrap {
-  flex: 0 0 auto !important;
-  height: calc(100vh - 310px) !important;
-  min-height: calc(100vh - 310px) !important;
-  max-height: calc(100vh - 310px) !important;
+  flex: 1 1 auto !important;
+  height: calc(100vh - 235px) !important;
+  min-height: calc(100vh - 235px) !important;
+  max-height: calc(100vh - 235px) !important;
   width: 100% !important;
   display: block !important;
   overflow-x: auto !important;
@@ -1094,8 +1110,8 @@ input:focus, select:focus, textarea:focus {
   border-radius: 8px !important;
   background: transparent !important;
   box-shadow: none !important;
-  margin: 0 !important;
-  padding: 0 0 35px 0 !important;
+  margin: 0 0 1mm 0 !important;
+  padding: 0 !important;
   position: relative !important;
   box-sizing: border-box !important;
 }
@@ -1106,7 +1122,8 @@ input:focus, select:focus, textarea:focus {
   border-collapse: separate !important;
   border-spacing: 0 !important;
   font-size: 12.5px !important;
-  color: var(--text-main) !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
   table-layout: auto !important;
   margin: 0 !important;
 }
@@ -1115,7 +1132,7 @@ input:focus, select:focus, textarea:focus {
 .dashboardTable thead tr {
   position: sticky !important;
   top: 0 !important;
-  z-index: 999 !important;
+  z-index: 10 !important;
 }
 
 .dashboardTable th,
@@ -1136,31 +1153,33 @@ input:focus, select:focus, textarea:focus {
   text-transform: uppercase !important;
   position: sticky !important;
   top: 0 !important;
-  z-index: 999 !important;
-  border: none !important;
+  z-index: 10 !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
+  border-right: none !important;
+  border-left: none !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.15) !important;
   text-shadow: none !important;
 }
 
-.dashboardTable td {
-  border-bottom: 1px solid var(--border-color) !important;
-}
-
-.dashboardTable tr:last-child td {
-  border-bottom: none !important;
+.dashboardTable tbody tr {
+  background: #ffffff !important;
 }
 
 .dashboardTable td {
-  background: transparent !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-right: none !important;
+  border-left: none !important;
   white-space: nowrap !important;
 }
 
-.dashboardTable td * {
-  white-space: nowrap !important;
+.dashboardTable td:last-child {
+  border-right: none !important;
 }
 
 .dashboardTable tr:hover td {
-  background: rgba(2, 132, 199, 0.06) !important;
+  background: #f1f5f9 !important;
 }
 
 .dashboardTable tr:last-child td {
@@ -1281,47 +1300,109 @@ input:focus, select:focus, textarea:focus {
   text-align: left !important;
 }
 
-/* DETAIL DATA / RIWAYAT TABLE STYLING - EXACT MATCH WITH DASHBOARD TABLE BORDERS */
+/* DETAIL DATA / RIWAYAT TABLE STYLING - WHITE BACKGROUND WITH THIN BORDER LINES */
 .historyTable, #tableMasterDb, #tableUserMgmt {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
   overflow: visible !important;
 }
 
 .historyTable th, #tableMasterDb th, #tableUserMgmt th {
   position: sticky !important;
   top: 0 !important;
-  z-index: 99999 !important;
+  z-index: 10 !important;
   background: var(--primary) !important;
   color: #ffffff !important;
   font-weight: 700 !important;
   text-align: left !important;
   border-right: none !important;
-  border-left: none !important;
-  border-bottom: 2px solid var(--table-border) !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
   padding: 10px 14px !important;
   white-space: nowrap !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
 }
 
-.historyTable td, #tableMasterDb td, #tableUserMgmt td {
+.historyTable th:last-child, #tableMasterDb th:last-child, #tableUserMgmt th:last-child {
+  border-right: none !important;
+}
+
+.historyTable tbody tr, #tableMasterDb tbody tr, #tableUserMgmt tbody tr {
+  background: #ffffff !important;
+}
+
+/* NORMAL (NON-BOLD) FONT FOR ALL TABLE DATA CELLS & NO VERTICAL BORDER LINES */
+.historyTable td,
+#tableMasterDb td,
+#tableUserMgmt td,
+.dashboardTable td,
+.detailTable2 td {
+  font-weight: 400 !important;
   padding: 10px 14px !important;
   border-right: none !important;
   border-left: none !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  color: var(--text-main) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+}
+
+/* ACTION BUTTONS & ICONS STAY NORMAL WEIGHT (NOT BOLD) */
+.btnIcon,
+.btnIcon span,
+.btnIcon .material-symbols-rounded,
+tr.blink-row-red .btnIcon,
+tr.blink-row-red .btnIcon span,
+tr.blink-row-red .btnIcon .material-symbols-rounded {
+  font-weight: 400 !important;
+  font-variation-settings: 'wght' 400 !important;
+}
+
+/* FULL 1 BARIS (TR) BOLD & KEDIP-KEDIP MERAH UNTUK AKSI STATUS TUNGGU DM / TUNGGU SERVICE */
+@keyframes blinkRowRed {
+  0% {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+  }
+  50% {
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+    opacity: 0.9 !important;
+  }
+  100% {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+  }
+}
+
+tr.blink-row-red,
+tr.blink-row-red td,
+tr.blink-row-red td div,
+tr.blink-row-red td span,
+tr.blink-row-red td small,
+tr.blink-row-red td strong,
+.blink-row-red,
+.blink-row-red td {
+  animation: blinkRowRed 0.6s ease-in-out infinite !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.historyTable td:last-child, #tableMasterDb td:last-child, #tableUserMgmt td:last-child {
+  border-right: none !important;
 }
 
 .historyTable tr:last-child td, #tableMasterDb tr:last-child td, #tableUserMgmt tr:last-child td, .dashboardTable tr:last-child td, .detailTable2 tr:last-child td {
   border-bottom: none !important;
-  padding-bottom: 32px !important;
+  padding-bottom: 6mm !important;
 }
 
-.historyTable tbody tr:hover, #tableMasterDb tbody tr:hover, #tableUserMgmt tbody tr:hover {
-  background: var(--table-hover) !important;
+.historyTable tbody tr:hover td, #tableMasterDb tbody tr:hover td, #tableUserMgmt tbody tr:hover td {
+  background: #f1f5f9 !important;
 }
 
 /* DYNAMIC FORM GRID ROWS */
@@ -1459,19 +1540,29 @@ section#masterDbPage.page.active {
   flex: 1 !important;
   display: block !important;
   width: 100% !important;
-  height: calc(100vh - 235px) !important;
-  min-height: calc(100vh - 235px) !important;
-  max-height: calc(100vh - 235px) !important;
+  height: calc(100vh - 120px) !important;
+  min-height: calc(100vh - 120px) !important;
+  max-height: calc(100vh - 120px) !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-x pan-y !important;
-  border: 1px solid var(--border-color) !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 10px !important;
   position: relative !important;
   box-sizing: border-box !important;
-  background: var(--bg-box) !important;
-  padding-bottom: 28px !important;
+  background: #ffffff !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+}
+
+.tableWrap::after,
+#riwayatPage .tableWrap::after,
+#masterDbPage .tableWrap::after,
+#detailDashboard .tableWrap::after {
+  content: "";
+  display: none !important;
+  height: 0 !important;
 }
 
 .tableWrap table thead,
@@ -1484,7 +1575,7 @@ section#masterDbPage.page.active {
 #masterDbPage .historyTable thead tr {
   position: sticky !important;
   top: 0 !important;
-  z-index: 99999 !important;
+  z-index: 10 !important;
 }
 
 .tableWrap table th,
@@ -1497,7 +1588,7 @@ section#masterDbPage.page.active {
 .historyTable thead th {
   position: sticky !important;
   top: 0 !important;
-  z-index: 99999 !important;
+  z-index: 10 !important;
   background: var(--primary) !important;
   color: #ffffff !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
@@ -1653,7 +1744,7 @@ section#masterDbPage.page.active {
   background: transparent !important;
   border: none !important;
   cursor: pointer !important;
-  display: flex !important;
+  display: flex;
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1665,6 +1756,13 @@ section#masterDbPage.page.active {
   padding: 4px 0 !important;
   border-radius: 12px !important;
   transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease !important;
+}
+
+#bottomMenu button[style*="display: none"],
+#bottomMenu button[style*="display:none"],
+#btnMasterDbNav.hidden-admin-btn,
+#btnUserNav.hidden-admin-btn {
+  display: none !important;
 }
 
 #bottomMenu button:hover,
@@ -1860,17 +1958,20 @@ section#masterDbPage.page.active {
 }
 
 .popupTableScroll {
-  border: 1px solid var(--border-color) !important;
+  border: 1px solid #cbd5e1 !important;
   border-radius: 8px !important;
   overflow-x: auto !important;
+  overflow-y: auto !important;
+  max-height: 58vh !important;
   -webkit-overflow-scrolling: touch !important;
   box-sizing: border-box !important;
-  background: var(--bg-box) !important;
+  background: #ffffff !important;
 }
 
 .detailTable2 {
   width: 100% !important;
-  border-collapse: collapse !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
   font-size: 12.5px !important;
   margin: 0 !important;
   border: none !important;
@@ -2108,6 +2209,17 @@ section#masterDbPage.page.active {
   padding: 16px;
   max-height: 78vh;
   overflow-y: auto;
+}
+
+#popupDetail .popupContent,
+#popupDetail #popupMessage {
+  padding: 0 !important;
+  max-height: none !important;
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
 }
 
 .popupTableScroll {
@@ -2480,12 +2592,18 @@ section#masterDbPage.page.active {
     white-space: nowrap !important;
   }
 
-  .popupBox, .popupBoxDetail, .confirmBox, .popupNotif, .rejectBoxPopup, .akunBox, .ttdBox {
+  .popupBox, .confirmBox, .popupNotif, .rejectBoxPopup, .akunBox, .ttdBox {
     width: 94vw !important;
     max-width: 94vw !important;
     max-height: 90vh !important;
     padding: 14px !important;
     box-sizing: border-box;
+  }
+
+  #popupDetail .popupBoxDetail,
+  .popupBoxDetail {
+    padding: 0 0 1mm 0 !important;
+    box-sizing: border-box !important;
   }
 
   #bottomMenu {
@@ -3215,28 +3333,75 @@ div.rowHighlightOrange {
 /* ==========================================================================
    POPUP DETAIL ITEM STYLING (ZERO INNER CARD - DIRECT EMBEDDED TABLE)
    ========================================================================== */
+/* ==========================================================================
+   POPUP DETAIL PERMINTAAN (#popupDetail) - COMPLETE & EXACT RE-ARCHITECTED CSS
+   ========================================================================== */
+#popupDetail {
+  z-index: 9000 !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px !important;
+}
+
 #popupDetail .popupBoxDetail,
 .popupOverlay #popupDetail .popupBoxDetail,
 .popupBoxDetail {
-  width: 780px !important;
+  width: 840px !important;
   max-width: calc(100vw - 16px) !important;
-  height: auto !important;
-  min-height: auto !important;
-  max-height: 92vh !important;
-  margin: 0 auto !important;
+  max-height: 84vh !important;
+  margin: auto !important;
   padding: 0 !important;
-  border-radius: 16px !important;
+  border-radius: 14px !important;
   overflow: hidden !important;
   border: 1px solid var(--border-color) !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25) !important;
-  background: var(--bg-box) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3) !important;
+  background: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
 
 #popupDetail .popupHeader {
-  padding: 14px 16px !important;
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  padding: 12px 18px !important;
   margin: 0 !important;
   border-radius: 0 !important;
-  border-bottom: 1px solid var(--border-color) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+#popupDetail .popupHeader span,
+#popupDetail #popupTitle {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+#popupDetail .popupClose {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 24px !important;
+  cursor: pointer !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
 #popupDetail .popupContent,
@@ -3244,135 +3409,249 @@ div.rowHighlightOrange {
   padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  background: transparent !important;
+  background: #ffffff !important;
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: calc(84vh - 120px) !important;
 }
 
-#popupDetail .popupTableScroll {
+.detailHeaderInfo {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 2cm !important;
+  padding: 8px 18px !important;
+  margin-top: 2mm !important;
+  margin-bottom: 0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  font-size: 13px !important;
+  color: #0f172a !important;
+  flex-shrink: 0 !important;
+  background: #ffffff !important;
   width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+.detailHeaderInfo .noSuratWrap {
+  text-align: left !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+.detailHeaderInfo .tokoWrap {
+  text-align: left !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  margin-left: 0 !important;
+}
+
+.detailHeaderInfo .noSuratVal {
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+}
+
+.detailHeaderInfo .tokoVal {
+  font-weight: 700 !important;
+  color: #0f172a !important;
+}
+
+.detailTableContainer {
+  width: 100% !important;
+  height: auto !important;
+  max-height: calc(82vh - 170px) !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
   margin: 0 !important;
   padding: 0 !important;
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  outline: none !important;
-  overflow-x: auto !important;
+  border-top: none !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  flex: 0 1 auto !important;
+  box-sizing: border-box !important;
 }
 
-#popupDetail table,
-#popupDetail .detailTable2,
-.popupTableScroll .detailTable2,
-table.detailTable2 {
+/* FLAT NON-3D TABLE & AUTO-FIT COMPACT ROW HEIGHT FOR #popupMessage */
+#popupMessage table,
+#popupMessage .detailTable2,
+#popupDetail table.detailTable2,
+.detailTable2 {
   width: 100% !important;
   min-width: 100% !important;
-  border: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  outline: none !important;
-  background: transparent !important;
+  table-layout: auto !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
-}
-
-#popupDetail table thead,
-#popupDetail table thead tr,
-#popupDetail .detailTable2 thead,
-.popupTableScroll .detailTable2 thead {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 999 !important;
-}
-
-#popupDetail table th,
-#popupDetail .detailTable2 th,
-.popupTableScroll .detailTable2 th {
-  background: var(--bg-box) !important;
-  color: var(--text-muted) !important;
-  font-weight: 800 !important;
-  font-size: 11.5px !important;
-  padding: 10px 12px !important;
-  border-top: 1px solid var(--border-color) !important;
-  border-bottom: 2px solid var(--border-color) !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: 0 !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.12) !important;
-  text-transform: uppercase !important;
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 999 !important;
-}
-
-#popupDetail table td,
-#popupDetail .detailTable2 td,
-.popupTableScroll .detailTable2 td {
-  padding: 10px 12px !important;
-  font-size: 12px !important;
-  border-top: none !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: 0 !important;
+  border: none !important;
   box-shadow: none !important;
-  background: transparent !important;
-  color: var(--text-main) !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
-#popupDetail table tr:last-child td,
-#popupDetail .detailTable2 tr:last-child td {
-  border-bottom: none !important;
+#popupMessage table thead,
+#popupMessage .detailTable2 thead,
+#popupDetail table.detailTable2 thead,
+.detailTable2 thead {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
 }
 
-#popupDetail .popupDetailActions {
-  padding: 12px 16px !important;
-  margin: 0 !important;
-  border-top: 1px solid var(--border-color) !important;
-  background: transparent !important;
+#popupMessage table th,
+#popupMessage .detailTable2 th,
+#popupDetail table.detailTable2 th,
+.detailTable2 th {
+  background: var(--primary) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.3px !important;
+  padding: 5px 12px !important;
+  height: auto !important;
+  line-height: 1.2 !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
   border-radius: 0 !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  white-space: nowrap !important;
+  width: auto !important;
+}
+
+#popupMessage table tr,
+#popupMessage .detailTable2 tr,
+#popupDetail table.detailTable2 tr,
+.detailTable2 tr {
+  height: auto !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+#popupMessage table td,
+#popupMessage .detailTable2 td,
+#popupDetail table.detailTable2 td,
+.detailTable2 td {
+  padding: 5px 12px !important;
+  height: auto !important;
+  line-height: 1.2 !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  border: none !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  text-align: left !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+  width: auto !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+#popupDetail table.detailTable2 th:first-child,
+#popupDetail table.detailTable2 td:first-child,
+.detailTable2 th:first-child,
+.detailTable2 td:first-child {
+  padding-left: 18px !important;
+  padding-right: 14px !important;
+  text-align: center !important;
+  width: 1% !important;
+  white-space: nowrap !important;
+}
+
+#popupDetail table.detailTable2 th:last-child,
+#popupDetail table.detailTable2 td:last-child,
+.detailTable2 th:last-child,
+.detailTable2 td:last-child {
+  padding-left: 14px !important;
+  padding-right: 18px !important;
+  text-align: center !important;
+  width: 1% !important;
+  white-space: nowrap !important;
+}
+
+#popupDetail table.detailTable2 tr:last-child td {
+  border-bottom: none !important;
+  padding-bottom: 4px !important;
+}
+
+#popupDetail .popupDetailActions,
+.popupDetailActions {
+  padding: 8px 16px 2mm 16px !important;
+  margin: 0 0 2mm 0 !important;
+  border-top: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  border-radius: 0 0 14px 14px !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  box-sizing: border-box !important;
 }
 
 @media (max-width: 768px) {
-  #popupDetail .popupBoxDetail,
-  .popupOverlay #popupDetail .popupBoxDetail {
-    width: calc(100vw - 10px) !important;
-    max-width: calc(100vw - 10px) !important;
-    margin: 0 auto !important;
+  #popupDetail .popupBoxDetail {
+    width: calc(100vw - 12px) !important;
+    max-width: calc(100vw - 12px) !important;
+    max-height: 88vh !important;
     border-radius: 14px !important;
   }
 
-  #popupDetail .popupContent,
-  #popupDetail #popupMessage {
-    padding: 0 !important;
-    margin: 0 !important;
+  .detailHeaderInfo {
+    padding: 10px 14px !important;
+    font-size: 11.5px !important;
   }
 
-  #popupDetail .detailTable2 th,
-  #popupDetail table th,
-  .popupTableScroll .detailTable2 th {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 999 !important;
-    background: var(--bg-box) !important;
-    padding: 8px 6px !important;
-    font-size: 10.5px !important;
-    border-left: none !important;
-    border-right: none !important;
-  }
-
-  #popupDetail .detailTable2 td,
-  #popupDetail table td {
-    padding: 8px 6px !important;
+  #popupDetail table.detailTable2 th {
+    padding: 9px 8px !important;
     font-size: 11px !important;
-    border-left: none !important;
-    border-right: none !important;
+  }
+
+  #popupDetail table.detailTable2 td {
+    padding: 9px 8px !important;
+    font-size: 11.5px !important;
   }
 
   #popupDetail .popupDetailActions {
-    padding: 10px 12px !important;
+    padding: 10px 14px 12px 14px !important;
+    gap: 8px !important;
   }
+}
+
+/* HIGHEST OVERLAY Z-INDEX FOR HELP MODAL, NOTIFICATIONS, & CONFIRMATION BOXES */
+#helpModal,
+.popupNotif,
+.confirmBox,
+.rejectBoxPopup,
+.akunBox,
+#notifContainer,
+#confirmModal,
+#loadingOverlay {
+  z-index: 9999999 !important;
 }
