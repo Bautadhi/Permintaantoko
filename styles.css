@@ -1017,15 +1017,16 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 18px 36px -4px rgba(2, 132, 199, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.55), inset 0 -3px 6px rgba(0, 0, 0, 0.2) !important;
 }
 
-/* ALL MENU CARDS WIDENED & MODERNIZED */
+/* ALL MENU CARDS WIDENED & EVENLY ALIGNED LEFT-RIGHT */
 .box, .box.box-full {
   background: var(--bg-box);
   border-radius: 18px !important;
-  padding: 22px 18px !important;
+  padding: 18px 14px !important;
   margin-bottom: 22px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   width: 100% !important;
   max-width: 100% !important;
+  box-sizing: border-box !important;
   border: 1px solid var(--border-color);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1043,37 +1044,39 @@ input:focus, select:focus, textarea:focus {
   height: auto !important;
   min-height: auto !important;
   max-height: none !important;
-  flex: none !important;
-  display: flex !important;
-  flex-direction: column !important;
+  flex: 0 0 auto !important;
+  display: block !important;
   overflow: hidden !important;
   margin-bottom: 22px !important;
-  padding: 14px 14px !important;
+  padding: 14px 14px 0px 14px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 #detailDashboard #dashboardRecentTitle {
-  flex-shrink: 0 !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 12px !important;
   font-size: 14px !important;
   font-weight: 700 !important;
   text-align: center !important;
   color: var(--text-main) !important;
 }
 
-/* RECENT DATA LIST ON DASHBOARD - NO VERTICAL GRIDLINES & COMPACT ROW HEIGHT */
+/* RECENT DATA LIST ON DASHBOARD - WRAPS TIGHTLY AROUND TABLE */
 #detailDashboard .tableWrap {
-  flex: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
+  flex: 0 0 auto !important;
+  height: auto !important;
+  max-height: none !important;
   width: 100% !important;
   overflow-x: auto !important;
-  overflow-y: auto !important;
+  overflow-y: visible !important;
   -webkit-overflow-scrolling: touch !important;
   border: none !important;
   border-radius: 0 !important;
   background: transparent !important;
   box-shadow: none !important;
-  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   position: relative !important;
 }
 
@@ -1118,6 +1121,10 @@ input:focus, select:focus, textarea:focus {
 
 .dashboardTable tr:hover td {
   background: rgba(2, 132, 199, 0.06) !important;
+}
+
+.dashboardTable tr:last-child td {
+  border-bottom: none !important;
 }
 
 /* FULL SCREEN WIDTH AUTO-FIT GRID: 100% STRETCH & PERFECT VERTICAL COLUMN ALIGNMENT */
@@ -1421,9 +1428,22 @@ input:focus, select:focus, textarea:focus {
   padding: 10px 14px;
 }
 
-.tableWrap {
-  width: 100%;
-  overflow-x: auto;
+#riwayatPage .box,
+#masterDbPage .box {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  padding-bottom: 0 !important;
+}
+
+.tableWrap,
+#riwayatPage .tableWrap,
+#masterDbPage .tableWrap {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  margin-bottom: 0 !important;
+  overflow-x: auto !important;
   border-radius: 12px;
 }
 
@@ -1435,6 +1455,7 @@ input:focus, select:focus, textarea:focus {
   font-size: 13px;
   color: var(--text-main);
   table-layout: auto;
+  margin-bottom: 0 !important;
 }
 
 .historyTable thead {
