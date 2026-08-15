@@ -4857,7 +4857,6 @@ function toggleTheme() {
       supabase.from('permintaan_toko').upsert(themePayload).then(({ error }) => {
         if (!error) {
           console.log('⚡ [SUPABASE GLOBAL THEME SYNC SUCCESS]: Tema disebar ke semua perangkat!', t.id);
-          showNotif(`TEMA '${t.name.toUpperCase()}' BERHASIL DITERAPKAN!`, 'info');
         }
       }).catch(e => console.warn('[SUPABASE GLOBAL THEME EXCEPTION]:', e));
     }
@@ -5630,14 +5629,78 @@ function toggleMobileFabMenu(forceState) {
   if (!container) return;
   const fabIcon = document.getElementById('mobileFabIcon');
   const isOpen = typeof forceState === 'boolean' ? forceState : !container.classList.contains('active');
+  const headerActions = document.querySelector('.top-header-actions');
   
   if (isOpen) {
     container.classList.add('active');
+    document.body.classList.add('mobile-fab-menu-open');
     if (fabIcon) fabIcon.textContent = 'close';
+    if (headerActions) {
+      headerActions.style.setProperty('display', 'none', 'important');
+      headerActions.style.setProperty('opacity', '0', 'important');
+      headerActions.style.setProperty('pointer-events', 'none', 'important');
+    }
+    try {
+      if (!window._mobileFabHistoryPushed) {
+        window._mobileFabHistoryPushed = true;
+        history.pushState({ mobileFabOpen: true }, '');
+      }
+    } catch(e) {}
   } else {
     container.classList.remove('active');
+    document.body.classList.remove('mobile-fab-menu-open');
     if (fabIcon) fabIcon.textContent = 'menu';
+    if (headerActions) {
+      headerActions.style.setProperty('display', 'flex', 'important');
+      headerActions.style.setProperty('opacity', '1', 'important');
+      headerActions.style.setProperty('pointer-events', 'auto', 'important');
+    }
+    window._mobileFabHistoryPushed = false;
   }
+}
+
+// HANDLER TOMBOL BACK HP UNTUK MENUTUP POPUP MENU HP
+window.addEventListener('popstate', function(e) {
+  const container = document.getElementById('mobileFabContainer');
+  if (container && container.classList.contains('active')) {
+    toggleMobileFabMenu(false);
+  }
+});
+
+// HANDLER AUTO-HIDE MENU BUTTON DI TAMPILAN PC SAAT TABLE DI SCROLL MENTOK KE ATAS (SCROLLTOP === 0)
+function initPcMenuScrollAutoHide() {
+  function handleScroll(e) {
+    if (window.innerWidth <= 768) return; // Khusus tampilan PC / Desktop
+    const target = e.target;
+    let scrollTop = 0;
+    if (target && typeof target.scrollTop === 'number') {
+      scrollTop = target.scrollTop;
+    } else {
+      scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
+    }
+
+    const pcMenuBtns = document.querySelectorAll('.btnMenuPC, .pcMenuBtn, #btnFloatingMenuPC, #mobileFabBtn');
+    pcMenuBtns.forEach(btn => {
+      if (scrollTop <= 5) {
+        btn.style.setProperty('opacity', '0', 'important');
+        btn.style.setProperty('pointer-events', 'none', 'important');
+        btn.style.setProperty('transform', 'translateY(10px) scale(0.9)', 'important');
+        btn.style.setProperty('transition', 'opacity 0.25s ease, transform 0.25s ease', 'important');
+      } else {
+        btn.style.setProperty('opacity', '1', 'important');
+        btn.style.setProperty('pointer-events', 'auto', 'important');
+        btn.style.setProperty('transform', 'translateY(0) scale(1)', 'important');
+      }
+    });
+  }
+
+  document.addEventListener('scroll', handleScroll, true);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPcMenuScrollAutoHide);
+} else {
+  initPcMenuScrollAutoHide();
 }
 
 function mobileNavTo(pageId) {
@@ -5848,6 +5911,18 @@ function loadDashboard() {
     `;
     lastDataContainer.appendChild(tr);
   });
+
+  // APPEND 1 EMPTY ROW AT THE END OF DASHBOARD TABLE
+  const emptyDashRow = document.createElement('tr');
+  emptyDashRow.className = 'empty-grid-row';
+  emptyDashRow.style.cssText = 'height: 48px !important; min-height: 48px !important; max-height: 48px !important; background: transparent !important; pointer-events: none !important;';
+  emptyDashRow.innerHTML = `
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+  `;
+  lastDataContainer.appendChild(emptyDashRow);
 }
 
 function bukaDetailDariDashboard(noSurat) {
@@ -6970,6 +7045,21 @@ function filterRiwayat() {
     `;
     tbody.appendChild(tr);
   });
+
+  // APPEND 1 EMPTY ROW AT THE END OF RIWAYAT TABLE
+  const emptyRiwayatRow = document.createElement('tr');
+  emptyRiwayatRow.className = 'empty-grid-row';
+  emptyRiwayatRow.style.cssText = 'height: 48px !important; min-height: 48px !important; max-height: 48px !important; background: transparent !important; pointer-events: none !important;';
+  emptyRiwayatRow.innerHTML = `
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+  `;
+  tbody.appendChild(emptyRiwayatRow);
 }
 
 function lihatFotoByNoSurat(noSurat) {
@@ -8128,15 +8218,6 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
   const bodyBox = document.getElementById('popupBodyV2');
   if (!bodyBox) return;
 
-  let headerInfoHtml = `
-    <div class="detailHeaderInfoV2" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; justify-content: flex-start !important; align-items: center !important; width: 100% !important; padding: 6px 12px !important; box-sizing: border-box !important; background: transparent !important;">
-      <div class="noSuratWrapV2" style="display: inline-flex !important; align-items: center !important; text-align: left !important; white-space: nowrap !important; flex: 0 0 auto !important; background: transparent !important;">
-        <span style="opacity: 0.85; font-weight: 500; color: var(--text-main);">NO SURAT : </span>
-        <span class="noSuratValV2" style="color: var(--primary) !important; font-weight: 700 !important; margin-left: 4px; background: transparent !important;">${req.noSurat || '-'}</span>
-      </div>
-    </div>
-  `;
-
   let rawItems = req.items;
   let itemsList = [];
   if (Array.isArray(rawItems)) {
@@ -8144,6 +8225,35 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
   } else if (typeof rawItems === 'string') {
     try { itemsList = JSON.parse(rawItems || '[]'); } catch (e) { itemsList = []; }
   }
+
+  const totalItems = itemsList.length;
+  const totalQty = itemsList.reduce((acc, curr) => {
+    const q = parseInt(curr.qty || curr.jumlah || 1, 10);
+    return acc + (isNaN(q) ? 1 : q);
+  }, 0);
+
+  let headerInfoHtml = `
+    <div class="detailHeaderInfoV2" style="display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; justify-content: space-between !important; align-items: center !important; width: 100% !important; padding: 8px 14px !important; gap: 8px 16px !important; box-sizing: border-box !important; background: var(--bg-body) !important; border-bottom: 1px solid var(--border-color) !important; font-size: 11.5px !important;">
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <div style="white-space: nowrap;">
+          <span style="opacity: 0.75; font-weight: 600; color: var(--text-main);">NO SURAT: </span>
+          <span style="color: var(--primary) !important; font-weight: 800 !important;">${req.noSurat || '-'}</span>
+        </div>
+        <div style="white-space: nowrap;">
+          <span style="opacity: 0.75; font-weight: 600; color: var(--text-main);">TOKO: </span>
+          <span style="font-weight: 700; color: var(--text-main);">${req.toko || '-'}</span>
+        </div>
+        <div style="white-space: nowrap;">
+          <span style="opacity: 0.75; font-weight: 600; color: var(--text-main);">TANGGAL: </span>
+          <span style="font-weight: 700; color: var(--text-main);">${typeof formatDateDDMMYYYYString === 'function' ? formatDateDDMMYYYYString(req.tanggal || '') : (req.tanggal || '-')}</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <span style="padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; background: rgba(2, 132, 199, 0.12); color: var(--primary); border: 1px solid rgba(2, 132, 199, 0.3);">JENIS: ${req.jenis || 'DEFAULT'}</span>
+        <span style="padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981;">TOTAL: ${totalItems} ITEM (${totalQty} QTY)</span>
+      </div>
+    </div>
+  `;
 
   const thBase = "background: var(--primary) !important; color: #ffffff !important; padding: 8px 12px !important; border: 1px solid var(--border-color) !important; position: sticky !important; top: 0 !important; z-index: 100 !important; font-size: 11.5px !important; font-weight: 700 !important; letter-spacing: 0.3px !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; box-shadow: none !important; text-shadow: none !important;";
   const thStyleAutofit = `${thBase} width: 1% !important; white-space: nowrap !important; text-align: center !important;`;
@@ -8433,6 +8543,21 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
     </thead>
   `;
 
+  const tableFooterHtml = `
+    <tfoot>
+      <tr style="background: var(--bg-body) !important; font-weight: bold !important;">
+        <td colspan="${isDus ? 6 : 5}" style="text-align: right !important; padding: 8px 12px !important; font-weight: 800 !important; font-size: 12px !important; border-top: 2px solid var(--border-color) !important; color: var(--text-main) !important; white-space: nowrap !important;">
+          TOTAL (${totalItems} ITEM):
+        </td>
+        <td style="text-align: center !important; padding: 8px 6px !important; font-weight: 800 !important; font-size: 13px !important; border-top: 2px solid var(--border-color) !important; color: var(--primary) !important; white-space: nowrap !important;">
+          ${totalQty}
+        </td>
+        ${showKetPartCol ? `<td style="border-top: 2px solid var(--border-color) !important;"></td>` : ''}
+        ${canServiceRowActions ? `<td style="border-top: 2px solid var(--border-color) !important;"></td>` : ''}
+      </tr>
+    </tfoot>
+  `;
+
   bodyBox.innerHTML = `
     <div class="popupCardBodyContainerV2" style="width: 100% !important; min-width: 0 !important; max-width: 100% !important; padding: 8px 0px 12px 0px !important; display: flex !important; flex-direction: column !important; gap: 6px !important; box-sizing: border-box !important; background: var(--bg-box) !important; border-radius: 0 0 18px 18px !important; overflow: hidden !important;">
       ${headerInfoHtml}
@@ -8442,7 +8567,11 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
           ${tableHeaderHtml}
           <tbody>
             ${itemsHtml}
+            <tr class="empty-grid-row" style="height: 48px !important; min-height: 48px !important; max-height: 48px !important; background: transparent !important; pointer-events: none !important;">
+              <td colspan="100" style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important; color: transparent !important;">&nbsp;</td>
+            </tr>
           </tbody>
+          ${tableFooterHtml}
         </table>
       </div>
 
@@ -9078,6 +9207,12 @@ function renderFullPdfPreviewDocument(modelId) {
             <td style="text-align:center; padding:6px 8px; border: 1px solid #cbd5e1; font-weight:bold;">1</td>
           </tr>
         </tbody>
+        <tfoot>
+          <tr style="background: #f8fafc; font-weight: bold; border-top: 2px solid #cbd5e1;">
+            <td colspan="5" style="text-align: right; padding: 6px 10px; font-weight: 800; font-size: 11px; border: 1px solid #cbd5e1; color: #0f172a;">TOTAL (2 ITEM):</td>
+            <td style="text-align: center; padding: 6px 4px; font-weight: 800; font-size: 12px; border: 1px solid #cbd5e1; color: #0284c7;">2</td>
+          </tr>
+        </tfoot>
       </table>
 
       <div style="margin-top: 8px; margin-bottom: 12px; font-size: 11px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border: 1.5px solid #0284c7; border-left: 5px solid ${tableHeaderBg}; padding: 8px 12px; border-radius: 6px; color: #0f172a;">
@@ -9344,20 +9479,32 @@ function bukaPdfModal(noSurat) {
 
         <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">DETAIL PERMINTAAN:</div>
         <div class="pdf-table-responsive" style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; border-radius: 6px;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #cbd5e1; min-width: 100%;">
-            <thead>
-              <tr style="background: ${tableHeaderBg}; color: #ffffff;">
-                <th style="width: 28px; text-align:center; padding:6px 4px; border:1px solid #cbd5e1;">NO</th>
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">TIPE BARANG</th>
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">NO. SERI</th>
-                ${req.jenis === 'DUS' ? `<th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">NO. SERI DUS</th>` : ''}
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">PERMINTAAN BARANG</th>
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">ALASAN PERMINTAAN</th>
-                <th style="width: 38px; text-align:center; padding:6px 4px; border:1px solid #cbd5e1;">QTY</th>
-              </tr>
-            </thead>
-            <tbody>${itemRowsHtml}</tbody>
-          </table>
+          ${(() => {
+            const totalQty = Array.isArray(req.items) ? req.items.reduce((acc, i) => acc + (parseInt(i.qty) || 0), 0) : 0;
+            const totalColspan = req.jenis === 'DUS' ? 6 : 5;
+            return `
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #cbd5e1; min-width: 100%;">
+              <thead>
+                <tr style="background: ${tableHeaderBg}; color: #ffffff;">
+                  <th style="width: 28px; text-align:center; padding:6px 4px; border:1px solid #cbd5e1;">NO</th>
+                  <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">TIPE BARANG</th>
+                  <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">NO. SERI</th>
+                  ${req.jenis === 'DUS' ? `<th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">NO. SERI DUS</th>` : ''}
+                  <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">PERMINTAAN BARANG</th>
+                  <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">ALASAN PERMINTAAN</th>
+                  <th style="width: 38px; text-align:center; padding:6px 4px; border:1px solid #cbd5e1;">QTY</th>
+                </tr>
+              </thead>
+              <tbody>${itemRowsHtml}</tbody>
+              <tfoot>
+                <tr style="background: #f8fafc; font-weight: bold; border-top: 2px solid #cbd5e1;">
+                  <td colspan="${totalColspan}" style="text-align: right; padding: 6px 10px; font-weight: 800; font-size: 11px; border: 1px solid #cbd5e1; color: #0f172a;">TOTAL (${Array.isArray(req.items) ? req.items.length : 0} ITEM):</td>
+                  <td style="text-align: center; padding: 6px 4px; font-weight: 800; font-size: 12px; border: 1px solid #cbd5e1; color: #0284c7;">${totalQty}</td>
+                </tr>
+              </tfoot>
+            </table>
+            `;
+          })()}
         </div>
 
         ${photoSection}
@@ -11145,6 +11292,23 @@ function loadUsersManagement() {
     `;
     tbody.appendChild(tr);
   });
+
+  // APPEND 1 EMPTY ROW AT THE END OF USER MANAGEMENT TABLE
+  const emptyUserRow = document.createElement('tr');
+  emptyUserRow.className = 'empty-grid-row';
+  emptyUserRow.style.cssText = 'height: 48px !important; min-height: 48px !important; max-height: 48px !important; background: transparent !important; pointer-events: none !important;';
+  emptyUserRow.innerHTML = `
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+    <td style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+  `;
+  tbody.appendChild(emptyUserRow);
   updateMultiUserBtnState();
 }
 
@@ -11747,6 +11911,15 @@ function loadMasterDbTable() {
     `;
     tbody.appendChild(tr);
   });
+
+  // APPEND 1 EMPTY ROW AT THE END OF MASTER DB TABLE
+  const emptyMasterRow = document.createElement('tr');
+  emptyMasterRow.className = 'empty-grid-row';
+  emptyMasterRow.style.cssText = 'height: 48px !important; min-height: 48px !important; max-height: 48px !important; background: transparent !important; pointer-events: none !important;';
+  emptyMasterRow.innerHTML = `
+    <td colspan="10" style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+  `;
+  tbody.appendChild(emptyMasterRow);
   updateMultiMasterDbBtnState();
 }
 
@@ -12351,6 +12524,15 @@ function loadDaftarTokoModal(filterKeyword = '') {
     `;
     tbody.appendChild(tr);
   });
+
+  // APPEND 1 EMPTY ROW AT THE END OF DAFTAR TOKO TABLE
+  const emptyTokoRow = document.createElement('tr');
+  emptyTokoRow.className = 'empty-grid-row';
+  emptyTokoRow.style.cssText = 'height: 48px !important; min-height: 48px !important; max-height: 48px !important; background: transparent !important; pointer-events: none !important;';
+  emptyTokoRow.innerHTML = `
+    <td colspan="4" style="height: 48px !important; border-bottom: 1px solid var(--border-color) !important; background: transparent !important; padding: 0 !important;">&nbsp;</td>
+  `;
+  tbody.appendChild(emptyTokoRow);
 }
 window.loadDaftarTokoModal = loadDaftarTokoModal;
 
@@ -14027,26 +14209,137 @@ async function prosesExcelAutoFill(event) {
 }
 window.prosesExcelAutoFill = prosesExcelAutoFill;
 
+// =============================================================================
+// MESIN GEMINI AI UNTUK PEMBACAAN PDF DAN FOTO DENGAN API KEY SEKALI ISI
+// =============================================================================
+
+function getGeminiApiKey() {
+  let key = localStorage.getItem('gemini_api_key') || localStorage.getItem('GEMINI_API_KEY') || '';
+  return key.trim();
+}
+
+function aturGeminiApiKey() {
+  const modal = document.getElementById('modalGeminiApiKey');
+  const input = document.getElementById('inputGeminiApiKeyVal');
+  if (modal) {
+    if (input) input.value = getGeminiApiKey();
+    modal.style.display = 'flex';
+    if (input) input.focus();
+  } else {
+    const currentKey = getGeminiApiKey();
+    const newKey = prompt('MASUKKAN GEMINI API KEY ANDA (Hanya diisi sekali):', currentKey);
+    if (newKey !== null) {
+      localStorage.setItem('gemini_api_key', newKey.trim());
+      if (typeof showNotif === 'function') showNotif('GEMINI API KEY BERHASIL DISIMPAN!', 'success');
+    }
+  }
+}
+window.aturGeminiApiKey = aturGeminiApiKey;
+
+function tutupModalGeminiApiKey() {
+  const modal = document.getElementById('modalGeminiApiKey');
+  if (modal) modal.style.display = 'none';
+}
+window.tutupModalGeminiApiKey = tutupModalGeminiApiKey;
+
+function toggleShowGeminiApiKey() {
+  const input = document.getElementById('inputGeminiApiKeyVal');
+  const icon = document.getElementById('iconToggleGeminiKey');
+  if (!input || !icon) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.textContent = 'visibility_off';
+  } else {
+    input.type = 'password';
+    icon.textContent = 'visibility';
+  }
+}
+window.toggleShowGeminiApiKey = toggleShowGeminiApiKey;
+
+function simpanGeminiApiKeyDariModal() {
+  const input = document.getElementById('inputGeminiApiKeyVal');
+  const val = input ? input.value.trim() : '';
+  if (!val) {
+    if (typeof showNotif === 'function') showNotif('API KEY TIDAK BOLEH KOSONG!', 'warning');
+    return;
+  }
+  localStorage.setItem('gemini_api_key', val);
+  tutupModalGeminiApiKey();
+  if (typeof showNotif === 'function') showNotif('GEMINI API KEY BERHASIL DISIMPAN SECARA PERMANEN!', 'success');
+}
+window.simpanGeminiApiKeyDariModal = simpanGeminiApiKeyDariModal;
+
+function triggerUploadPdfAutoFill() {
+  const input = document.getElementById('inputPdfAutoFill');
+  if (input) input.click();
+}
+window.triggerUploadPdfAutoFill = triggerUploadPdfAutoFill;
+
+function triggerUploadGambarAutoFill() {
+  const input = document.getElementById('inputGambarAutoFill');
+  if (input) input.click();
+}
+window.triggerUploadGambarAutoFill = triggerUploadGambarAutoFill;
+
+function triggerUploadExcelAutoFill() {
+  const input = document.getElementById('inputExcelAutoFill');
+  if (input) input.click();
+}
+window.triggerUploadExcelAutoFill = triggerUploadExcelAutoFill;
+
+async function getBestActiveGeminiModel(apiKey) {
+  const preferredModels = [
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-flash-latest',
+    'gemini-1.5-pro'
+  ];
+
+  try {
+    const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if (listRes.ok) {
+      const data = await listRes.json();
+      if (data && Array.isArray(data.models)) {
+        const available = data.models
+          .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'))
+          .map(m => m.name.replace('models/', ''));
+
+        const sorted = [];
+        preferredModels.forEach(p => {
+          if (available.includes(p)) sorted.push(p);
+        });
+        available.forEach(a => {
+          if (!sorted.includes(a) && (a.includes('flash') || a.includes('pro'))) {
+            sorted.push(a);
+          }
+        });
+        if (sorted.length > 0) return sorted;
+      }
+    }
+  } catch (e) {}
+
+  return preferredModels;
+}
+
+// ----------------------------------------------------
+// 1. PROSES BACA DOKUMEN PDF MENGGUNAKAN GEMINI AI
+// ----------------------------------------------------
 async function prosesPdfAutoFillGemini(event) {
   const abortController = new AbortController();
   window._cancelGeminiProcess = () => abortController.abort();
   const file = event.target.files && event.target.files[0];
   if (!file) return;
 
-  if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-    if (typeof showNotif === 'function') showNotif('BERKAS HARUS BERFORMAT PDF!', 'warning');
-    event.target.value = '';
-    return;
-  }
-
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
-    // aturGeminiApiKey disabled
+    aturGeminiApiKey();
+    if (typeof showNotif === 'function') showNotif('SILAHKAN MASUKKAN GEMINI API KEY TERLEBIH DAHULU!', 'warning');
     event.target.value = '';
     return;
   }
 
-  if (typeof showLoading === 'function') showLoading('Membaca dokumen...', true);
+  if (typeof showLoading === 'function') showLoading('Membaca dokumen PDF dengan Gemini AI...', true);
 
   try {
     const base64Data = await new Promise((resolve, reject) => {
@@ -14062,21 +14355,21 @@ async function prosesPdfAutoFillGemini(event) {
 
     const modelCandidates = await getBestActiveGeminiModel(apiKey);
     const promptText = `
-Anda adalah sistem pengurai data dokumen permintaan toko / barang yang sangat teliti.
-Tolong baca seluruh isi dokumen PDF ini dan uraikan datanya secara akurat.
-Kembalikan hasilnya HANYA dalam format JSON murni TANPA pembungkus markdown.
+Anda adalah asisten pengurai data dokumen PDF permintaan barang / toko yang sangat akurat.
+Tolong baca seluruh isi dokumen PDF ini dan ekstrak seluruh data secara presisi.
+Kembalikan hasilnya HANYA dalam format JSON murni TANPA pembungkus markdown apapun.
 
 Format JSON wajib persis seperti berikut:
 {
   "toko": "NAMA TOKO",
   "jenis": "DEFAULT atau DUS",
-  "catatan": "Catatan atau keterangan jika ada",
+  "catatan": "Catatan jika ada",
   "items": [
     {
       "typeBarang": "Nama / Tipe Barang",
       "noSeri": "Nomor Seri Barang",
       "noSeriDus": "Nomor Seri Dus jika ada",
-      "permintaanBarang": "Deskripsi atau Nama Barang Permintaan",
+      "permintaanBarang": "Deskripsi Barang Permintaan",
       "alasan": "Alasan Permintaan",
       "qty": 1
     }
@@ -14100,75 +14393,49 @@ Format JSON wajib persis seperti berikut:
       ]
     };
 
-    const uniqueModelNames = Array.isArray(modelCandidates) && modelCandidates.length > 0 ? modelCandidates : ['gemini-flash-latest'];
+    let response = null;
+    let rawText = '';
+    let isUnauthorized = false;
 
-    const requestsToTry = [];
-    uniqueModelNames.forEach(mod => {
-      requestsToTry.push({
-        url: `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${apiKey}`,
-        options: {
+    for (const mod of modelCandidates) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(generatePayload),
           signal: abortController.signal
-        },
-        type: 'generateContent'
-      });
-    });
+        });
 
-    let response = null;
-    let rawText = '';
-    let isUnauthorized = false;
-    let is503Overload = false;
+        if (res.status === 401 || res.status === 400) {
+          const errData = await res.json().catch(() => ({}));
+          if (errData && errData.error && (errData.error.code === 401 || errData.error.code === 400 || String(errData.error.message).includes('API key'))) {
+            isUnauthorized = true;
+          }
+        }
 
-    for (const reqObj of requestsToTry) {
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          const res = await fetch(reqObj.url, reqObj.options);
-          if (res.status === 503) {
-            is503Overload = true;
-            if (attempt < 3) {
-              await new Promise(r => setTimeout(r, 2000 * attempt));
-              continue;
+        if (res.ok) {
+          const resJson = await res.json();
+          if (resJson.candidates && resJson.candidates[0] && resJson.candidates[0].content) {
+            const parts = resJson.candidates[0].content.parts || [];
+            rawText = parts.map(p => p.text || '').join('');
+            if (rawText.trim()) {
+              response = res;
+              break;
             }
           }
-          if (res.status === 401 || res.status === 400) {
-            const errData = await res.json().catch(() => ({}));
-            if (errData && errData.error && (errData.error.code === 401 || errData.error.code === 400 || String(errData.error.message).includes('API key'))) {
-              isUnauthorized = true;
-            }
-          }
-          if (res.ok) {
-            is503Overload = false;
-            const resJson = await res.json();
-            if (resJson.candidates && resJson.candidates[0] && resJson.candidates[0].content) {
-              const parts = resJson.candidates[0].content.parts || [];
-              rawText = parts.map(p => p.text || '').join('');
-              if (rawText.trim()) {
-                response = res;
-                break;
-              }
-            }
-          }
-        } catch (e) {}
-        break;
-      }
-      if (response && rawText) break;
+        }
+      } catch (e) {}
     }
 
     if (isUnauthorized && (!response || !rawText)) {
       if (typeof hideLoading === 'function') hideLoading();
-      if (typeof showNotif === 'function') showNotif('GEMINI API KEY TIDAK VALID / EXPIRED (401 Unauthorized). SILAHKAN MASUKKAN API KEY TERBARU DARI GOOGLE AI STUDIO!', 'warning');
-      // aturGeminiApiKey disabled
+      aturGeminiApiKey();
+      if (typeof showNotif === 'function') showNotif('GEMINI API KEY TIDAK VALID / EXPIRED. SILAHKAN MASUKKAN API KEY TERBARU!', 'warning');
       return;
     }
 
     if (!response || !rawText) {
-      if (is503Overload) {
-        throw new Error('Server Google Gemini AI sedang sibuk sementara (503 Service Unavailable). Silahkan coba klik beberapa detik lagi.');
-      } else {
-        throw new Error('Gagal terhubung ke Gemini AI atau format PDF tidak terbaca.');
-      }
+      throw new Error('Gagal terhubung ke Gemini AI atau format PDF tidak terbaca.');
     }
 
     const parsedData = extractFirstValidJSON(rawText);
@@ -14179,7 +14446,7 @@ Format JSON wajib persis seperti berikut:
 
     applyParsedDataToForm(parsedData);
     if (typeof hideLoading === 'function') hideLoading();
-    if (typeof showNotif === 'function') showNotif('BERHASIL MEMBACA DOKUMEN. SILAHKAN CEK TERLEBIH DAHULU', 'success');
+    if (typeof showNotif === 'function') showNotif('BERHASIL MEMBACA DOKUMEN PDF DENGAN GEMINI AI!', 'success');
 
   } catch(err) {
     if (typeof hideLoading === 'function') hideLoading();
@@ -14193,7 +14460,11 @@ Format JSON wajib persis seperti berikut:
   }
 }
 window.prosesPdfAutoFillGemini = prosesPdfAutoFillGemini;
+window.prosesPdfAutoFill = prosesPdfAutoFillGemini;
 
+// ----------------------------------------------------
+// 2. PROSES BACA GAMBAR / FOTO MENGGUNAKAN GEMINI AI
+// ----------------------------------------------------
 async function prosesGambarAutoFillGemini(event) {
   const abortController = new AbortController();
   window._cancelGeminiProcess = () => abortController.abort();
@@ -14202,12 +14473,13 @@ async function prosesGambarAutoFillGemini(event) {
 
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
-    // aturGeminiApiKey disabled
+    aturGeminiApiKey();
+    if (typeof showNotif === 'function') showNotif('SILAHKAN MASUKKAN GEMINI API KEY TERLEBIH DAHULU!', 'warning');
     event.target.value = '';
     return;
   }
 
-  if (typeof showLoading === 'function') showLoading('Membaca dokumen...', true);
+  if (typeof showLoading === 'function') showLoading('Membaca dokumen Foto dengan Gemini AI...', true);
 
   try {
     const base64Data = await new Promise((resolve, reject) => {
@@ -14223,21 +14495,21 @@ async function prosesGambarAutoFillGemini(event) {
 
     const modelCandidates = await getBestActiveGeminiModel(apiKey);
     const promptText = `
-Anda adalah sistem pengurai data gambar dokumen permintaan toko / barang yang sangat teliti.
-Tolong baca seluruh gambar ini dan uraikan datanya secara akurat.
-Kembalikan hasilnya HANYA dalam format JSON murni TANPA pembungkus markdown.
+Anda adalah asisten pengurai data gambar dokumen permintaan barang / toko yang sangat akurat.
+Tolong baca seluruh gambar dokumen ini dan ekstrak seluruh data secara presisi.
+Kembalikan hasilnya HANYA dalam format JSON murni TANPA pembungkus markdown apapun.
 
 Format JSON wajib persis seperti berikut:
 {
   "toko": "NAMA TOKO",
   "jenis": "DEFAULT atau DUS",
-  "catatan": "Catatan atau keterangan jika ada",
+  "catatan": "Catatan jika ada",
   "items": [
     {
       "typeBarang": "Nama / Tipe Barang",
       "noSeri": "Nomor Seri Barang",
       "noSeriDus": "Nomor Seri Dus jika ada",
-      "permintaanBarang": "Deskripsi atau Nama Barang Permintaan",
+      "permintaanBarang": "Deskripsi Barang Permintaan",
       "alasan": "Alasan Permintaan",
       "qty": 1
     }
@@ -14261,66 +14533,44 @@ Format JSON wajib persis seperti berikut:
       ]
     };
 
-    const uniqueModelNames = Array.isArray(modelCandidates) && modelCandidates.length > 0 ? modelCandidates : ['gemini-flash-latest'];
+    let response = null;
+    let rawText = '';
+    let isUnauthorized = false;
 
-    const requestsToTry = [];
-    uniqueModelNames.forEach(mod => {
-      requestsToTry.push({
-        url: `https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${apiKey}`,
-        options: {
+    for (const mod of modelCandidates) {
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${mod}:generateContent?key=${apiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(generatePayload),
           signal: abortController.signal
-        },
-        type: 'generateContent'
-      });
-    });
+        });
 
-    let response = null;
-    let rawText = '';
-    let isUnauthorized = false;
-    let is503Overload = false;
+        if (res.status === 401 || res.status === 400) {
+          const errData = await res.json().catch(() => ({}));
+          if (errData && errData.error && (errData.error.code === 401 || errData.error.code === 400 || String(errData.error.message).includes('API key'))) {
+            isUnauthorized = true;
+          }
+        }
 
-    for (const reqObj of requestsToTry) {
-      for (let attempt = 1; attempt <= 3; attempt++) {
-        try {
-          const res = await fetch(reqObj.url, reqObj.options);
-          if (res.status === 503) {
-            is503Overload = true;
-            if (attempt < 3) {
-              await new Promise(r => setTimeout(r, 2000 * attempt));
-              continue;
+        if (res.ok) {
+          const resJson = await res.json();
+          if (resJson.candidates && resJson.candidates[0] && resJson.candidates[0].content) {
+            const parts = resJson.candidates[0].content.parts || [];
+            rawText = parts.map(p => p.text || '').join('');
+            if (rawText.trim()) {
+              response = res;
+              break;
             }
           }
-          if (res.status === 401 || res.status === 400) {
-            const errData = await res.json().catch(() => ({}));
-            if (errData && errData.error && (errData.error.code === 401 || errData.error.code === 400 || String(errData.error.message).includes('API key'))) {
-              isUnauthorized = true;
-            }
-          }
-          if (res.ok) {
-            is503Overload = false;
-            const resJson = await res.json();
-            if (resJson.candidates && resJson.candidates[0] && resJson.candidates[0].content) {
-              const parts = resJson.candidates[0].content.parts || [];
-              rawText = parts.map(p => p.text || '').join('');
-              if (rawText.trim()) {
-                response = res;
-                break;
-              }
-            }
-          }
-        } catch (e) {}
-        break;
-      }
-      if (response && rawText) break;
+        }
+      } catch (e) {}
     }
 
     if (isUnauthorized && (!response || !rawText)) {
       if (typeof hideLoading === 'function') hideLoading();
-      if (typeof showNotif === 'function') showNotif('GEMINI API KEY TIDAK VALID / EXPIRED (401 Unauthorized). SILAHKAN MASUKKAN API KEY TERBARU DARI GOOGLE AI STUDIO!', 'warning');
-      // aturGeminiApiKey disabled
+      aturGeminiApiKey();
+      if (typeof showNotif === 'function') showNotif('GEMINI API KEY TIDAK VALID / EXPIRED. SILAHKAN MASUKKAN API KEY TERBARU!', 'warning');
       return;
     }
 
@@ -14336,7 +14586,7 @@ Format JSON wajib persis seperti berikut:
 
     applyParsedDataToForm(parsedData);
     if (typeof hideLoading === 'function') hideLoading();
-    if (typeof showNotif === 'function') showNotif('BERHASIL MEMBACA DOKUMEN. SILAHKAN CEK TERLEBIH DAHULU', 'success');
+    if (typeof showNotif === 'function') showNotif('BERHASIL MEMBACA FOTO DENGAN GEMINI AI!', 'success');
 
   } catch(err) {
     if (typeof hideLoading === 'function') hideLoading();
@@ -14350,6 +14600,7 @@ Format JSON wajib persis seperti berikut:
   }
 }
 window.prosesGambarAutoFillGemini = prosesGambarAutoFillGemini;
+window.prosesGambarAutoFill = prosesGambarAutoFillGemini; // Alias backward compatible
 
 function extractFirstValidJSON(text) {
   if (!text) return null;

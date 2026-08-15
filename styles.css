@@ -373,14 +373,14 @@ body.light-mode .aesthetic-orb-3 {
 .header,
 .stats,
 .top-header-actions {
-  background: transparent !important;
+  background: var(--bg-box) !important;
 }
 
 .page {
   display: none !important;
   padding: 16px 0 !important;
   animation: fade .25s ease-out;
-  padding-bottom: 95px;
+  padding-bottom: 0;
   width: calc(100vw - 1mm) !important;
   max-width: calc(100vw - 1mm) !important;
   margin: 0 auto !important;
@@ -388,25 +388,25 @@ body.light-mode .aesthetic-orb-3 {
 
 .page.active {
   display: block !important;
-  height: calc(100vh - 60px) !important;
-  max-height: calc(100vh - 60px) !important;
+  height: calc(100vh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-y !important;
   box-sizing: border-box !important;
-  padding-bottom: 95px !important;
+  padding-bottom: 0 !important;
 }
 
 #userManagementPage.active,
 #inputPage.active {
   display: block !important;
-  height: calc(100vh - 60px) !important;
-  max-height: calc(100vh - 60px) !important;
+  height: calc(100vh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-y !important;
   box-sizing: border-box !important;
-  padding-bottom: 95px !important;
+  padding-bottom: 0 !important;
 }
 
 section#riwayatPage.page.active,
@@ -415,8 +415,8 @@ section#masterDbPage.page.active,
 #masterDbPage.active {
   display: flex !important;
   flex-direction: column !important;
-  height: calc(100vh - 65px) !important;
-  max-height: calc(100vh - 65px) !important;
+  height: calc(100vh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
   overflow: hidden !important;
   overflow-y: hidden !important;
   padding-bottom: 0 !important;
@@ -635,7 +635,7 @@ section#masterDbPage.page.active,
   align-items: center !important;
   justify-content: center !important;
   padding: 12px !important;
-  padding-bottom: calc(52px + 1cm) !important;
+  padding-bottom: 0 !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
 }
@@ -1156,7 +1156,7 @@ input:focus, select:focus, textarea:focus {
   position: relative !important;
   top: auto !important;
   z-index: 10 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   margin-top: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0.5mm !important;
@@ -1365,9 +1365,10 @@ input:focus, select:focus, textarea:focus {
 }
 
 #detailDashboard {
-  height: calc(100vh - 195px) !important;
-  max-height: calc(100vh - 195px) !important;
-  flex: 1 1 auto !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
@@ -1410,7 +1411,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 5px !important;
   -webkit-clip-path: inset(0 round 5px) !important;
   clip-path: inset(0 round 5px) !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   box-shadow: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -1556,7 +1557,7 @@ input:focus, select:focus, textarea:focus {
 #btnSimpan,
 .btn-primary#btnSimpan {
   margin-top: 24px !important;
-  margin-bottom: 1.8cm !important;
+  margin-bottom: 1mm !important;
   display: block !important;
   width: 100% !important;
   position: relative !important;
@@ -1584,7 +1585,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 #userManagementPage {
-  padding-bottom: 85px !important;
+  padding-bottom: 1mm !important;
   margin-bottom: 0 !important;
 }
 
@@ -1765,7 +1766,7 @@ html body #inputPage {
     margin-right: auto !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    padding-bottom: calc(58px + 3.5cm) !important;
+    padding-bottom: 0 !important;
     margin-bottom: 0 !important;
   }
 
@@ -1776,15 +1777,15 @@ html body #inputPage {
     margin-right: auto !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
-    padding-bottom: 25px !important;
-    margin-bottom: 10px !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 1mm !important;
   }
 
   #inputPage #btnSimpan,
   #btnSimpan,
   .btn-primary#btnSimpan {
     margin-top: 14px !important;
-    margin-bottom: 30px !important;
+    margin-bottom: 1mm !important;
     position: relative !important;
     z-index: 10 !important;
   }
@@ -1804,7 +1805,7 @@ html body #inputPage {
 #btnRefreshCloudUsage {
   border: 1.5px solid var(--primary) !important;
   color: var(--primary) !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   font-weight: 800 !important;
   transition: all 0.2s ease !important;
 }
@@ -1939,7 +1940,7 @@ tr.blink-row-red td strong,
 
 .historyTable tr:last-child td, #tableMasterDb tr:last-child td, #tableUserMgmt tr:last-child td, .dashboardTable tr:last-child td, .detailTable2 tr:last-child td {
   border-bottom: none !important;
-  padding-bottom: 1cm !important;
+  padding-bottom: 6px !important;
 }
 
 .historyTable tbody tr:hover td, #tableMasterDb tbody tr:hover td, #tableUserMgmt tbody tr:hover td {
@@ -2033,8 +2034,8 @@ section#riwayatPage.page.active,
 section#masterDbPage.page.active {
   display: none;
   flex-direction: column !important;
-  height: calc(100vh - 65px) !important;
-  max-height: calc(100vh - 65px) !important;
+  height: calc(100vh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
   overflow: hidden !important;
   overflow-y: hidden !important;
   padding-bottom: 0 !important;
@@ -2062,7 +2063,7 @@ section#masterDbPage.page.active {
   min-height: 0 !important;
   margin-bottom: 0 !important;
   padding: 4px 0 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -2186,7 +2187,7 @@ section#masterDbPage.page.active {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   box-shadow: none !important;
   font-size: 13px !important;
@@ -2343,7 +2344,7 @@ body.design-mode-3d-isometric .dashboardTable th {
 }
 
 #bottomMenu button {
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   cursor: pointer !important;
   display: flex;
@@ -2423,8 +2424,8 @@ body.design-mode-3d-isometric .dashboardTable th {
     position: fixed !important;
     bottom: 12px !important;
     right: 12px !important;
-    width: 40px !important;
-    height: 40px !important;
+    width: 46px !important;
+    height: 46px !important;
     border-radius: 50% !important;
     background: linear-gradient(135deg, var(--primary, #0284c7), #0369a1) !important;
     color: #ffffff !important;
@@ -2449,7 +2450,7 @@ body.design-mode-3d-isometric .dashboardTable th {
   }
 
   #mobileFabBtn .material-symbols-rounded {
-    font-size: 20px !important;
+    font-size: 23px !important;
     color: #ffffff !important;
     font-weight: 700 !important;
     line-height: 1 !important;
@@ -2457,7 +2458,7 @@ body.design-mode-3d-isometric .dashboardTable th {
 
   #mobileFabDrawer {
     position: fixed !important;
-    bottom: 58px !important;
+    bottom: 64px !important;
     right: 12px !important;
     width: 210px !important;
     max-width: calc(100vw - 28px) !important;
@@ -2493,13 +2494,28 @@ body.design-mode-3d-isometric .dashboardTable th {
   }
 
   .mobileFabHeader button {
-    background: transparent !important;
-    border: none !important;
+    background: var(--primary) !important;
     color: #ffffff !important;
-    font-size: 20px !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+    font-size: 18px !important;
     font-weight: 900 !important;
     cursor: pointer !important;
     line-height: 1 !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.2s ease !important;
+  }
+  .mobileFabHeader button:hover,
+  .mobileFabHeader button:active {
+    background: #ffffff !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    transform: scale(1.1) !important;
   }
 
   .mobileFabBody {
@@ -2516,7 +2532,7 @@ body.design-mode-3d-isometric .dashboardTable th {
     align-items: center !important;
     gap: 10px !important;
     padding: 9px 12px !important;
-    background: transparent !important;
+    background: var(--bg-box) !important;
     border: none !important;
     border-radius: 6px !important;
     color: var(--text-main, #f1f5f9) !important;
@@ -2983,7 +2999,7 @@ div[id*="Modal"] {
   min-height: 0 !important;
   border-radius: 5px !important;
   overflow: hidden !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   margin: 2mm auto !important;
   position: relative !important;
   display: flex !important;
@@ -2996,7 +3012,7 @@ div[id*="Modal"] {
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   overflow: hidden !important;
   border-radius: 5px !important;
   display: flex !important;
@@ -3070,7 +3086,7 @@ div[id*="Modal"] {
 .popupBoxDetail,
 .popupBoxDetailV2,
 #detailContentContainer {
-  padding-bottom: 1cm !important;
+  padding-bottom: 1mm !important;
 }
 
 /* ENFORCE SINGLE LINE 1-ROW (NO WRAPTEXT) WITH HORIZONTAL SCROLL */
@@ -3145,7 +3161,7 @@ table th,
 .detailHeaderInfoV2,
 .noSuratValV2,
 #detailHeaderInfoV2 {
-  background: transparent !important;
+  background: var(--bg-box) !important;
   color: var(--text-main) !important;
   box-shadow: none !important;
   border: none !important;
@@ -3172,7 +3188,7 @@ table th,
 .popupHeader button,
 .popupHeader .popupClose,
 .detailHeader button {
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   color: var(--primary) !important;
   font-size: 26px !important;
@@ -3262,7 +3278,7 @@ table th,
   position: absolute !important;
   top: 10px !important;
   right: 12px !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   color: var(--primary) !important;
   font-size: 26px !important;
@@ -3567,7 +3583,7 @@ table th,
   font-size: 28px !important;
   font-weight: 900 !important;
   color: #ffffff !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   line-height: 1 !important;
   cursor: pointer !important;
@@ -4113,7 +4129,7 @@ table th,
     padding-left: 0 !important;
     padding-right: 0 !important;
     padding-top: 12px !important;
-    padding-bottom: 95px !important;
+    padding-bottom: 0 !important;
   }
 
   #inputPage,
@@ -4164,8 +4180,8 @@ table th,
   #dashboardPage {
     overflow: hidden !important;
     overflow-y: hidden !important;
-    height: calc(100vh - 65px) !important;
-    max-height: calc(100vh - 65px) !important;
+    height: calc(100vh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
     padding-top: 6px !important;
     padding-bottom: 0 !important;
     touch-action: pan-x pan-y !important;
@@ -4262,7 +4278,7 @@ table th,
 
   #popupTambahToko {
     padding-top: 1cm !important;
-    padding-bottom: 1cm !important;
+    padding-bottom: 0 !important;
     padding-left: 1mm !important;
     padding-right: 1mm !important;
     align-items: center !important;
@@ -4277,7 +4293,7 @@ table th,
     height: calc(100vh - 2cm) !important;
     max-height: calc(100vh - 2cm) !important;
     margin-top: 1cm !important;
-    margin-bottom: 1cm !important;
+    margin-bottom: 1mm !important;
     margin-left: 1mm !important;
     margin-right: 1mm !important;
     box-sizing: border-box !important;
@@ -4440,7 +4456,7 @@ table th,
   #detailDashboard {
     padding: 0 !important;
     margin-bottom: 12px !important;
-    background: transparent !important;
+    background: var(--bg-box) !important;
     border: none !important;
   }
 
@@ -4643,7 +4659,7 @@ button.btnKembali {
 
   .page, .page.active, #dashboardPage, #userManagementPage {
     padding-top: 10px !important;
-    padding-bottom: 56px !important;
+    padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     width: calc(100vw - 1mm) !important;
@@ -4714,7 +4730,7 @@ button.btnKembali {
     border-radius: 5px !important;
     -webkit-clip-path: inset(0 round 5px) !important;
     clip-path: inset(0 round 5px) !important;
-    background: transparent !important;
+    background: var(--bg-box) !important;
     border: none !important;
     box-shadow: none !important;
     margin-top: 0.5mm !important;
@@ -4858,7 +4874,7 @@ button.btnKembali {
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
-    background: transparent !important;
+    background: var(--bg-box) !important;
     box-shadow: none !important;
     padding: 0 !important;
     overflow-x: auto !important;
@@ -4945,7 +4961,7 @@ button.btnKembali {
   margin-bottom: 10px !important;
   padding: 0 !important;
   border-radius: 5px !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   box-shadow: none !important;
   margin-bottom: 1mm !important;
@@ -4998,7 +5014,7 @@ button[onclick="tutupModalTambahToko()"] {
   font-size: 26px !important;
   line-height: 1 !important;
   opacity: 1 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   text-shadow: 0 0 6px rgba(239, 68, 68, 0.5) !important;
   cursor: pointer !important;
@@ -5127,7 +5143,7 @@ div.rowHighlightOrange {
 }
 
 #popupDetail .popupClose {
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   color: #ffffff !important;
   font-weight: 700 !important;
@@ -5424,7 +5440,7 @@ div.rowHighlightOrange {
   font-weight: 900 !important;
   font-size: 28px !important;
   border: none !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   cursor: pointer !important;
   line-height: 1 !important;
   padding: 0 4px !important;
@@ -5577,7 +5593,7 @@ div.rowHighlightOrange {
   padding: 4px 14px !important;
   margin: 0 !important;
   border-top: none !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border-radius: 0 0 9.5px 9.5px !important;
   flex-shrink: 0 !important;
   display: flex !important;
@@ -5597,7 +5613,7 @@ div.rowHighlightOrange {
   width: 100% !important;
   padding: 8px 14px !important;
   margin: 0 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   box-shadow: none !important;
   font-size: 13px !important;
@@ -6013,7 +6029,7 @@ div.rowHighlightOrange {
   #pdfModal {
     position: static !important;
     padding: 0 !important;
-    background: transparent !important;
+    background: var(--bg-box) !important;
     display: block !important;
   }
   #pdfModal .popupBox {
@@ -6376,12 +6392,12 @@ html body .dashboardTable thead tr {
 @media (max-width: 768px) {
   html body #inputPage,
   html body .page#inputPage {
-    padding-bottom: calc(58px + 1mm) !important;
+    padding-bottom: 0 !important;
     margin-bottom: 0 !important;
   }
 
   html body #inputPage .box {
-    padding-bottom: 12px !important;
+    padding-bottom: 0 !important;
     margin-bottom: 1mm !important;
   }
 
@@ -6451,7 +6467,7 @@ body:has(#masterDbPage.active) {
   touch-action: pan-x pan-y !important;
   padding: 0 !important;
   margin: 0 !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   box-shadow: none !important;
   box-sizing: border-box !important;
@@ -6579,7 +6595,7 @@ body:has(#masterDbPage.active) {
   backdrop-filter: blur(8px) saturate(120%) !important;
   -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
   padding-top: 8px !important;
-  padding-bottom: 75px !important;
+  padding-bottom: 0 !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
   box-sizing: border-box !important;
@@ -6667,7 +6683,7 @@ body:has(#masterDbPage.active) {
     align-items: center !important;
     justify-content: center !important;
     padding: 12px !important;
-    padding-bottom: calc(52px + 2cm) !important;
+    padding-bottom: 0 !important;
   }
   #confirmOverlay {
     align-items: center !important;
@@ -7074,15 +7090,15 @@ html body .cardStat .icon {
   section#dashboardPage.page.active,
   section#riwayatPage.page.active,
   section#masterDbPage.page.active {
-    height: calc(100vh - 60px - 1mm) !important;
-    height: calc(100dvh - 60px - 1mm) !important;
-    max-height: calc(100vh - 60px - 1mm) !important;
-    max-height: calc(100dvh - 60px - 1mm) !important;
-    min-height: calc(100vh - 60px - 1mm) !important;
-    min-height: calc(100dvh - 60px - 1mm) !important;
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
     display: flex !important;
     flex-direction: column !important;
-    padding-bottom: 1mm !important;
+    padding-bottom: 0 !important;
     margin-bottom: 0 !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
@@ -7094,7 +7110,7 @@ html body .cardStat .icon {
   .page#inputPage {
     height: auto !important;
     max-height: none !important;
-    padding-bottom: calc(65px + 2mm) !important;
+    padding-bottom: 0 !important;
     box-sizing: border-box !important;
     overflow-y: auto !important;
   }
@@ -7127,7 +7143,7 @@ html body .cardStat .icon {
     align-items: center !important;
     justify-content: center !important;
     padding: 12px !important;
-    padding-bottom: calc(52px + 1cm) !important;
+    padding-bottom: 0 !important;
   }
 
   #popupNotifList .popupNotifCard {
@@ -7504,7 +7520,7 @@ button.btnBatal:active {
   background: #dc2626 !important;
   transform: translateY(-1px) !important;
 }
-
+}
 
 /* MOBILE SPECIFIC NOTIFICATION & DETAIL POPUP COMPACT HEIGHT ADJUSTMENT */
 @media screen and (max-width: 768px) {
@@ -7589,7 +7605,7 @@ html body #rejectOverlay .confirmButton,
   html body #rejectOverlay,
   #rejectOverlay {
     padding: 2mm !important;
-    padding-bottom: calc(52px + 2mm) !important;
+    padding-bottom: 0 !important;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
@@ -7719,7 +7735,7 @@ html body #rejectOverlay .rejectHeaderPopup .popupClose,
   font-weight: 900 !important;
   line-height: 1 !important;
   padding: 0 4px !important;
-  background: transparent !important;
+  background: var(--bg-box) !important;
   border: none !important;
   color: #ffffff !important;
 }
@@ -7788,14 +7804,2558 @@ html body #rejectOverlay .rejectHeaderPopup .popupClose,
   html body section#masterDbPage .tableWrap {
     flex: 1 1 100% !important;
     flex-grow: 1 !important;
-    height: calc(100% - 1mm) !important;
+    height: 100% !important;
     min-height: 200px !important;
-    max-height: calc(100% - 1mm) !important;
+    max-height: 100% !important;
     align-self: stretch !important;
     margin-top: 1mm !important;
     margin-bottom: 1mm !important;
     box-sizing: border-box !important;
     overflow-y: auto !important;
     overflow-x: auto !important;
+  }
+}
+
+
+/* =============================================================================
+   ULTIMATE PRECISION 1MM BOTTOM BOUNDARY FOR DASHBOARD PAGE
+   ============================================================================= */
+html body #app #dashboardPage,
+html body section#dashboardPage,
+html body #dashboardPage.page,
+html body #dashboardPage.active,
+html body section#dashboardPage.page.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-top: 2px !important;
+  padding-bottom: 0 !important;
+  padding-left: 0.5mm !important;
+  padding-right: 0.5mm !important;
+  margin: 0 !important;
+  margin-bottom: 1mm !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #dashboardPage .dashboardTop {
+  flex: 0 0 auto !important;
+  margin-bottom: 2px !important;
+}
+
+html body #dashboardPage #dashboardRecentTitle {
+  flex: 0 0 auto !important;
+  margin-top: 1px !important;
+  margin-bottom: 1px !important;
+}
+
+html body #dashboardPage #detailDashboard,
+html body #detailDashboard {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-top: 1px !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #detailDashboard .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  html body #app #dashboardPage,
+  html body section#dashboardPage,
+  html body #dashboardPage.page,
+  html body #dashboardPage.active,
+  html body section#dashboardPage.page.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 1mm !important;
+  }
+
+  html body #dashboardPage #detailDashboard,
+  html body #detailDashboard {
+    margin-bottom: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+}
+
+
+/* =============================================================================
+   ULTIMATE PRECISION 1MM BOTTOM BOUNDARY FOR RIWAYAT PAGE
+   ============================================================================= */
+html body #app #riwayatPage,
+html body section#riwayatPage,
+html body #riwayatPage.page,
+html body #riwayatPage.active,
+html body section#riwayatPage.page.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-top: 2px !important;
+  padding-bottom: 0 !important;
+  padding-left: 0.5mm !important;
+  padding-right: 0.5mm !important;
+  margin: 0 !important;
+  margin-bottom: 1mm !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .riwayatContent,
+html body section#riwayatPage .riwayatContent {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage h3 {
+  flex: 0 0 auto !important;
+  margin-top: 1px !important;
+  margin-bottom: 4px !important;
+}
+
+html body #riwayatPage .searchToolbar {
+  flex: 0 0 auto !important;
+  margin-bottom: 4px !important;
+}
+
+html body #riwayatPage .tableWrap,
+html body section#riwayatPage .tableWrap,
+html body #riwayatPage .riwayatContent .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  margin-top: 1px !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x pan-y !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  html body #app #riwayatPage,
+  html body section#riwayatPage,
+  html body #riwayatPage.page,
+  html body #riwayatPage.active,
+  html body section#riwayatPage.page.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 1mm !important;
+  }
+
+  html body #riwayatPage .tableWrap {
+    margin-bottom: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+}
+
+
+/* =============================================================================
+   ULTIMATE PRECISION 1MM BOTTOM SPACING FOR RIWAYAT DATA TBODY
+   ============================================================================= */
+html body #riwayatData,
+html body #riwayatPage #riwayatData,
+html body #riwayatPage .historyTable #riwayatData {
+  margin-bottom: 1mm !important;
+  padding-bottom: 1mm !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatData tr:last-child td,
+html body #riwayatPage #riwayatData tr:last-child td,
+html body .historyTable tbody#riwayatData tr:last-child td {
+  padding-bottom: 1mm !important;
+}
+
+
+/* =============================================================================
+   ULTIMATE PRECISION 1MM BOTTOM SPACING FOR LOGIN & USER MANAGEMENT (MOBILE HP)
+   ============================================================================= */
+@media (max-width: 768px) {
+  html body #app #loginPage,
+  html body section#loginPage,
+  html body #loginPage.page,
+  html body section#loginPage.page.active,
+  html body .login-card {
+    margin-bottom: 1mm !important;
+    padding-bottom: 1mm !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  html body #userManagementPage.page,
+  html body #userManagementPage.active,
+  html body section#userManagementPage.page.active {
+    padding-bottom: 1mm !important;
+    margin-bottom: 1mm !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #userManagementPage .box:last-child,
+  html body #userManagementPage .tableWrap,
+  html body #userManagementPage .tableWrap:last-child {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/* GLOBAL HIGH SPECIFICITY OVERRIDE FOR LOGIN AND USER MGMT HP BOTTOM SPACING */
+html body #userManagementPage {
+  padding-bottom: 1mm !important;
+  margin-bottom: 1mm !important;
+}
+
+
+/* =============================================================================
+   ULTIMATE PRECISION 1MM BOTTOM BOUNDARY FOR USER MANAGEMENT PAGE (DESKTOP & HP)
+   ============================================================================= */
+html body #app #userManagementPage,
+html body section#userManagementPage,
+html body #userManagementPage.page,
+html body #userManagementPage.active,
+html body section#userManagementPage.page.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  padding-bottom: 1mm !important;
+  margin-bottom: 1mm !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
+}
+
+html body #userManagementPage .box:last-child,
+html body #userManagementPage .tableWrap:last-child,
+html body #userManagementPage > div:last-child {
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  html body #userManagementPage.page,
+  html body #userManagementPage.active,
+  html body section#userManagementPage.page.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    padding-bottom: 1mm !important;
+    margin-bottom: 1mm !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
+/* =============================================================================
+   MASTER GLOBAL RULE: EXACT 1MM SPACING WITH BOTTOM OF SCREEN FOR ALL PAGES
+   (LOGIN, DASHBOARD, INPUT, RIWAYAT, MASTER DB, USER MANAGEMENT)
+   ============================================================================= */
+
+/* Reset body & #app bottom padding/margin */
+html, body, html body #app {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Master Rule for ALL Section Pages */
+html body #app .page,
+html body #app .page.active,
+html body #app section.page,
+html body #app section.page.active,
+html body #loginPage.active,
+html body #dashboardPage.active,
+html body #inputPage.active,
+html body #riwayatPage.active,
+html body #masterDbPage.active,
+html body #userManagementPage.active,
+html body section#loginPage,
+html body section#dashboardPage,
+html body section#inputPage,
+html body section#riwayatPage,
+html body section#masterDbPage,
+html body section#userManagementPage {
+  box-sizing: border-box !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+}
+
+/* Flex/Fullscreen Pages Height: 1mm from screen bottom */
+html body #dashboardPage.active,
+html body #riwayatPage.active,
+html body #masterDbPage.active,
+html body #userManagementPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+}
+
+/* Ensure bottom-most child in any page sits 1mm from bottom */
+html body .page > div:last-child,
+html body .page > form:last-child,
+html body .page .box:last-child,
+html body .page .tableWrap:last-child,
+html body .page .login-card,
+html body #inputPage .btn-primary#btnSimpan,
+html body #inputPage .box:last-child,
+html body #userManagementPage .box:last-child {
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+}
+
+/* Mobile HP specific height override for 56px navbar */
+@media (max-width: 768px) {
+  html body #dashboardPage.active,
+  html body #riwayatPage.active,
+  html body #masterDbPage.active,
+  html body #userManagementPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+}
+
+
+/* =============================================================================
+   ULTIMATE PRECISION 1MM BOTTOM SPACING FOR ALL 6 PAGES (SINGLE SOURCE OF TRUTH)
+   (LOGIN, DASHBOARD, INPUT, RIWAYAT, MASTER DB, USER MANAGEMENT)
+   ============================================================================= */
+
+/* Reset body, html, #app */
+html, body, html body #app {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Master Rule for ALL 6 Pages */
+html body #app .page,
+html body #app .page.active,
+html body #app section.page,
+html body #app section.page.active,
+html body #loginPage,
+html body #loginPage.active,
+html body #dashboardPage,
+html body #dashboardPage.active,
+html body #inputPage,
+html body #inputPage.active,
+html body #riwayatPage,
+html body #riwayatPage.active,
+html body #masterDbPage,
+html body #masterDbPage.active,
+html body #userManagementPage,
+html body #userManagementPage.active {
+  box-sizing: border-box !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+}
+
+/* 1. LOGIN PAGE */
+html body #loginPage,
+html body #loginPage.page,
+html body #loginPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #loginPage .login-card {
+  margin-bottom: 1mm !important;
+}
+
+/* 2. DASHBOARD PAGE */
+html body #dashboardPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #dashboardPage #detailDashboard {
+  margin-bottom: 0 !important;
+}
+
+/* 3. INPUT PAGE */
+html body #inputPage,
+html body #inputPage.page,
+html body #inputPage.active {
+  height: auto !important;
+  max-height: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #inputPage .box:last-child,
+html body #inputPage .btn-primary#btnSimpan,
+html body #inputPage #btnSimpan {
+  margin-bottom: 1mm !important;
+}
+
+/* 4. RIWAYAT PAGE */
+html body #riwayatPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #riwayatPage .tableWrap {
+  margin-bottom: 0 !important;
+}
+
+/* 5. MASTER DB PAGE */
+html body #masterDbPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #masterDbPage .box,
+html body #masterDbPage .tableWrap {
+  margin-bottom: 0 !important;
+}
+
+/* 6. USER MANAGEMENT PAGE */
+html body #userManagementPage,
+html body #userManagementPage.page,
+html body #userManagementPage.active {
+  height: auto !important;
+  max-height: none !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #userManagementPage .box:last-child,
+html body #userManagementPage .tableWrap:last-child,
+html body #userManagementPage > div:last-child {
+  margin-bottom: 1mm !important;
+}
+
+/* MOBILE HP OVERRIDE (max-width: 768px) FOR ALL 6 PAGES */
+@media (max-width: 768px) {
+  html body #dashboardPage.active,
+  html body #riwayatPage.active,
+  html body #masterDbPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 1mm !important;
+  }
+
+  html body #inputPage,
+  html body #userManagementPage {
+    padding-bottom: 0 !important;
+    margin-bottom: 1mm !important;
+  }
+
+  html body #inputPage .btn-primary#btnSimpan,
+  html body #inputPage #btnSimpan,
+  html body #userManagementPage .box:last-child,
+  html body #userManagementPage .tableWrap:last-child {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+
+/* =============================================================================
+   MOBILE HP (MAX-WIDTH 768PX) STRICT 1MM BOTTOM BOUNDARY FIX FOR
+   INPUT FORM (#inputPage) AND USER MANAGEMENT (#userManagementPage)
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  /* 1. INPUT FORM PAGE (#inputPage) MOBILE HP FIX */
+  html body #app #inputPage,
+  html body section#inputPage,
+  html body #inputPage.page,
+  html body #inputPage.active {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  html body #inputPage .box,
+  html body #inputPage .box:last-child {
+    margin-bottom: 1mm !important;
+    padding-bottom: 6px !important;
+  }
+
+  html body #inputPage .btn-primary#btnSimpan,
+  html body #inputPage #btnSimpan {
+    margin-bottom: 0 !important;
+    margin-top: 10px !important;
+  }
+
+  /* 2. USER MANAGEMENT PAGE (#userManagementPage) MOBILE HP FIX */
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  html body #userManagementPage.page,
+  html body #userManagementPage.active {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  html body #userManagementPage .box,
+  html body #userManagementPage .box:last-child {
+    margin-bottom: 1mm !important;
+    padding-bottom: 8px !important;
+  }
+
+  html body #userManagementPage .tableWrap,
+  html body #userManagementPage .tableWrap:last-child {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+/* GLOBAL HIGH SPECIFICITY OVERRIDES FOR INPUT & USER MGMT BOTTOM BUTTONS/BOXES */
+html body #inputPage .btn-primary#btnSimpan {
+  margin-bottom: 0 !important;
+}
+
+html body #inputPage .box {
+  padding-bottom: 6px !important;
+  margin-bottom: 1mm !important;
+}
+
+html body #userManagementPage .box:last-child {
+  margin-bottom: 1mm !important;
+  padding-bottom: 8px !important;
+}
+
+
+/* =============================================================================
+   ULTIMATE MOBILE HP (MAX-WIDTH 768PX) STRICT 1MM BOTTOM BOUNDARY FIX FOR #inputPage
+   ============================================================================= */
+@media (max-width: 768px) {
+  html body #app #inputPage,
+  html body section#inputPage,
+  html body #inputPage.page,
+  html body #inputPage.active,
+  #inputPage,
+  .page#inputPage {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  html body #inputPage .box,
+  html body section#inputPage .box,
+  #inputPage .box {
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+  }
+
+  html body #inputPage .btn-primary#btnSimpan,
+  html body #inputPage #btnSimpan,
+  html body #btnSimpan,
+  #btnSimpan,
+  .btn-primary#btnSimpan {
+    margin-bottom: 0 !important;
+    margin-top: 10px !important;
+  }
+}
+
+
+/* =============================================================================
+   MASTER 1MM BOTTOM SCREEN BOUNDARY & CARD STRETCHING FIX
+   (ELIMINATES WALLPAPER GAP BEHIND FORM CARD ON HP & DESKTOP)
+   ============================================================================= */
+
+/* MOBILE HP (MAX-WIDTH 768PX) */
+@media (max-width: 768px) {
+  html body #app #inputPage,
+  html body section#inputPage,
+  html body #inputPage.page,
+  html body #inputPage.active,
+  #inputPage {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #inputPage .box,
+  html body section#inputPage .box,
+  #inputPage .box {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 10px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  html body #inputPage .btn-primary#btnSimpan,
+  html body #inputPage #btnSimpan,
+  #btnSimpan {
+    margin-bottom: 1mm !important;
+    margin-top: 14px !important;
+  }
+
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  html body #userManagementPage.page,
+  html body #userManagementPage.active,
+  #userManagementPage {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #userManagementPage .box:last-child,
+  html body #userManagementPage .tableWrap:last-child,
+  html body #userManagementPage > div:last-child {
+    margin-bottom: 1mm !important;
+  }
+}
+
+/* PC DESKTOP (MIN-WIDTH 769PX) */
+@media (min-width: 769px) {
+  html body #app #inputPage,
+  html body section#inputPage,
+  html body #inputPage.page,
+  html body #inputPage.active,
+  #inputPage {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+  }
+
+  html body #inputPage .box,
+  #inputPage .box {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 14px !important;
+  }
+
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  #userManagementPage {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+  }
+}
+
+
+/* =============================================================================
+   UNBEATABLE MASTER 1MM SCREEN BOUNDARY FOR ALL 6 PAGES (ELIMINATES 56PX GAP)
+   ============================================================================= */
+
+html body #app .page,
+html body #app .page.active,
+html body #app section.page,
+html body #app section.page.active,
+html body #loginPage,
+html body #loginPage.active,
+html body #dashboardPage,
+html body #dashboardPage.active,
+html body #inputPage,
+html body #inputPage.active,
+html body #riwayatPage,
+html body #riwayatPage.active,
+html body #masterDbPage,
+html body #masterDbPage.active,
+html body #userManagementPage,
+html body #userManagementPage.active {
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* For Full-height pages (Dashboard, Riwayat, MasterDB) */
+html body #dashboardPage.active,
+html body #riwayatPage.active,
+html body #masterDbPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+}
+
+/* For Scrollable Content pages (Input, UserManagement, Login) */
+html body #inputPage,
+html body #inputPage.active,
+html body #userManagementPage,
+html body #userManagementPage.active,
+html body #loginPage,
+html body #loginPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+}
+
+html body #inputPage .box,
+html body #userManagementPage .box {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 10px !important;
+  box-sizing: border-box !important;
+}
+
+html body #inputPage .btn-primary#btnSimpan,
+html body #inputPage #btnSimpan,
+#btnSimpan {
+  margin-bottom: 1mm !important;
+  margin-top: 14px !important;
+}
+
+
+/* =============================================================================
+   ULTIMATE HP (MAX-WIDTH 768PX) FLEX STRETCH FIX FOR 1MM BOTTOM SCREEN BOUNDARY:
+   DASHBOARD (#dashboardPage), DETAIL/RIWAYAT (#riwayatPage), MASTER DATA (#masterDbPage)
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  /* 1. DASHBOARD PAGE HP STRETCH 1MM */
+  html body #app #dashboardPage,
+  html body section#dashboardPage,
+  html body #dashboardPage.page,
+  html body #dashboardPage.active,
+  #dashboardPage {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #dashboardPage .dashboardTop,
+  html body #dashboardPage #dashboardRecentTitle {
+    flex: 0 0 auto !important;
+  }
+
+  html body #dashboardPage #detailDashboard,
+  html body #detailDashboard {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  html body #detailDashboard .tableWrap {
+    height: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* 2. DETAIL / RIWAYAT PAGE HP STRETCH 1MM */
+  html body #app #riwayatPage,
+  html body section#riwayatPage,
+  html body #riwayatPage.page,
+  html body #riwayatPage.active,
+  #riwayatPage {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #riwayatPage .riwayatContent {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    flex: 1 1 100% !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+
+  html body #riwayatPage .searchToolbar {
+    flex: 0 0 auto !important;
+    margin-bottom: 8px !important;
+  }
+
+  html body #riwayatPage .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* 3. MASTER DATABASE VIEW PAGE HP STRETCH 1MM */
+  html body #app #masterDbPage,
+  html body section#masterDbPage,
+  html body #masterDbPage.page,
+  html body #masterDbPage.active,
+  #masterDbPage {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #masterDbPage .box,
+  html body #masterDbPage .box-full {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    flex: 1 1 100% !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+
+  html body #masterDbPage .searchToolbar {
+    flex: 0 0 auto !important;
+    margin-bottom: 8px !important;
+  }
+
+  html body #masterDbPage .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+
+
+/* =============================================================================
+   ULTIMATE MOBILE HP & PC ABSOLUTE 1MM BOTTOM SCREEN BOUNDARY OVERHAUL (ALL 6 PAGES)
+   ============================================================================= */
+
+/* UNIVERSAL RESET FOR CONTAINER BOUNDARIES */
+html, body, html body #app {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 1. DASHBOARD PAGE (#dashboardPage) - HP & PC 1MM FLEX STRETCH */
+html body #app #dashboardPage,
+html body section#dashboardPage,
+html body #dashboardPage.page,
+html body #dashboardPage.active,
+#dashboardPage.active {
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #dashboardPage .dashboardTop,
+html body #dashboardPage #dashboardRecentTitle {
+  flex: 0 0 auto !important;
+}
+
+html body #dashboardPage #detailDashboard,
+html body #detailDashboard {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+html body #detailDashboard .tableWrap {
+  height: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 2. INPUT FORM PAGE (#inputPage) - HP & PC 1MM CARD STRETCH */
+html body #app #inputPage,
+html body section#inputPage,
+html body #inputPage.page,
+html body #inputPage.active,
+#inputPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body #inputPage .box,
+html body section#inputPage .box,
+#inputPage .box {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 10px !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+}
+
+html body #inputPage .btn-primary#btnSimpan,
+html body #inputPage #btnSimpan,
+#btnSimpan {
+  margin-bottom: 1mm !important;
+  margin-top: 14px !important;
+}
+
+/* 3. DETAIL / RIWAYAT PAGE (#riwayatPage) - HP & PC 1MM FLEX STRETCH */
+html body #app #riwayatPage,
+html body section#riwayatPage,
+html body #riwayatPage.page,
+html body #riwayatPage.active,
+#riwayatPage.active {
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .riwayatContent {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  flex: 1 1 100% !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
+  margin-bottom: 0 !important;
+}
+
+html body #riwayatPage .searchToolbar {
+  flex: 0 0 auto !important;
+  margin-bottom: 8px !important;
+}
+
+html body #riwayatPage .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* 4. MASTER DATABASE PAGE (#masterDbPage) - HP & PC 1MM FLEX STRETCH */
+html body #app #masterDbPage,
+html body section#masterDbPage,
+html body #masterDbPage.page,
+html body #masterDbPage.active,
+#masterDbPage.active {
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #masterDbPage .box,
+html body #masterDbPage .box-full {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  flex: 1 1 100% !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
+  margin-bottom: 0 !important;
+}
+
+html body #masterDbPage .searchToolbar {
+  flex: 0 0 auto !important;
+  margin-bottom: 8px !important;
+}
+
+html body #masterDbPage .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* 5. USER MANAGEMENT PAGE (#userManagementPage) - HP & PC 1MM STRETCH */
+html body #app #userManagementPage,
+html body section#userManagementPage,
+html body #userManagementPage.page,
+html body #userManagementPage.active,
+#userManagementPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body #userManagementPage .box:last-child,
+html body #userManagementPage .tableWrap:last-child {
+  margin-bottom: 1mm !important;
+  padding-bottom: 8px !important;
+}
+
+/* 6. LOGIN PAGE (#loginPage) - HP & PC 1MM STRETCH */
+html body #app #loginPage,
+html body section#loginPage,
+html body #loginPage.page,
+html body #loginPage.active,
+#loginPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+
+/* =============================================================================
+   ABSOLUTE 1MM BOTTOM HP SCREEN BOUNDARY FIX FOR DASHBOARD & RIWAYAT/DETAIL PAGE
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  /* 1. DASHBOARD PAGE (#dashboardPage) HP FIX */
+  html body #app #dashboardPage,
+  html body section#dashboardPage,
+  html body #dashboardPage.page,
+  html body #dashboardPage.active,
+  #dashboardPage {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  html body #dashboardPage .dashboardTop,
+  html body #dashboardPage #dashboardRecentTitle {
+    flex: 0 0 auto !important;
+  }
+
+  html body #dashboardPage #detailDashboard,
+  html body #detailDashboard {
+    flex: 1 1 auto !important;
+    min-height: calc(100vh - 240px - 1mm) !important;
+    min-height: calc(100dvh - 240px - 1mm) !important;
+    margin-top: 1mm !important;
+    margin-bottom: 1mm !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+  }
+
+  html body #detailDashboard .tableWrap {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* 2. DETAIL / RIWAYAT PAGE (#riwayatPage) HP FIX */
+  html body #app #riwayatPage,
+  html body section#riwayatPage,
+  html body #riwayatPage.page,
+  html body #riwayatPage.active,
+  #riwayatPage {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  html body #riwayatPage .riwayatContent,
+  html body section#riwayatPage .riwayatContent {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 6px !important;
+    box-sizing: border-box !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  html body #riwayatPage .tableWrap,
+  html body section#riwayatPage .tableWrap {
+    flex: 1 1 auto !important;
+    margin-top: 1mm !important;
+    margin-bottom: 1mm !important;
+    padding-bottom: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
+/* =============================================================================
+   ULTIMATE MIN-HEIGHT & 1MM BOTTOM BOUNDARY GUARANTEE FOR ALL 6 PAGES (HP & PC)
+   ============================================================================= */
+
+/* 1. DASHBOARD PAGE (#dashboardPage) GUARANTEE */
+html body #app #dashboardPage,
+html body section#dashboardPage,
+html body #dashboardPage.page,
+html body #dashboardPage.active,
+#dashboardPage {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body #dashboardPage #detailDashboard,
+html body #detailDashboard {
+  flex: 1 1 auto !important;
+  min-height: calc(100vh - 220px - 1mm) !important;
+  min-height: calc(100dvh - 220px - 1mm) !important;
+  margin-top: 1mm !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+}
+
+html body #detailDashboard .tableWrap {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 2. DETAIL / RIWAYAT PAGE (#riwayatPage) GUARANTEE */
+html body #app #riwayatPage,
+html body section#riwayatPage,
+html body #riwayatPage.page,
+html body #riwayatPage.active,
+#riwayatPage {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body #riwayatPage .riwayatContent,
+html body section#riwayatPage .riwayatContent,
+#riwayatPage .riwayatContent {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 6px !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body #riwayatPage .tableWrap,
+html body section#riwayatPage .tableWrap {
+  flex: 1 1 auto !important;
+  min-height: calc(100vh - 100px - 1mm) !important;
+  min-height: calc(100dvh - 100px - 1mm) !important;
+  margin-top: 1mm !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 3. MASTER DATABASE PAGE (#masterDbPage) GUARANTEE */
+html body #app #masterDbPage,
+html body section#masterDbPage,
+html body #masterDbPage.page,
+html body #masterDbPage.active,
+#masterDbPage {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body #masterDbPage .box,
+html body #masterDbPage .box-full,
+#masterDbPage .box {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 6px !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body #masterDbPage .tableWrap,
+html body section#masterDbPage .tableWrap {
+  flex: 1 1 auto !important;
+  min-height: calc(100vh - 120px - 1mm) !important;
+  min-height: calc(100dvh - 120px - 1mm) !important;
+  margin-top: 1mm !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 4. INPUT FORM PAGE (#inputPage) GUARANTEE */
+html body #app #inputPage,
+html body section#inputPage,
+html body #inputPage.page,
+html body #inputPage.active,
+#inputPage {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body #inputPage .box,
+html body section#inputPage .box,
+#inputPage .box {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 8px !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+}
+
+/* 5. USER MANAGEMENT PAGE (#userManagementPage) GUARANTEE */
+html body #app #userManagementPage,
+html body section#userManagementPage,
+html body #userManagementPage.page,
+html body #userManagementPage.active,
+#userManagementPage {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html body #userManagementPage .box:last-child,
+html body #userManagementPage .tableWrap:last-child {
+  margin-bottom: 1mm !important;
+  padding-bottom: 8px !important;
+}
+
+
+/* =============================================================================
+   ABSOLUTE 100% 1MM BOTTOM BOUNDARY FIX FOR DASHBOARD PAGE ON HP MOBILE
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  html body #app #dashboardPage,
+  html body section#dashboardPage,
+  html body #dashboardPage.page,
+  html body #dashboardPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #dashboardPage .dashboardTop {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 2px !important;
+  }
+
+  html body #dashboardPage #dashboardRecentTitle {
+    flex: 0 0 auto !important;
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+  }
+
+  html body #dashboardPage #detailDashboard,
+  html body #detailDashboard {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #detailDashboard .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #detailDashboard .tableWrap table.dashboardTable {
+    margin-bottom: 0 !important;
+  }
+
+  html body #detailDashboard .tableWrap table.dashboardTable tbody#lastData {
+    margin-bottom: 0 !important;
+  }
+}
+
+
+/* =============================================================================
+   PATENT FIXED TABLE DOWNWARD HEIGHT (1MM BOTTOM SCREEN BOUNDARY REGARDLESS OF DATA)
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  /* 1. DASHBOARD PAGE TABLE (#dashboardPage) */
+  html body #app #dashboardPage,
+  html body section#dashboardPage,
+  html body #dashboardPage.page,
+  html body #dashboardPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #dashboardPage .dashboardTop,
+  html body #dashboardPage #dashboardRecentTitle {
+    flex: 0 0 auto !important;
+  }
+
+  html body #dashboardPage #detailDashboard,
+  html body #detailDashboard {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #detailDashboard .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. DETAIL / RIWAYAT PAGE TABLE (#riwayatPage) */
+  html body #app #riwayatPage,
+  html body section#riwayatPage,
+  html body #riwayatPage.page,
+  html body #riwayatPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #riwayatPage .riwayatContent,
+  html body section#riwayatPage .riwayatContent {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 6px !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #riwayatPage h3,
+  html body #riwayatPage .searchToolbar {
+    flex: 0 0 auto !important;
+  }
+
+  html body #riwayatPage .tableWrap,
+  html body section#riwayatPage .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. MASTER DATABASE PAGE TABLE (#masterDbPage) */
+  html body #app #masterDbPage,
+  html body section#masterDbPage,
+  html body #masterDbPage.page,
+  html body #masterDbPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #masterDbPage .box,
+  html body #masterDbPage .box-full {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 6px !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #masterDbPage .box h3,
+  html body #masterDbPage .box .searchToolbar {
+    flex: 0 0 auto !important;
+  }
+
+  html body #masterDbPage .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. USER MANAGEMENT PAGE TABLE (#userManagementPage) */
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  html body #userManagementPage.page,
+  html body #userManagementPage.active {
+    height: calc(100vh - 1mm) !important;
+    height: calc(100dvh - 1mm) !important;
+    max-height: calc(100vh - 1mm) !important;
+    max-height: calc(100dvh - 1mm) !important;
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin-top: 0 !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #userManagementPage .box:last-child {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 6px !important;
+    background: var(--bg-box) !important;
+    border-radius: 5px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #userManagementPage .box:last-child .tableWrap {
+    flex: 1 1 100% !important;
+    flex-grow: 1 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+}
+
+
+/* =============================================================================
+   PATENT 1MM BOTTOM SCREEN BOUNDARY FOR 1 DATA ROW OR MANY DATA ROWS (ALL DEVICESS)
+   ============================================================================= */
+
+html body #app #dashboardPage,
+html body section#dashboardPage,
+html body #dashboardPage.page,
+html body #dashboardPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #dashboardPage #detailDashboard,
+html body #detailDashboard {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #detailDashboard .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+html body #app #riwayatPage,
+html body section#riwayatPage,
+html body #riwayatPage.page,
+html body #riwayatPage.active {
+  height: calc(100vh - 1mm) !important;
+  height: calc(100dvh - 1mm) !important;
+  max-height: calc(100vh - 1mm) !important;
+  max-height: calc(100dvh - 1mm) !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .riwayatContent,
+html body section#riwayatPage .riwayatContent {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 6px !important;
+  background: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .tableWrap,
+html body section#riwayatPage .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+
+/* =============================================================================
+   BULLETPROOF 1-ROW TABLE STRETCH FIX FOR MOBILE WEBVIEW & DESKTOP (1MM BOTTOM)
+   ============================================================================= */
+
+/* 1. DASHBOARD PAGE (#dashboardPage) */
+html body #app #dashboardPage,
+html body section#dashboardPage,
+html body #dashboardPage.page,
+html body #dashboardPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #dashboardPage #detailDashboard,
+html body #detailDashboard {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 235px - 1mm) !important;
+  min-height: calc(100dvh - 235px - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  background-color: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #detailDashboard .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 235px - 1mm) !important;
+  min-height: calc(100dvh - 235px - 1mm) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background-color: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. DETAIL / RIWAYAT PAGE (#riwayatPage) */
+html body #app #riwayatPage,
+html body section#riwayatPage,
+html body #riwayatPage.page,
+html body #riwayatPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .riwayatContent,
+html body section#riwayatPage .riwayatContent {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 6px !important;
+  background-color: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .tableWrap,
+html body section#riwayatPage .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 90px - 1mm) !important;
+  min-height: calc(100dvh - 90px - 1mm) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background-color: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+/* 3. MASTER DATABASE PAGE (#masterDbPage) */
+html body #app #masterDbPage,
+html body section#masterDbPage,
+html body #masterDbPage.page,
+html body #masterDbPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #masterDbPage .box,
+html body #masterDbPage .box-full {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 6px !important;
+  background-color: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #masterDbPage .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 95px - 1mm) !important;
+  min-height: calc(100dvh - 95px - 1mm) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background-color: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+/* 4. USER MANAGEMENT PAGE (#userManagementPage) */
+html body #app #userManagementPage,
+html body section#userManagementPage,
+html body #userManagementPage.page,
+html body #userManagementPage.active {
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 1mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #userManagementPage .box:last-child {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 1mm) !important;
+  min-height: calc(100dvh - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 6px !important;
+  background-color: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+html body #userManagementPage .box:last-child .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: calc(100vh - 35px - 1mm) !important;
+  min-height: calc(100dvh - 35px - 1mm) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background-color: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+
+/* =============================================================================
+   ULTIMATE SOLID #detailDashboard CARD STRETCH FIX (1MM BOTTOM, NO TRANSPARENCY)
+   ============================================================================= */
+
+html body #dashboardPage #detailDashboard,
+html body #detailDashboard {
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+  border-radius: 5px !important;
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  min-height: calc(100vh - 240px - 1mm) !important;
+  min-height: calc(100dvh - 240px - 1mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+html body #detailDashboard .tableWrap {
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  min-height: calc(100vh - 240px - 1mm) !important;
+  min-height: calc(100dvh - 240px - 1mm) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+html body #detailDashboard .tableWrap table.dashboardTable {
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+}
+
+html body #detailDashboard .tableWrap table.dashboardTable tbody#lastData {
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+}
+
+
+/* =============================================================================
+   PRECISION 0.5MM BOTTOM SCREEN BOUNDARY FOR RIWAYAT PAGE (#riwayatPage)
+   ============================================================================= */
+
+html body #app #riwayatPage,
+html body section#riwayatPage,
+html body #riwayatPage.page,
+html body #riwayatPage.active,
+#riwayatPage {
+  height: calc(100vh - 0.5mm) !important;
+  height: calc(100dvh - 0.5mm) !important;
+  max-height: calc(100vh - 0.5mm) !important;
+  max-height: calc(100dvh - 0.5mm) !important;
+  min-height: calc(100vh - 0.5mm) !important;
+  min-height: calc(100dvh - 0.5mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0.5mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html body #riwayatPage .riwayatContent,
+html body section#riwayatPage .riwayatContent {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: calc(100vh - 0.5mm) !important;
+  min-height: calc(100dvh - 0.5mm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-bottom: 4px !important;
+  background-color: var(--bg-box) !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+html body #riwayatPage .tableWrap,
+html body section#riwayatPage .tableWrap {
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: calc(100vh - 90px - 0.5mm) !important;
+  min-height: calc(100dvh - 90px - 0.5mm) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background-color: var(--bg-box) !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  html body #app #riwayatPage,
+  html body section#riwayatPage,
+  html body #riwayatPage.page,
+  html body #riwayatPage.active,
+  #riwayatPage {
+    height: calc(100vh - 0.5mm) !important;
+    height: calc(100dvh - 0.5mm) !important;
+    max-height: calc(100vh - 0.5mm) !important;
+    max-height: calc(100dvh - 0.5mm) !important;
+    min-height: calc(100vh - 0.5mm) !important;
+    min-height: calc(100dvh - 0.5mm) !important;
+    margin-bottom: 0.5mm !important;
+    padding-bottom: 0 !important;
+  }
+
+  html body #riwayatPage .riwayatContent {
+    min-height: calc(100vh - 0.5mm) !important;
+    min-height: calc(100dvh - 0.5mm) !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+
+/* =============================================================================
+   TOTAL MASTER 1MM HP BOUNDARY OVERHAUL FOR ALL 6 PAGES (UNIFIED & EQUAL)
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  /* GLOBAL PAGE CONTAINER 1MM HP FIX */
+  html body #app .page,
+  html body #app .page.active,
+  html body #app section.page,
+  html body #app section.page.active {
+    box-sizing: border-box !important;
+    margin-top: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-bottom: 1mm !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    width: calc(100vw - 1mm) !important;
+    max-width: calc(100vw - 1mm) !important;
+  }
+
+  /* 1. LOGIN PAGE (#loginPage) */
+  html body #app #loginPage,
+  html body section#loginPage,
+  html body #loginPage.page,
+  html body #loginPage.active {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+  html body #loginPage .loginBox,
+  html body #loginPage .box {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+
+  /* 2. DASHBOARD PAGE (#dashboardPage) */
+  html body #app #dashboardPage,
+  html body section#dashboardPage,
+  html body #dashboardPage.page,
+  html body #dashboardPage.active {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+  html body #dashboardPage #detailDashboard,
+  html body #detailDashboard {
+    min-height: calc(100vh - 235px - 1mm) !important;
+    min-height: calc(100dvh - 235px - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+    border-radius: 5px !important;
+  }
+  html body #detailDashboard .tableWrap {
+    min-height: calc(100vh - 235px - 1mm) !important;
+    min-height: calc(100dvh - 235px - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+
+  /* 3. INPUT FORM PAGE (#inputPage) */
+  html body #app #inputPage,
+  html body section#inputPage,
+  html body #inputPage.page,
+  html body #inputPage.active {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+  html body #inputPage .box {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+
+  /* 4. DETAIL / RIWAYAT PAGE (#riwayatPage) */
+  html body #app #riwayatPage,
+  html body section#riwayatPage,
+  html body #riwayatPage.page,
+  html body #riwayatPage.active {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+  html body #riwayatPage .riwayatContent,
+  html body section#riwayatPage .riwayatContent {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+  html body #riwayatPage .tableWrap,
+  html body section#riwayatPage .tableWrap {
+    min-height: calc(100vh - 90px - 1mm) !important;
+    min-height: calc(100dvh - 90px - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+
+  /* 5. MASTER DATABASE PAGE (#masterDbPage) */
+  html body #app #masterDbPage,
+  html body section#masterDbPage,
+  html body #masterDbPage.page,
+  html body #masterDbPage.active {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+  html body #masterDbPage .box,
+  html body #masterDbPage .box-full {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+  html body #masterDbPage .tableWrap {
+    min-height: calc(100vh - 95px - 1mm) !important;
+    min-height: calc(100dvh - 95px - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+
+  /* 6. USER MANAGEMENT PAGE (#userManagementPage) */
+  html body #app #userManagementPage,
+  html body section#userManagementPage,
+  html body #userManagementPage.page,
+  html body #userManagementPage.active {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+  }
+  html body #userManagementPage .box:last-child {
+    min-height: calc(100vh - 1mm) !important;
+    min-height: calc(100dvh - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+  html body #userManagementPage .box:last-child .tableWrap {
+    min-height: calc(100vh - 35px - 1mm) !important;
+    min-height: calc(100dvh - 35px - 1mm) !important;
+    margin-bottom: 0 !important;
+    background: var(--bg-box) !important;
+    background-color: var(--bg-box) !important;
+  }
+}
+
+
+/* =============================================================================
+   BLUR & COVER TOP HEADER ACTIONS (NOTIF BELL, BANTUAN, SUPABASE) WHEN HP MENU OPENS
+   ============================================================================= */
+
+.top-header-actions.blurred-by-menu,
+#mobileFabContainer.active ~ .top-header-actions,
+#mobileFabContainer.active ~ #app .top-header-actions,
+body:has(#mobileFabContainer.active) .top-header-actions,
+html body #mobileFabContainer.active ~ .top-header-actions {
+  filter: blur(4px) opacity(0.2) !important;
+  -webkit-filter: blur(4px) opacity(0.2) !important;
+  pointer-events: none !important;
+  z-index: 9999 !important;
+  transition: filter 0.2s ease, opacity 0.2s ease !important;
+}
+
+
+/* =============================================================================
+   TOTAL COVER & HIDE TOP HEADER ACTIONS (NOTIF BELL, BANTUAN, SUPABASE) WHEN HP MENU OPENS
+   ============================================================================= */
+
+body.mobile-fab-menu-open .top-header-actions,
+body.mobile-fab-menu-open #topHeaderActions,
+html body.mobile-fab-menu-open .top-header-actions {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+}
+
+
+/* =============================================================================
+   GLOBAL ALL CLOSE X BUTTONS - BOLD THICK RED COLOR, NO CONTAINER / NO WRAPPER
+   ============================================================================= */
+
+.popupClose,
+.popupCloseV2,
+.popupCloseTTD,
+.chatClose,
+.mobileFabHeader button,
+button[onclick*="tutup"],
+button[onclick*="close"],
+button[title*="TUTUP"],
+button[title*="Tutup"],
+button[title*="tutup"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  color: #ef4444 !important;
+  font-size: 26px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 4px !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  text-shadow: none !important;
+  transition: transform 0.15s ease, opacity 0.15s ease !important;
+}
+
+.popupClose:hover,
+.popupCloseV2:hover,
+.popupCloseTTD:hover,
+.chatClose:hover,
+.mobileFabHeader button:hover,
+button[onclick*="tutup"]:hover,
+button[onclick*="close"]:hover,
+button[title*="TUTUP"]:hover,
+button[title*="Tutup"]:hover {
+  color: #dc2626 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  transform: scale(1.2) !important;
+}
+
+
+/* =============================================================================
+   PATENT RED X CLOSE BUTTONS (NO CIRCLE, NO BOX, NO BORDER, PATENT RED COLOR #EF4444)
+   ============================================================================= */
+
+.popupClose,
+.popupCloseV2,
+.popupCloseTTD,
+.chatClose,
+.mobileFabHeader button,
+button[onclick*="tutup"],
+button[onclick*="close"],
+button[onclick*="toggleMobileFabMenu"],
+button[title*="TUTUP"],
+button[title*="Tutup"],
+button[title*="tutup"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #ef4444 !important;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 4px !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  text-shadow: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+.popupClose:hover,
+.popupClose:active,
+.popupClose:focus,
+.popupCloseV2:hover,
+.popupCloseV2:active,
+.popupCloseTTD:hover,
+.popupCloseTTD:active,
+.chatClose:hover,
+.chatClose:active,
+.mobileFabHeader button:hover,
+.mobileFabHeader button:active,
+button[onclick*="tutup"]:hover,
+button[onclick*="tutup"]:active,
+button[onclick*="close"]:hover,
+button[onclick*="close"]:active,
+button[onclick*="toggleMobileFabMenu"]:hover,
+button[onclick*="toggleMobileFabMenu"]:active,
+button[title*="TUTUP"]:hover,
+button[title*="TUTUP"]:active {
+  color: #ef4444 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transform: scale(1.15) !important;
+}
+
+
+/* =============================================================================
+   PC DESKTOP SCROLL AUTO-HIDE MENU BUTTON WHEN TABLE SCROLLED TO TOP
+   ============================================================================= */
+
+@media (min-width: 769px) {
+  .btnMenuPC, .pcMenuBtn, #btnFloatingMenuPC {
+    transition: opacity 0.25s ease, transform 0.25s ease !important;
+  }
+}
+
+
+/* =============================================================================
+   PC DESKTOP 1CM BOTTOM SCROLL SPACE AFTER LAST ROW IN DASHBOARD & RIWAYAT TABLES
+   ============================================================================= */
+
+@media (min-width: 769px) {
+  html body #detailDashboard .tableWrap table.dashboardTable,
+  html body #detailDashboard .tableWrap table,
+  html body #riwayatPage .tableWrap table.historyTable,
+  html body #riwayatPage .tableWrap table,
+  html body #masterDbPage .tableWrap table.masterTable,
+  html body #masterDbPage .tableWrap table {
+    margin-bottom: 1cm !important;
+  }
+
+  html body #detailDashboard .tableWrap table tbody#lastData tr:last-child td,
+  html body #riwayatPage .tableWrap table tbody#riwayatData tr:last-child td,
+  html body #masterDbPage .tableWrap table tbody tr:last-child td {
+    padding-bottom: 1cm !important;
+  }
+
+  html body #detailDashboard .tableWrap::after,
+  html body #riwayatPage .tableWrap::after,
+  html body #masterDbPage .tableWrap::after {
+    content: '' !important;
+    display: block !important;
+    height: 1cm !important;
+    width: 100% !important;
+    pointer-events: none !important;
   }
 }
