@@ -18,6 +18,7 @@
 :root, body {
   --bg-body: #0f172a;
   --bg-box: #1e293b;
+  --bg-card: #1e293b;
   --bg-header: #0f172a;
   --text-main: #f1f5f9;
   --text-muted: #94a3b8;
@@ -239,7 +240,7 @@ body {
   transition: opacity 0.5s ease;
 }
 
-/* 1. Scenic Landscape Image (Pemandangan Bulan, Gunung & Danau Buat Agak Tidak Jelas Sedikit & Soft) */
+/* 1. Scenic Landscape Image (Pemandangan Bulan, Gunung & Danau) */
 .aesthetic-bg-image {
   position: absolute;
   inset: 0;
@@ -249,9 +250,9 @@ body {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  opacity: 0.48 !important;
+  opacity: var(--bg-opacity-val, 0.48) !important;
   filter: saturate(1.15) contrast(1.05) blur(1px);
-  transition: opacity 0.5s ease, background-image 0.3s ease, filter 0.5s ease;
+  transition: opacity 0.3s ease, background-image 0.3s ease, filter 0.3s ease;
   will-change: opacity, background-image;
 }
 
@@ -259,7 +260,7 @@ body.light-mode .aesthetic-bg-image,
 body.classic-mode .aesthetic-bg-image,
 body.forest-mode .aesthetic-bg-image,
 body.sunset-mode .aesthetic-bg-image {
-  opacity: 0.38 !important;
+  opacity: var(--bg-opacity-val, 0.38) !important;
   filter: saturate(1.1) contrast(1.0) blur(1px);
 }
 
@@ -373,14 +374,14 @@ body.light-mode .aesthetic-orb-3 {
 .header,
 .stats,
 .top-header-actions {
-  background: var(--bg-box) !important;
+  background: transparent !important;
 }
 
 .page {
   display: none !important;
   padding: 16px 0 !important;
   animation: fade .25s ease-out;
-  padding-bottom: 0;
+  padding-bottom: 95px;
   width: calc(100vw - 1mm) !important;
   max-width: calc(100vw - 1mm) !important;
   margin: 0 auto !important;
@@ -388,25 +389,25 @@ body.light-mode .aesthetic-orb-3 {
 
 .page.active {
   display: block !important;
-  height: calc(100vh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
+  height: calc(100vh - 60px) !important;
+  max-height: calc(100vh - 60px) !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-y !important;
   box-sizing: border-box !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 95px !important;
 }
 
 #userManagementPage.active,
 #inputPage.active {
   display: block !important;
-  height: calc(100vh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
+  height: calc(100vh - 60px) !important;
+  max-height: calc(100vh - 60px) !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-y !important;
   box-sizing: border-box !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 95px !important;
 }
 
 section#riwayatPage.page.active,
@@ -415,8 +416,8 @@ section#masterDbPage.page.active,
 #masterDbPage.active {
   display: flex !important;
   flex-direction: column !important;
-  height: calc(100vh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
+  height: calc(100vh - 65px) !important;
+  max-height: calc(100vh - 65px) !important;
   overflow: hidden !important;
   overflow-y: hidden !important;
   padding-bottom: 0 !important;
@@ -635,7 +636,7 @@ section#masterDbPage.page.active,
   align-items: center !important;
   justify-content: center !important;
   padding: 12px !important;
-  padding-bottom: 0 !important;
+  padding-bottom: calc(52px + 1cm) !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
 }
@@ -726,6 +727,17 @@ section#masterDbPage.page.active,
     clip-path: inset(0 round 5px) !important;
     box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
     box-sizing: border-box !important;
+  }
+
+  #popupDetailBarangV2 .tableCardV2 {
+    flex: 1 1 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    margin-top: 1mm !important;
+    margin-bottom: 2mm !important;
+    border-radius: 5px !important;
+    -webkit-clip-path: inset(0 round 5px) !important;
+    clip-path: inset(0 round 5px) !important;
   }
 }
 
@@ -1156,7 +1168,7 @@ input:focus, select:focus, textarea:focus {
   position: relative !important;
   top: auto !important;
   z-index: 10 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   margin-top: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0.5mm !important;
@@ -1367,13 +1379,13 @@ input:focus, select:focus, textarea:focus {
 #detailDashboard {
   height: 100% !important;
   max-height: 100% !important;
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
+  min-height: 0 !important;
+  flex: 1 1 auto !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
   margin-top: 1mm !important;
-  margin-bottom: 1mm !important;
+  margin-bottom: 0 !important;
   padding: 0 !important;
   border-radius: 5px !important;
   -webkit-clip-path: inset(0 round 5px) !important;
@@ -1411,7 +1423,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 5px !important;
   -webkit-clip-path: inset(0 round 5px) !important;
   clip-path: inset(0 round 5px) !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   box-shadow: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -1557,7 +1569,7 @@ input:focus, select:focus, textarea:focus {
 #btnSimpan,
 .btn-primary#btnSimpan {
   margin-top: 24px !important;
-  margin-bottom: 1mm !important;
+  margin-bottom: 1.8cm !important;
   display: block !important;
   width: 100% !important;
   position: relative !important;
@@ -1585,7 +1597,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 #userManagementPage {
-  padding-bottom: 1mm !important;
+  padding-bottom: 85px !important;
   margin-bottom: 0 !important;
 }
 
@@ -1766,7 +1778,7 @@ html body #inputPage {
     margin-right: auto !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    padding-bottom: 0 !important;
+    padding-bottom: calc(58px + 3.5cm) !important;
     margin-bottom: 0 !important;
   }
 
@@ -1777,15 +1789,15 @@ html body #inputPage {
     margin-right: auto !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 1mm !important;
+    padding-bottom: 25px !important;
+    margin-bottom: 10px !important;
   }
 
   #inputPage #btnSimpan,
   #btnSimpan,
   .btn-primary#btnSimpan {
     margin-top: 14px !important;
-    margin-bottom: 1mm !important;
+    margin-bottom: 30px !important;
     position: relative !important;
     z-index: 10 !important;
   }
@@ -1805,7 +1817,7 @@ html body #inputPage {
 #btnRefreshCloudUsage {
   border: 1.5px solid var(--primary) !important;
   color: var(--primary) !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   font-weight: 800 !important;
   transition: all 0.2s ease !important;
 }
@@ -1940,7 +1952,7 @@ tr.blink-row-red td strong,
 
 .historyTable tr:last-child td, #tableMasterDb tr:last-child td, #tableUserMgmt tr:last-child td, .dashboardTable tr:last-child td, .detailTable2 tr:last-child td {
   border-bottom: none !important;
-  padding-bottom: 6px !important;
+  padding-bottom: 1cm !important;
 }
 
 .historyTable tbody tr:hover td, #tableMasterDb tbody tr:hover td, #tableUserMgmt tbody tr:hover td {
@@ -2034,8 +2046,8 @@ section#riwayatPage.page.active,
 section#masterDbPage.page.active {
   display: none;
   flex-direction: column !important;
-  height: calc(100vh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
+  height: calc(100vh - 65px) !important;
+  max-height: calc(100vh - 65px) !important;
   overflow: hidden !important;
   overflow-y: hidden !important;
   padding-bottom: 0 !important;
@@ -2063,7 +2075,7 @@ section#masterDbPage.page.active {
   min-height: 0 !important;
   margin-bottom: 0 !important;
   padding: 4px 0 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -2081,7 +2093,8 @@ section#masterDbPage.page.active {
 #masterDbPage .tableWrap {
   flex: 1 1 100% !important;
   flex-grow: 1 !important;
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
   width: 100% !important;
   height: 100% !important;
   min-height: 0 !important;
@@ -2098,7 +2111,7 @@ section#masterDbPage.page.active {
   position: relative !important;
   box-sizing: border-box !important;
   margin-top: 1mm !important;
-  margin-bottom: -1mm !important;
+  margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
 
@@ -2142,19 +2155,63 @@ section#masterDbPage.page.active {
   text-align: center !important;
 }
 
-/* SEARCH & HISTORY TABLE */
+/* SEARCH & HISTORY TABLE TOOLBAR (1 BARIS ELASTIS DI HP & DESKTOP) */
 .searchToolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 10px !important;
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+  box-sizing: border-box !important;
 }
 
-.searchToolbar input {
-  flex: 1;
-  min-width: 240px;
-  padding: 10px 14px;
+#riwayatPage .searchToolbar {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 8px !important;
+  width: 100% !important;
+  flex-wrap: nowrap !important;
+  box-sizing: border-box !important;
+}
+
+#riwayatPage #searchRiwayat {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 38px !important;
+  padding: 0 10px !important;
+  font-size: 11.5px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+#riwayatPage #filterStatusDropdown {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 105px !important;
+  max-width: 135px !important;
+  height: 38px !important;
+  padding: 0 6px !important;
+  font-size: 11px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+#riwayatPage .btnDownload {
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
 }
 
 #riwayatPage h3 {
@@ -2170,10 +2227,8 @@ section#masterDbPage.page.active {
   width: 100% !important;
   display: block !important;
   position: relative !important;
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
+  height: calc(100vh - 220px) !important;
+  max-height: calc(100vh - 220px) !important;
   overflow-x: auto !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
@@ -2187,7 +2242,7 @@ section#masterDbPage.page.active {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   font-size: 13px !important;
@@ -2344,7 +2399,7 @@ body.design-mode-3d-isometric .dashboardTable th {
 }
 
 #bottomMenu button {
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   cursor: pointer !important;
   display: flex;
@@ -2391,173 +2446,6 @@ body.design-mode-3d-isometric .dashboardTable th {
 #bottomMenu button.active .material-symbols-rounded {
   transform: scale(1.15) !important;
   color: var(--primary) !important;
-}
-
-/* FLOATING ACTION MENU (MOBILE HP ONLY FAB & DRAWER LIST) */
-#mobileFabContainer {
-  display: none !important;
-}
-
-@media (max-width: 768px) {
-  #mobileFabContainer {
-    display: block !important;
-  }
-
-  #mobileFabOverlay {
-    position: fixed !important;
-    inset: 0 !important;
-    background: rgba(15, 23, 42, 0.6) !important;
-    backdrop-filter: blur(3px) !important;
-    -webkit-backdrop-filter: blur(3px) !important;
-    z-index: 99999998 !important;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  #mobileFabContainer.active #mobileFabOverlay {
-    display: block !important;
-    opacity: 1 !important;
-  }
-
-  #mobileFabBtn {
-    position: fixed !important;
-    bottom: 12px !important;
-    right: 12px !important;
-    width: 46px !important;
-    height: 46px !important;
-    border-radius: 50% !important;
-    background: linear-gradient(135deg, var(--primary, #0284c7), #0369a1) !important;
-    color: #ffffff !important;
-    border: 2px solid rgba(255, 255, 255, 0.4) !important;
-    box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4), 0 3px 8px rgba(0, 0, 0, 0.25) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    z-index: 100000000 !important;
-    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.25s ease !important;
-  }
-
-  #mobileFabBtn:active {
-    transform: scale(0.92) !important;
-  }
-
-  #mobileFabContainer.active #mobileFabBtn {
-    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-    box-shadow: 0 6px 18px rgba(239, 68, 68, 0.45), 0 3px 8px rgba(0, 0, 0, 0.25) !important;
-    transform: rotate(90deg) !important;
-  }
-
-  #mobileFabBtn .material-symbols-rounded {
-    font-size: 23px !important;
-    color: #ffffff !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-  }
-
-  #mobileFabDrawer {
-    position: fixed !important;
-    bottom: 64px !important;
-    right: 12px !important;
-    width: 210px !important;
-    max-width: calc(100vw - 28px) !important;
-    background: var(--bg-box, #1e293b) !important;
-    border: 1px solid var(--border-color, #334155) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
-    z-index: 99999999 !important;
-    overflow: hidden !important;
-    display: none;
-    opacity: 0;
-    transform: translateY(12px) scale(0.95);
-    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-  }
-
-  #mobileFabContainer.active #mobileFabDrawer {
-    display: flex !important;
-    flex-direction: column !important;
-    opacity: 1 !important;
-    transform: translateY(0) scale(1) !important;
-  }
-
-  .mobileFabHeader {
-    background: var(--primary, #0284c7) !important;
-    color: #ffffff !important;
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    font-size: 11.5px !important;
-    font-weight: 800 !important;
-    letter-spacing: 0.5px !important;
-  }
-
-  .mobileFabHeader button {
-    background: var(--primary) !important;
-    color: #ffffff !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
-    font-size: 18px !important;
-    font-weight: 900 !important;
-    cursor: pointer !important;
-    line-height: 1 !important;
-    width: 30px !important;
-    height: 30px !important;
-    border-radius: 50% !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
-    transition: all 0.2s ease !important;
-  }
-  .mobileFabHeader button:hover,
-  .mobileFabHeader button:active {
-    background: #ffffff !important;
-    color: var(--primary) !important;
-    border-color: var(--primary) !important;
-    transform: scale(1.1) !important;
-  }
-
-  .mobileFabBody {
-    padding: 6px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 3px !important;
-    background: var(--bg-box, #1e293b) !important;
-  }
-
-  .mobileFabBody button {
-    width: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    padding: 9px 12px !important;
-    background: var(--bg-box) !important;
-    border: none !important;
-    border-radius: 6px !important;
-    color: var(--text-main, #f1f5f9) !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    cursor: pointer !important;
-    text-align: left !important;
-    transition: background 0.15s ease, color 0.15s ease !important;
-  }
-
-  .mobileFabBody button:hover,
-  .mobileFabBody button.active {
-    background: var(--primary, #0284c7) !important;
-    color: #ffffff !important;
-  }
-
-  .mobileFabBody button .material-symbols-rounded {
-    font-size: 20px !important;
-    color: var(--primary, #0284c7) !important;
-  }
-
-  .mobileFabBody button:hover .material-symbols-rounded,
-  .mobileFabBody button.active .material-symbols-rounded {
-    color: #ffffff !important;
-  }
 }
 
 /* ALL POPUP BACKDROP OVERLAYS IN APP: NO BLUR, MORE DIMMED OVERLAY (80% GELAP REDUP) FOR ALL POPUPS */
@@ -2630,16 +2518,17 @@ div[id*="Modal"] {
 .confirmBox,
 .confirmBoxCard,
 #confirmBoxCard {
-  z-index: 999999999 !important;
+  z-index: 2000000000 !important;
 }
 
 #popupNotif,
 #popupNotifCard {
-  z-index: 9999999999 !important;
+  z-index: 2147483646 !important;
 }
 
-#loadingOverlay {
-  z-index: 99999999999 !important;
+#loadingOverlay,
+.loadingOverlay {
+  z-index: 2147483647 !important;
 }
 
 .popupOverlay.show, .popupAkun.show, .popupTTD.show, .popupBantuan.show, #popupBantuan.show {
@@ -2671,7 +2560,7 @@ div[id*="Modal"] {
   animation: fade .25s ease-out;
 }
 
-/* PERFECTLY BALANCED DEAD-CENTER POPUP AKUN */
+/* PERFECTLY BALANCED DEAD-CENTER POPUP AKUN (1CM SCREEN GAP TOP & BOTTOM) */
 .popupAkun,
 #popupAkun {
   position: fixed !important;
@@ -2681,10 +2570,22 @@ div[id*="Modal"] {
   bottom: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
+  display: none;
   justify-content: center !important;
   align-items: center !important;
-  padding: 16px !important;
+  padding-top: 1cm !important;
+  padding-bottom: 1cm !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
   box-sizing: border-box !important;
+  z-index: 99999 !important;
+}
+
+.popupAkun.show,
+#popupAkun.show,
+#popupAkun[style*="display: flex"],
+#popupAkun[style*="display: block"] {
+  display: flex !important;
 }
 
 #popupAkun .akunBox,
@@ -2693,36 +2594,49 @@ div[id*="Modal"] {
   width: 450px !important;
   max-width: 94vw !important;
   min-width: 0 !important;
-  max-height: 90vh !important;
+  height: calc(100vh - 2cm) !important;
+  height: calc(100dvh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
+  max-height: calc(100dvh - 2cm) !important;
   overflow-y: auto !important;
-  margin: auto !important;
-  transform: translateY(-20px) !important;
-  padding: 4mm !important;
+  -webkit-overflow-scrolling: touch !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  padding: 14px !important;
   border-radius: 5px !important;
   box-shadow: 0 24px 60px rgba(0,0,0,0.45) !important;
   box-sizing: border-box !important;
 }
 
-/* KHUSUS TAMPILAN HP / MOBILE: PADDING ISI DENGAN LEBAR POPUP AKUN 4MM */
+/* KHUSUS TAMPILAN HP / MOBILE: PADDING ISI DENGAN LEBAR POPUP AKUN (1CM SCREEN GAP TOP & BOTTOM) */
 @media (max-width: 768px) {
   .popupAkun,
   #popupAkun {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    padding-top: 1cm !important;
+    padding-bottom: 1cm !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
     box-sizing: border-box !important;
   }
 
   #popupAkun .akunBox,
   .popupAkun .akunBox,
   .akunBox {
-    width: calc(100vw - 4mm) !important;
-    max-width: calc(100vw - 4mm) !important;
-    min-width: calc(100vw - 4mm) !important;
-    margin-left: 2mm !important;
-    margin-right: 2mm !important;
-    padding: 4mm !important;
+    width: calc(100vw - 8px) !important;
+    max-width: calc(100vw - 8px) !important;
+    min-width: calc(100vw - 8px) !important;
+    height: calc(100vh - 2cm) !important;
+    height: calc(100dvh - 2cm) !important;
+    max-height: calc(100vh - 2cm) !important;
+    max-height: calc(100dvh - 2cm) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    padding: 12px !important;
     box-sizing: border-box !important;
   }
 }
@@ -2999,7 +2913,7 @@ div[id*="Modal"] {
   min-height: 0 !important;
   border-radius: 5px !important;
   overflow: hidden !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   margin: 2mm auto !important;
   position: relative !important;
   display: flex !important;
@@ -3012,7 +2926,7 @@ div[id*="Modal"] {
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   overflow: hidden !important;
   border-radius: 5px !important;
   display: flex !important;
@@ -3086,7 +3000,7 @@ div[id*="Modal"] {
 .popupBoxDetail,
 .popupBoxDetailV2,
 #detailContentContainer {
-  padding-bottom: 1mm !important;
+  padding-bottom: 1cm !important;
 }
 
 /* ENFORCE SINGLE LINE 1-ROW (NO WRAPTEXT) WITH HORIZONTAL SCROLL */
@@ -3153,7 +3067,8 @@ table th,
   box-shadow: none !important;
   text-shadow: none !important;
   filter: none !important;
-  border-radius: 0 !important;
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
   background: var(--primary) !important;
 }
 
@@ -3161,7 +3076,7 @@ table th,
 .detailHeaderInfoV2,
 .noSuratValV2,
 #detailHeaderInfoV2 {
-  background: var(--bg-box) !important;
+  background: transparent !important;
   color: var(--text-main) !important;
   box-shadow: none !important;
   border: none !important;
@@ -3188,7 +3103,7 @@ table th,
 .popupHeader button,
 .popupHeader .popupClose,
 .detailHeader button {
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   color: var(--primary) !important;
   font-size: 26px !important;
@@ -3262,23 +3177,42 @@ table th,
 
 .btnHapus { background: #dc2626 !important; color: #fff !important; }
 
-/* POPUP TAMBAH USER BARU: ELEVATED POSITION & BOLD THEME-COLORED CLOSE X */
+/* POPUP TAMBAH USER BARU / EDIT USER (1CM GAP ATAS-BAWAH & 2MM KANAN-KIRI) */
 #popupUserForm.popupOverlay,
-#popupUserForm {
-  align-items: flex-start !important;
-  padding-top: 35px !important;
+#popupUserForm,
+html body #popupUserForm,
+html body #popupUserForm.popupOverlay {
+  z-index: 10000005 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding-top: 1cm !important;
+  padding-bottom: 1cm !important;
+  padding-left: 2mm !important;
+  padding-right: 2mm !important;
+  box-sizing: border-box !important;
 }
 
-#popupUserForm .popupBox {
-  margin-top: 15px !important;
-  transform: translateY(-20px) !important;
+#popupUserForm .popupBox,
+html body #popupUserForm .popupBox {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
+  max-height: calc(100vh - 2cm) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  background: var(--bg-box) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45) !important;
+  border-radius: 5px !important;
 }
 
 #popupUserForm .popupClose {
   position: absolute !important;
   top: 10px !important;
   right: 12px !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   color: var(--primary) !important;
   font-size: 26px !important;
@@ -3583,7 +3517,7 @@ table th,
   font-size: 28px !important;
   font-weight: 900 !important;
   color: #ffffff !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   line-height: 1 !important;
   cursor: pointer !important;
@@ -3645,16 +3579,19 @@ table th,
 #loadingOverlay,
 .loadingOverlay {
   position: fixed !important;
-  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(10, 15, 30, 0.75) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
+  background: rgba(10, 15, 30, 0.45) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
   display: none;
   justify-content: center !important;
   align-items: center !important;
-  z-index: 99999999999 !important;
+  z-index: 2147483647 !important;
   pointer-events: auto !important;
   touch-action: none !important;
   box-sizing: border-box !important;
@@ -3681,7 +3618,7 @@ table th,
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   animation: spinnerPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  z-index: 99999999999 !important;
+  z-index: 2147483647 !important;
 }
 
 .spinner {
@@ -3696,45 +3633,6 @@ table th,
   filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8)) !important;
   box-sizing: border-box !important;
 }
-
-.spinner::after {
-  content: '' !important;
-  position: absolute !important;
-  inset: 6px !important;
-  border-radius: 50% !important;
-  border: 3px solid transparent !important;
-  border-top: 3px solid #34d399 !important;
-  border-left: 3px solid #38bdf8 !important;
-  animation: spinReverse 1.1s linear infinite !important;
-  box-sizing: border-box !important;
-}
-
-.loadingText,
-#loadingText {
-  color: #ffffff !important;
-  font-size: 13.5px !important;
-  font-weight: 800 !important;
-  letter-spacing: 0.8px !important;
-  text-transform: uppercase !important;
-  text-align: center !important;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
-  max-width: 280px !important;
-  line-height: 1.4 !important;
-}
-
-@keyframes spinSmooth {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes spinReverse {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-360deg); }
-}
-
-@keyframes spinnerPop {
-  0% { transform: scale(0.85); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
 }
 
 /* INLINE BUTTON ROTATING SPINNER ANIMATION */
@@ -3774,18 +3672,23 @@ table th,
 #miniCenterLoading,
 .miniCenterLoading {
   position: fixed !important;
-  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  background: rgba(10, 15, 30, 0.55) !important;
-  backdrop-filter: blur(6px) !important;
-  -webkit-backdrop-filter: blur(6px) !important;
+  background: rgba(10, 15, 30, 0.45) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
   display: none;
   justify-content: center !important;
   align-items: center !important;
   z-index: 2147483647 !important;
   pointer-events: auto !important;
   box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 #miniCenterLoading.show,
@@ -4129,7 +4032,7 @@ table th,
     padding-left: 0 !important;
     padding-right: 0 !important;
     padding-top: 12px !important;
-    padding-bottom: 0 !important;
+    padding-bottom: 95px !important;
   }
 
   #inputPage,
@@ -4180,8 +4083,8 @@ table th,
   #dashboardPage {
     overflow: hidden !important;
     overflow-y: hidden !important;
-    height: calc(100vh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
+    height: calc(100vh - 65px) !important;
+    max-height: calc(100vh - 65px) !important;
     padding-top: 6px !important;
     padding-bottom: 0 !important;
     touch-action: pan-x pan-y !important;
@@ -4191,10 +4094,8 @@ table th,
     width: 100% !important;
     display: block !important;
     position: relative !important;
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
+    height: calc(100vh - 310px) !important;
+    max-height: calc(100vh - 310px) !important;
     min-height: 200px !important;
     overflow-x: auto !important;
     overflow-y: scroll !important;
@@ -4278,7 +4179,7 @@ table th,
 
   #popupTambahToko {
     padding-top: 1cm !important;
-    padding-bottom: 0 !important;
+    padding-bottom: 1cm !important;
     padding-left: 1mm !important;
     padding-right: 1mm !important;
     align-items: center !important;
@@ -4293,7 +4194,7 @@ table th,
     height: calc(100vh - 2cm) !important;
     max-height: calc(100vh - 2cm) !important;
     margin-top: 1cm !important;
-    margin-bottom: 1mm !important;
+    margin-bottom: 1cm !important;
     margin-left: 1mm !important;
     margin-right: 1mm !important;
     box-sizing: border-box !important;
@@ -4314,13 +4215,18 @@ table th,
     border-radius: 5px !important;
   }
 
-  html body #bottomMenu,
   #bottomMenu {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    height: 0 !important;
+    height: 60px;
+    padding: 2px 4px;
+  }
+
+  #bottomMenu button {
+    font-size: 9.5px;
+    gap: 2px;
+  }
+
+  #bottomMenu button .material-symbols-rounded {
+    font-size: 22px;
   }
 }
 
@@ -4351,10 +4257,8 @@ table th,
   #masterDbPage.active {
     display: flex !important;
     flex-direction: column !important;
-    height: calc(100vh - 2mm) !important;
-    height: calc(100dvh - 2mm) !important;
-    max-height: calc(100vh - 2mm) !important;
-    max-height: calc(100dvh - 2mm) !important;
+    height: calc(100vh - 60px - 1mm) !important;
+    max-height: calc(100vh - 60px - 1mm) !important;
     overflow: hidden !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -4456,7 +4360,7 @@ table th,
   #detailDashboard {
     padding: 0 !important;
     margin-bottom: 12px !important;
-    background: var(--bg-box) !important;
+    background: transparent !important;
     border: none !important;
   }
 
@@ -4659,7 +4563,7 @@ button.btnKembali {
 
   .page, .page.active, #dashboardPage, #userManagementPage {
     padding-top: 10px !important;
-    padding-bottom: 0 !important;
+    padding-bottom: 56px !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     width: calc(100vw - 1mm) !important;
@@ -4681,10 +4585,8 @@ button.btnKembali {
     max-width: 100% !important;
     overflow: hidden !important;
     overflow-y: hidden !important;
-    height: calc(100vh - 2mm) !important;
-    height: calc(100dvh - 2mm) !important;
-    max-height: calc(100vh - 2mm) !important;
-    max-height: calc(100dvh - 2mm) !important;
+    height: calc(100vh - 60px - 1mm) !important;
+    max-height: calc(100vh - 60px - 1mm) !important;
     box-sizing: border-box !important;
     margin-bottom: 0 !important;
   }
@@ -4730,7 +4632,7 @@ button.btnKembali {
     border-radius: 5px !important;
     -webkit-clip-path: inset(0 round 5px) !important;
     clip-path: inset(0 round 5px) !important;
-    background: var(--bg-box) !important;
+    background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     margin-top: 0.5mm !important;
@@ -4845,9 +4747,9 @@ button.btnKembali {
   .popupBoxDetailV2 {
     width: 100vw !important;
     max-width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-    margin: 0 !important;
+    height: calc(100vh - 2cm) !important;
+    max-height: calc(100vh - 2cm) !important;
+    margin: auto !important;
     padding: 0 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;
@@ -4874,7 +4776,7 @@ button.btnKembali {
     margin: 0 !important;
     border: none !important;
     border-radius: 0 !important;
-    background: var(--bg-box) !important;
+    background: transparent !important;
     box-shadow: none !important;
     padding: 0 !important;
     overflow-x: auto !important;
@@ -4935,7 +4837,7 @@ button.btnKembali {
 #masterDbPage.active {
   padding-left: 0 !important;
   padding-right: 0 !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 70px !important;
   width: calc(100vw - 1mm) !important;
   max-width: calc(100vw - 1mm) !important;
   margin-left: auto !important;
@@ -4961,7 +4863,7 @@ button.btnKembali {
   margin-bottom: 10px !important;
   padding: 0 !important;
   border-radius: 5px !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   margin-bottom: 1mm !important;
@@ -5014,7 +4916,7 @@ button[onclick="tutupModalTambahToko()"] {
   font-size: 26px !important;
   line-height: 1 !important;
   opacity: 1 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   text-shadow: 0 0 6px rgba(239, 68, 68, 0.5) !important;
   cursor: pointer !important;
@@ -5143,7 +5045,7 @@ div.rowHighlightOrange {
 }
 
 #popupDetail .popupClose {
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   color: #ffffff !important;
   font-weight: 700 !important;
@@ -5351,9 +5253,13 @@ div.rowHighlightOrange {
 .rejectBoxPopup,
 .akunBox,
 #notifContainer,
-#confirmModal,
-#loadingOverlay {
+#confirmModal {
   z-index: 9999999 !important;
+}
+
+#loadingOverlay,
+.loadingOverlay {
+  z-index: 2147483647 !important;
 }
 
 /* STRICT HIDE FOR BOTTOM MENU ON LOGIN PAGE ONLY */
@@ -5388,8 +5294,8 @@ div.rowHighlightOrange {
   width: calc(100vw - 2mm) !important;
   min-width: calc(100vw - 2mm) !important;
   max-width: calc(100vw - 2mm) !important;
-  height: auto !important;
-  max-height: 96vh !important;
+  height: calc(100vh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
   margin: auto 1mm !important;
   padding: 0 !important;
   border-radius: 5px !important;
@@ -5440,7 +5346,7 @@ div.rowHighlightOrange {
   font-weight: 900 !important;
   font-size: 28px !important;
   border: none !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   cursor: pointer !important;
   line-height: 1 !important;
   padding: 0 4px !important;
@@ -5456,19 +5362,17 @@ div.rowHighlightOrange {
 .popupCardBodyContainerV2 {
   width: 100% !important;
   min-width: 100% !important;
-  padding: 0 0 14px 0 !important;
+  padding: 0 !important;
   margin: 0 !important;
   box-sizing: border-box !important;
   background: var(--bg-box) !important;
   border: none !important;
   display: flex !important;
   flex-direction: column !important;
-  overflow-y: auto !important;
-  overflow-x: auto !important;
-  flex: 0 1 auto !important;
+  overflow: hidden !important;
+  flex: 1 1 0px !important;
   height: auto !important;
   min-height: 0 !important;
-  max-height: calc(92vh - 50px) !important;
 }
 
 .detailHeaderInfoV2 {
@@ -5589,12 +5493,15 @@ div.rowHighlightOrange {
   filter: none !important;
 }
 
-.popupDetailActionsV2 {
-  padding: 4px 14px !important;
-  margin: 0 !important;
+.popupDetailActionsV2,
+.popupDetailActions {
+  padding: 2px 14px 0 14px !important;
+  padding-bottom: 0 !important;
+  margin: 4px 0 2mm 0 !important;
+  margin-bottom: 2mm !important;
   border-top: none !important;
-  background: var(--bg-box) !important;
-  border-radius: 0 0 9.5px 9.5px !important;
+  background: transparent !important;
+  border-radius: 0 0 5px 5px !important;
   flex-shrink: 0 !important;
   display: flex !important;
   align-items: center !important;
@@ -5613,7 +5520,7 @@ div.rowHighlightOrange {
   width: 100% !important;
   padding: 8px 14px !important;
   margin: 0 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   font-size: 13px !important;
@@ -5696,7 +5603,9 @@ div.rowHighlightOrange {
   .tableCardV2,
   #popupDetailBarangV2 .tableWrap,
   #popupDetail .tableWrap {
-    max-height: 55vh !important;
+    flex: 1 1 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
     overflow-x: auto !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
@@ -6029,7 +5938,7 @@ div.rowHighlightOrange {
   #pdfModal {
     position: static !important;
     padding: 0 !important;
-    background: var(--bg-box) !important;
+    background: transparent !important;
     display: block !important;
   }
   #pdfModal .popupBox {
@@ -6067,6 +5976,11 @@ html body.design-mode-normal .confirmBox {
    APPLIES TO DASHBOARD TABLE, RIWAYAT TABLE, MASTER DB, DETAIL & INPUT TABLES
    ============================================================================= */
 .tableWrap,
+/* =============================================================================
+   UNIVERSAL FULL-HEIGHT CARDS WITH 5PX SMOOTH 90-DEGREE ROUNDED CORNERS
+   LINES ONLY APPEAR ON ACTUAL DATA ROWS (LAST ROW HAS NO BOTTOM BORDER)
+   ============================================================================= */
+.tableWrap,
 .dashboardTableContainer,
 #detailDashboard,
 #detailDashboard .tableWrap,
@@ -6076,6 +5990,12 @@ html body.design-mode-normal .confirmBox {
 #popupDetailBarangV2 .tableWrap,
 .tableCardV2,
 .tableCardV2.tableWrap {
+  flex: 1 1 auto !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
   border-radius: 5px !important;
   -webkit-clip-path: inset(0 round 5px) !important;
   clip-path: inset(0 round 5px) !important;
@@ -6083,9 +6003,10 @@ html body.design-mode-normal .confirmBox {
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   touch-action: pan-x pan-y !important;
-  border: 0 !important;
-  border-style: none !important;
-  box-shadow: none !important;
+  border: 1px solid var(--border-color) !important;
+  background: var(--bg-box) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  box-sizing: border-box !important;
 }
 
 html body table th,
@@ -6111,7 +6032,6 @@ html body .lastHeader > div {
   border-left: none !important;
   border-right: none !important;
   border-bottom: 2px solid rgba(0, 0, 0, 0.18) !important;
-  border-radius: 0 !important;
   box-shadow: none !important;
   text-shadow: none !important;
   outline: none !important;
@@ -6122,34 +6042,22 @@ html body .lastHeader > div {
   -webkit-backdrop-filter: none !important;
 }
 
-/* Header & Table 90 Degree Sharp Square Corners */
-table thead tr:first-child th:first-child,
-.dashboardTable thead tr:first-child th:first-child,
-.historyTable thead tr:first-child th:first-child,
-.detailTableV2 thead tr:first-child th:first-child,
-table thead tr:first-child th:last-child,
-.dashboardTable thead tr:first-child th:last-child,
-.historyTable thead tr:first-child th:last-child,
-.detailTableV2 thead tr:first-child th:last-child,
-table tbody tr:last-child td:first-child,
-.dashboardTable tbody tr:last-child td:first-child,
-.historyTable tbody tr:last-child td:first-child,
-#riwayatData tr:last-child td:first-child,
-#masterDbTableBody tr:last-child td:first-child,
-#lastData tr:last-child td:first-child,
-.detailTableV2 tbody tr:last-child td:first-child,
-table tbody tr:last-child td:last-child,
-.dashboardTable tbody tr:last-child td:last-child,
-.historyTable tbody tr:last-child td:last-child,
-#riwayatData tr:last-child td:last-child,
-#masterDbTableBody tr:last-child td:last-child,
-#lastData tr:last-child td:last-child,
-.detailTableV2 tbody tr:last-child td:last-child {
-  border-radius: 0 !important;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+/* DATA ROWS BORDER LINES: ONLY APPEAR WHEN ROW HAS DATA */
+.dashboardTable tbody tr td,
+.historyTable tbody tr td,
+.masterDbTable tbody tr td,
+.detailTableV2 tbody tr td,
+.detailTable2 tbody tr td {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* LAST ROW HAS NO BOTTOM BORDER LINE TO KEEP EMPTY BACKGROUND AREA CLEAN */
+.dashboardTable tbody tr:last-child td,
+.historyTable tbody tr:last-child td,
+.masterDbTable tbody tr:last-child td,
+.detailTableV2 tbody tr:last-child td,
+.detailTable2 tbody tr:last-child td {
+  border-bottom: none !important;
 }
 
 /* ANIMASI BERKEDIP SANGAT JELAS PADA BARIS TABEL (TR) UNTUK STATUS TUNGGU SERVICE & TUNGGU DM */
@@ -6224,22 +6132,22 @@ table.detailTableV2 {
 /* Dashboard Table Grid Rounded Corners */
 #detailDashboard .lastHeader,
 .lastHeader {
-  border-radius: 5px !important;
+  border-radius: 5px 5px 0 0 !important;
 }
 
 #detailDashboard .lastHeader > div:first-child,
 .lastHeader > div:first-child {
-  border-top-left-radius: 13px !important;
+  border-top-left-radius: 5px !important;
 }
 
 #detailDashboard .lastHeader > div:last-child,
 .lastHeader > div:last-child {
-  border-top-right-radius: 13px !important;
+  border-top-right-radius: 5px !important;
 }
 
 #detailDashboard #lastData .lastItem:last-child,
 .lastItem:last-child {
-  border-radius: 0 0 9.5px 9.5px !important;
+  border-radius: 0 0 5px 5px !important;
 }
 
 html body thead,
@@ -6392,12 +6300,12 @@ html body .dashboardTable thead tr {
 @media (max-width: 768px) {
   html body #inputPage,
   html body .page#inputPage {
-    padding-bottom: 0 !important;
+    padding-bottom: calc(58px + 1mm) !important;
     margin-bottom: 0 !important;
   }
 
   html body #inputPage .box {
-    padding-bottom: 0 !important;
+    padding-bottom: 12px !important;
     margin-bottom: 1mm !important;
   }
 
@@ -6439,8 +6347,8 @@ body:has(#masterDbPage.active) {
 #masterDbPage.page.active {
   display: flex !important;
   flex-direction: column !important;
-  height: calc(100vh - 58px - 1.6cm) !important;
-  max-height: calc(100vh - 58px - 1.6cm) !important;
+  height: calc(100vh - 60px - 1mm) !important;
+  max-height: calc(100vh - 60px - 1mm) !important;
   overflow: hidden !important;
   overflow-y: hidden !important;
   touch-action: auto !important;
@@ -6467,7 +6375,7 @@ body:has(#masterDbPage.active) {
   touch-action: pan-x pan-y !important;
   padding: 0 !important;
   margin: 0 !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   box-sizing: border-box !important;
@@ -6526,7 +6434,8 @@ body:has(#masterDbPage.active) {
 #popupDetail .popupBoxDetail,
 .popupBoxDetail,
 .popupBoxDetailV2 {
-  max-height: calc(100vh - 20px) !important;
+  height: calc(100vh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
   display: flex !important;
   flex-direction: column !important;
   overflow: hidden !important;
@@ -6549,8 +6458,9 @@ body:has(#masterDbPage.active) {
 #popupDetailBarangV2 .tableCardV2.tableWrap,
 #popupDetail .tableWrap,
 .tableCardV2.tableWrap {
-  flex: 1 !important;
-  max-height: calc(100vh - 160px) !important;
+  flex: 1 1 100% !important;
+  height: 100% !important;
+  max-height: none !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch !important;
@@ -6595,7 +6505,7 @@ body:has(#masterDbPage.active) {
   backdrop-filter: blur(8px) saturate(120%) !important;
   -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
   padding-top: 8px !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 75px !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
   box-sizing: border-box !important;
@@ -6683,7 +6593,7 @@ body:has(#masterDbPage.active) {
     align-items: center !important;
     justify-content: center !important;
     padding: 12px !important;
-    padding-bottom: 0 !important;
+    padding-bottom: calc(52px + 2cm) !important;
   }
   #confirmOverlay {
     align-items: center !important;
@@ -6719,11 +6629,17 @@ body:has(#masterDbPage.active) {
 #popupDetailBarangV2 .popupBoxDetailV2,
 #rejectOverlay .rejectBoxPopup,
 #popupUserForm .popupBox,
-#popupAkun .akunBox,
 #popupTTD .ttdBox {
   margin: auto !important;
   transform: translateY(-25px) !important;
   transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#popupAkun .akunBox {
+  margin: auto !important;
+  transform: none !important;
+  -webkit-transform: none !important;
+  transition: opacity 0.2s ease;
 }
 
 /* ==========================================================================
@@ -6813,8 +6729,9 @@ html body #masterDbData {
 #popupDetailBarangV2 .tableWrap,
 #popupDetail .tableWrap,
 .tableCardV2.tableWrap {
-  max-height: 55vh !important;
-  min-height: 140px !important;
+  flex: 1 1 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
 }
 
 /* 3. Table Min-Widths & Cell White-Space for Horizontal Scrolling (Kanan - Kiri) */
@@ -6997,12 +6914,40 @@ html body .popupHeaderV2,
 html body .rejectHeaderPopup,
 html body .artemisHeaderPopup,
 html body .cardHeader,
+html body thead,
+html body thead tr,
+html body .historyTable thead,
+html body .dashboardTable thead,
+html body .masterDbTable thead,
+html body .lastHeader,
 html body .dashboardTable th,
 html body .historyTable th,
 html body .masterDbTable th,
 html body .detailTableV2 th {
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
   border-radius: 5px 5px 0 0 !important;
   text-align: center !important;
+}
+
+html body thead th:first-child,
+html body .historyTable th:first-child,
+html body .dashboardTable th:first-child,
+html body .masterDbTable th:first-child,
+html body .detailTable2 th:first-child,
+html body .detailTableV2 th:first-child,
+html body .lastHeader > div:first-child {
+  border-top-left-radius: 5px !important;
+}
+
+html body thead th:last-child,
+html body .historyTable th:last-child,
+html body .dashboardTable th:last-child,
+html body .masterDbTable th:last-child,
+html body .detailTable2 th:last-child,
+html body .detailTableV2 th:last-child,
+html body .lastHeader > div:last-child {
+  border-top-right-radius: 5px !important;
 }
 
 /* 5. POPUP BODIES & BOTTOM CORNERS */
@@ -7059,58 +7004,35 @@ html body .cardStat .icon {
   #detailDashboard .tableWrap,
   .dashboardTableContainer,
   .box,
-  .box.box-full {
+  .box.box-full,
+  #bottomMenu {
     width: calc(100vw - 1mm) !important;
     max-width: calc(100vw - 1mm) !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
-  html body #bottomMenu,
-  #bottomMenu {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-    height: 0 !important;
-  }
-
   html body .page.active,
   html body #dashboardPage.active,
   html body #riwayatPage.active,
   html body #masterDbPage.active,
-  html body #userManagementPage.active,
   html body section#dashboardPage.page.active,
   html body section#riwayatPage.page.active,
-  html body section#masterDbPage.page.active,
-  #dashboardPage.active,
-  #riwayatPage.active,
-  #masterDbPage.active,
-  #userManagementPage.active,
-  section#dashboardPage.page.active,
-  section#riwayatPage.page.active,
-  section#masterDbPage.page.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
+  html body section#masterDbPage.page.active {
+    height: calc(100vh - 60px - 1mm) !important;
+    max-height: calc(100vh - 60px - 1mm) !important;
     display: flex !important;
     flex-direction: column !important;
     padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
     overflow: hidden !important;
     box-sizing: border-box !important;
   }
 
   html body #inputPage,
-  html body .page#inputPage,
-  #inputPage,
-  .page#inputPage {
+  html body .page#inputPage {
     height: auto !important;
     max-height: none !important;
-    padding-bottom: 0 !important;
+    padding-bottom: calc(58px + 3.5cm) !important; /* Safe 3.5cm gap above bottomMenu */
     box-sizing: border-box !important;
     overflow-y: auto !important;
   }
@@ -7119,16 +7041,11 @@ html body .cardStat .icon {
   #detailDashboard .tableWrap,
   #detailDashboard.tableWrap,
   #riwayatPage .tableWrap,
-  #masterDbPage .tableWrap,
-  html body #riwayatPage .tableWrap,
-  html body #masterDbPage .tableWrap,
-  html body #riwayatPage .riwayatContent .tableWrap,
-  html body section#riwayatPage .tableWrap,
-  html body section#masterDbPage .tableWrap {
+  #masterDbPage .tableWrap {
     flex: 1 1 100% !important;
     flex-grow: 1 !important;
     height: 100% !important;
-    min-height: 200px !important;
+    min-height: 250px !important;
     max-height: 100% !important;
     align-self: stretch !important;
     margin-top: 1mm !important;
@@ -7143,7 +7060,7 @@ html body .cardStat .icon {
     align-items: center !important;
     justify-content: center !important;
     padding: 12px !important;
-    padding-bottom: 0 !important;
+    padding-bottom: calc(52px + 1cm) !important;
   }
 
   #popupNotifList .popupNotifCard {
@@ -7178,9 +7095,9 @@ html body #masterDbPage.page.active,
 html body section#masterDbPage {
   display: flex !important;
   flex-direction: column !important;
-  height: calc(100vh - 58px - 1.6cm) !important;
-  max-height: calc(100vh - 58px - 1.6cm) !important;
-  min-height: calc(100vh - 58px - 1.6cm) !important;
+  height: calc(100vh - 60px - 1mm) !important;
+  max-height: calc(100vh - 60px - 1mm) !important;
+  min-height: calc(100vh - 60px - 1mm) !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
 }
@@ -7210,7 +7127,7 @@ html body #masterDbPage .searchToolbar {
   flex-shrink: 0 !important;
 }
 
-/* MANDATORY TABLE HEADER CENTER ALIGNMENT & SOLID FULL HEIGHT WRAPPER */
+/* MANDATORY TABLE HEADER CENTER ALIGNMENT & SOLID FULL HEIGHT WRAPPER WITH 16PX ROUNDED CLIP-PATH */
 html body #riwayatPage .historyTable th,
 html body #masterDbPage .masterDbTable th,
 html body .historyTable th,
@@ -7226,21 +7143,22 @@ html body section#riwayatPage .tableWrap,
 html body #riwayatPage .riwayatContent .tableWrap,
 html body #masterDbPage .tableWrap,
 html body section#masterDbPage .tableWrap {
-  display: block !important;
-  flex: 1 1 0px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 100% !important;
   flex-grow: 1 !important;
-  flex-shrink: 1 !important;
-  flex-basis: 0px !important;
-  height: calc(100% - 85px) !important;
-  min-height: calc(100% - 85px) !important;
+  height: 100% !important;
+  min-height: 0 !important;
   max-height: 100% !important;
   align-self: stretch !important;
   background: var(--bg-box, #ffffff) !important;
   border: 1px solid var(--border-color, #e2e8f0) !important;
   border-radius: 5px !important;
+  -webkit-clip-path: inset(0 round 5px) !important;
+  clip-path: inset(0 round 5px) !important;
   box-sizing: border-box !important;
   margin-top: 1mm !important;
-  margin-bottom: -1mm !important;
+  margin-bottom: 0 !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch !important;
@@ -7248,43 +7166,133 @@ html body section#masterDbPage .tableWrap {
 }
 
 html body #riwayatPage .historyTable,
-html body #masterDbPage .masterDbTable,
-html body #masterDbPage .historyTable,
-html body .historyTable,
-html body .masterDbTable {
-  min-height: auto !important;
-  height: auto !important;
+html body .historyTable {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
+  min-height: 100% !important;
+  height: 100% !important;
+  width: 100% !important;
+  min-width: 680px !important;
   background: var(--bg-box, #ffffff) !important;
   box-sizing: border-box !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  margin: 0 !important;
+}
+
+html body #riwayatPage .historyTable thead {
+  flex: 0 0 auto !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+html body #riwayatPage .historyTable thead tr {
+  display: flex !important;
+  width: 100% !important;
 }
 
 html body #riwayatData,
-html body #masterDbTableBody,
-html body .historyTable tbody,
-html body .masterDbTable tbody {
+html body .historyTable tbody {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 100% !important;
+  flex-grow: 1 !important;
   background: var(--bg-box, #ffffff) !important;
-  min-height: auto !important;
+  min-height: 100% !important;
+  height: 100% !important;
 }
 
-/* BARIS TABEL KOSONG PELENGKAP CONTAINER PENUH KE BAWAH */
+html body #riwayatData tr:not(.table-spacer-fill-row),
+html body .historyTable tbody tr:not(.table-spacer-fill-row) {
+  display: flex !important;
+  width: 100% !important;
+  flex: 0 0 auto !important;
+}
+
+html body #riwayatData tr:not(.table-spacer-fill-row) td,
+html body .historyTable tbody tr:not(.table-spacer-fill-row) td {
+  display: flex !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-sizing: border-box !important;
+  background: var(--bg-box) !important;
+  color: var(--text-main) !important;
+  font-size: 12px !important;
+}
+
+/* COLUMN FLEX SIZES FOR HISTORY TABLE */
+.historyTable th:nth-child(1), .historyTable td:nth-child(1) { width: 130px !important; flex: 0 0 130px !important; justify-content: center !important; }
+.historyTable th:nth-child(2), .historyTable td:nth-child(2) { width: 95px !important; flex: 0 0 95px !important; }
+.historyTable th:nth-child(3), .historyTable td:nth-child(3) { width: 140px !important; flex: 0 0 140px !important; }
+.historyTable th:nth-child(4), .historyTable td:nth-child(4) { width: 180px !important; flex: 0 0 180px !important; }
+.historyTable th:nth-child(5), .historyTable td:nth-child(5) { width: 85px !important; flex: 0 0 85px !important; }
+.historyTable th:nth-child(6), .historyTable td:nth-child(6) { width: 110px !important; flex: 0 0 110px !important; }
+.historyTable th:nth-child(7), .historyTable td:nth-child(7) { flex: 1 1 auto !important; min-width: 120px !important; }
+
+/* LAST ACTUAL DATA ROW HAS NO BOTTOM BORDER LINE TO KEEP EMPTY BACKGROUND AREA CLEAN */
+#riwayatData tr:not(.table-spacer-fill-row):last-of-type td,
+.historyTable tbody tr:not(.table-spacer-fill-row):last-of-type td {
+  border-bottom: none !important;
+}
+
+/* SPACER DENGAN BACKGROUND SOLID SAMA ISI BEBAS TANPA GARIS UNTUK MEMENUHI CONTAINER */
+html body #riwayatData tr.table-spacer-fill-row,
+html body .historyTable tbody tr.table-spacer-fill-row {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  background: var(--bg-box) !important;
+  border: none !important;
+}
+
+html body #riwayatData tr.table-spacer-fill-row td,
+html body .historyTable tbody tr.table-spacer-fill-row td {
+  display: block !important;
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: var(--bg-box) !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* EMPTY GRID ROWS (BARIS KOSONG) FILL FULL HEIGHT WITHOUT BORDER LINES */
 tr.empty-grid-row,
-html body tr.empty-grid-row {
+html body tr.empty-grid-row,
+#riwayatData tr.empty-grid-row {
+  display: flex !important;
+  width: 100% !important;
   height: 42px !important;
-  max-height: 42px !important;
-  background: var(--bg-box, #ffffff) !important;
-  pointer-events: none !important;
+  background: var(--bg-box) !important;
+  border: none !important;
 }
 
 tr.empty-grid-row td,
-html body tr.empty-grid-row td {
-  height: 42px !important;
-  border-bottom: 1px solid rgba(0,0,0,0.04) !important;
-  border-right: none !important;
+html body tr.empty-grid-row td,
+#riwayatData tr.empty-grid-row td {
+  display: flex !important;
+  align-items: center !important;
+  border: none !important;
+  border-bottom: none !important;
   border-left: none !important;
-  border-top: none !important;
-  background: var(--bg-box, #ffffff) !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
+  border-right: none !important;
+  background: var(--bg-box) !important;
+  height: 42px !important;
+  padding: 8px 12px !important;
+  color: transparent !important;
+}
+
+tr.empty-grid-row:last-child td,
+html body tr.empty-grid-row:last-child td,
+#riwayatData tr.empty-grid-row:last-child td {
+  border: none !important;
+  border-bottom: none !important;
 }
 
 /* ==========================================================================
@@ -7418,7 +7426,7 @@ button.btnBatal:active {
   z-index: 100 !important;
   flex-shrink: 0 !important;
   margin: 0 !important;
-  border-radius: 4px 4px 0 0 !important;
+  border-radius: 5px 5px 0 0 !important;
 }
 
 #popupTambahToko table {
@@ -7432,6 +7440,7 @@ button.btnBatal:active {
   top: 0 !important;
   z-index: 50 !important;
   background: var(--primary) !important;
+  border-radius: 5px 5px 0 0 !important;
 }
 
 #popupTambahToko table th {
@@ -7444,6 +7453,17 @@ button.btnBatal:active {
   padding: 10px 8px !important;
   white-space: nowrap !important;
   border-bottom: 2px solid rgba(0, 0, 0, 0.15) !important;
+  border-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}
+
+#popupTambahToko table th:first-child {
+  border-top-left-radius: 5px !important;
+}
+
+#popupTambahToko table th:last-child {
+  border-top-right-radius: 5px !important;
 }
 
 /* ==========================================================================
@@ -7520,7 +7540,7 @@ button.btnBatal:active {
   background: #dc2626 !important;
   transform: translateY(-1px) !important;
 }
-}
+
 
 /* MOBILE SPECIFIC NOTIFICATION & DETAIL POPUP COMPACT HEIGHT ADJUSTMENT */
 @media screen and (max-width: 768px) {
@@ -7528,12 +7548,16 @@ button.btnBatal:active {
   html body #popupDetail .popupBoxDetail,
   html body .popupBoxDetailV2,
   html body .popupBoxDetail {
-    max-height: calc(80vh - 20px) !important;
+    height: calc(100vh - 2cm) !important;
+    max-height: calc(100vh - 2cm) !important;
   }
   html body #popupDetailBarangV2 .tableCardV2.tableWrap,
   html body #popupDetail .tableWrap,
   html body .tableCardV2.tableWrap {
-    max-height: calc(80vh - 110px) !important;
+    flex: 1 1 0px !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
   }
   html body #popupNotifList .popupNotifCard {
     max-height: calc(65vh - 20px) !important;
@@ -7605,7 +7629,7 @@ html body #rejectOverlay .confirmButton,
   html body #rejectOverlay,
   #rejectOverlay {
     padding: 2mm !important;
-    padding-bottom: 0 !important;
+    padding-bottom: calc(52px + 2mm) !important;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
@@ -7735,2627 +7759,829 @@ html body #rejectOverlay .rejectHeaderPopup .popupClose,
   font-weight: 900 !important;
   line-height: 1 !important;
   padding: 0 4px !important;
-  background: var(--bg-box) !important;
+  background: transparent !important;
   border: none !important;
   color: #ffffff !important;
 }
 
-/* ==========================================================================
-   MOBILE HP (MAX-WIDTH: 768PX): EXPAND DETAIL TABLES FULL HEIGHT DOWN TO 2MM FROM SCREEN BOTTOM
-   ========================================================================== */
+}
+
+/* =============================================================================
+   MODAL POPUP GEMINI API KEY - RESPONSIVE HP DENGAN JARAK 2MM KE LAYAR
+   ============================================================================= */
+#modalGeminiApiKey {
+  padding: 2mm !important;
+  box-sizing: border-box !important;
+}
+
+#modalGeminiApiKey .modalKeyBox {
+  width: calc(100vw - 4mm) !important;
+  max-width: 460px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
 @media (max-width: 768px) {
-  html body .page.active,
-  html body #dashboardPage.active,
-  html body #riwayatPage.active,
-  html body #masterDbPage.active,
-  html body #userManagementPage.active,
-  html body section#dashboardPage.page.active,
-  html body section#riwayatPage.page.active,
-  html body section#masterDbPage.page.active,
-  #dashboardPage.active,
-  #riwayatPage.active,
-  #masterDbPage.active,
-  #userManagementPage.active,
-  section#dashboardPage.page.active,
-  section#riwayatPage.page.active,
-  section#masterDbPage.page.active {
-    height: calc(100vh - 2mm) !important;
-    height: calc(100dvh - 2mm) !important;
-    max-height: calc(100vh - 2mm) !important;
-    max-height: calc(100dvh - 2mm) !important;
-    min-height: calc(100vh - 2mm) !important;
-    min-height: calc(100dvh - 2mm) !important;
+  #modalGeminiApiKey {
+    padding: 2mm !important;
+  }
+  #modalGeminiApiKey .modalKeyBox {
+    width: calc(100vw - 4mm) !important;
+    max-width: calc(100vw - 4mm) !important;
+    border-radius: 12px !important;
+  }
+  #modalGeminiApiKey .modalKeyHeader {
+    padding: 10px 12px !important;
+  }
+  #modalGeminiApiKey .modalKeyHeader span {
+    font-size: 12px !important;
+  }
+  #modalGeminiApiKey .modalKeyBody {
+    padding: 12px 10px !important;
+    gap: 10px !important;
+  }
+  #modalGeminiApiKey .modalKeyActions {
     display: flex !important;
-    flex-direction: column !important;
-    padding-top: 2px !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: space-between !important;
   }
-
-  html body #riwayatPage .riwayatContent,
-  html body section#riwayatPage .riwayatContent,
-  html body #masterDbPage .box,
-  html body #masterDbPage .riwayatContent,
-  #riwayatPage .riwayatContent,
-  #masterDbPage .box,
-  #masterDbPage .riwayatContent {
-    display: flex !important;
-    flex-direction: column !important;
-    flex: 1 1 100% !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    margin: 0 !important;
-    padding-bottom: 0 !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-  }
-
-  #detailDashboard,
-  #detailDashboard .tableWrap,
-  #detailDashboard.tableWrap,
-  #riwayatPage .tableWrap,
-  #masterDbPage .tableWrap,
-  html body #riwayatPage .tableWrap,
-  html body #masterDbPage .tableWrap,
-  html body #riwayatPage .riwayatContent .tableWrap,
-  html body section#riwayatPage .tableWrap,
-  html body section#masterDbPage .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    min-height: 200px !important;
-    max-height: 100% !important;
-    align-self: stretch !important;
-    margin-top: 1mm !important;
-    margin-bottom: 1mm !important;
-    box-sizing: border-box !important;
-    overflow-y: auto !important;
-    overflow-x: auto !important;
-  }
-}
-
-
-/* =============================================================================
-   ULTIMATE PRECISION 1MM BOTTOM BOUNDARY FOR DASHBOARD PAGE
-   ============================================================================= */
-html body #app #dashboardPage,
-html body section#dashboardPage,
-html body #dashboardPage.page,
-html body #dashboardPage.active,
-html body section#dashboardPage.page.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding-top: 2px !important;
-  padding-bottom: 0 !important;
-  padding-left: 0.5mm !important;
-  padding-right: 0.5mm !important;
-  margin: 0 !important;
-  margin-bottom: 1mm !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #dashboardPage .dashboardTop {
-  flex: 0 0 auto !important;
-  margin-bottom: 2px !important;
-}
-
-html body #dashboardPage #dashboardRecentTitle {
-  flex: 0 0 auto !important;
-  margin-top: 1px !important;
-  margin-bottom: 1px !important;
-}
-
-html body #dashboardPage #detailDashboard,
-html body #detailDashboard {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin-top: 1px !important;
-  margin-bottom: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #detailDashboard .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  touch-action: pan-x pan-y !important;
-  box-sizing: border-box !important;
-}
-
-@media (max-width: 768px) {
-  html body #app #dashboardPage,
-  html body section#dashboardPage,
-  html body #dashboardPage.page,
-  html body #dashboardPage.active,
-  html body section#dashboardPage.page.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 1mm !important;
-  }
-
-  html body #dashboardPage #detailDashboard,
-  html body #detailDashboard {
-    margin-bottom: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-  }
-}
-
-
-/* =============================================================================
-   ULTIMATE PRECISION 1MM BOTTOM BOUNDARY FOR RIWAYAT PAGE
-   ============================================================================= */
-html body #app #riwayatPage,
-html body section#riwayatPage,
-html body #riwayatPage.page,
-html body #riwayatPage.active,
-html body section#riwayatPage.page.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding-top: 2px !important;
-  padding-bottom: 0 !important;
-  padding-left: 0.5mm !important;
-  padding-right: 0.5mm !important;
-  margin: 0 !important;
-  margin-bottom: 1mm !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .riwayatContent,
-html body section#riwayatPage .riwayatContent {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage h3 {
-  flex: 0 0 auto !important;
-  margin-top: 1px !important;
-  margin-bottom: 4px !important;
-}
-
-html body #riwayatPage .searchToolbar {
-  flex: 0 0 auto !important;
-  margin-bottom: 4px !important;
-}
-
-html body #riwayatPage .tableWrap,
-html body section#riwayatPage .tableWrap,
-html body #riwayatPage .riwayatContent .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  margin-top: 1px !important;
-  margin-bottom: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  touch-action: pan-x pan-y !important;
-  box-sizing: border-box !important;
-}
-
-@media (max-width: 768px) {
-  html body #app #riwayatPage,
-  html body section#riwayatPage,
-  html body #riwayatPage.page,
-  html body #riwayatPage.active,
-  html body section#riwayatPage.page.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 1mm !important;
-  }
-
-  html body #riwayatPage .tableWrap {
-    margin-bottom: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-  }
-}
-
-
-/* =============================================================================
-   ULTIMATE PRECISION 1MM BOTTOM SPACING FOR RIWAYAT DATA TBODY
-   ============================================================================= */
-html body #riwayatData,
-html body #riwayatPage #riwayatData,
-html body #riwayatPage .historyTable #riwayatData {
-  margin-bottom: 1mm !important;
-  padding-bottom: 1mm !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatData tr:last-child td,
-html body #riwayatPage #riwayatData tr:last-child td,
-html body .historyTable tbody#riwayatData tr:last-child td {
-  padding-bottom: 1mm !important;
-}
-
-
-/* =============================================================================
-   ULTIMATE PRECISION 1MM BOTTOM SPACING FOR LOGIN & USER MANAGEMENT (MOBILE HP)
-   ============================================================================= */
-@media (max-width: 768px) {
-  html body #app #loginPage,
-  html body section#loginPage,
-  html body #loginPage.page,
-  html body section#loginPage.page.active,
-  html body .login-card {
-    margin-bottom: 1mm !important;
-    padding-bottom: 1mm !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  html body #userManagementPage.page,
-  html body #userManagementPage.active,
-  html body section#userManagementPage.page.active {
-    padding-bottom: 1mm !important;
-    margin-bottom: 1mm !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #userManagementPage .box:last-child,
-  html body #userManagementPage .tableWrap,
-  html body #userManagementPage .tableWrap:last-child {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-  }
-}
-
-/* GLOBAL HIGH SPECIFICITY OVERRIDE FOR LOGIN AND USER MGMT HP BOTTOM SPACING */
-html body #userManagementPage {
-  padding-bottom: 1mm !important;
-  margin-bottom: 1mm !important;
-}
-
-
-/* =============================================================================
-   ULTIMATE PRECISION 1MM BOTTOM BOUNDARY FOR USER MANAGEMENT PAGE (DESKTOP & HP)
-   ============================================================================= */
-html body #app #userManagementPage,
-html body section#userManagementPage,
-html body #userManagementPage.page,
-html body #userManagementPage.active,
-html body section#userManagementPage.page.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  padding-bottom: 1mm !important;
-  margin-bottom: 1mm !important;
-  overflow-y: auto !important;
-  box-sizing: border-box !important;
-}
-
-html body #userManagementPage .box:last-child,
-html body #userManagementPage .tableWrap:last-child,
-html body #userManagementPage > div:last-child {
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-}
-
-@media (max-width: 768px) {
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  html body #userManagementPage.page,
-  html body #userManagementPage.active,
-  html body section#userManagementPage.page.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    padding-bottom: 1mm !important;
-    margin-bottom: 1mm !important;
-    overflow-y: auto !important;
-    box-sizing: border-box !important;
-  }
-}
-
-
-/* =============================================================================
-   MASTER GLOBAL RULE: EXACT 1MM SPACING WITH BOTTOM OF SCREEN FOR ALL PAGES
-   (LOGIN, DASHBOARD, INPUT, RIWAYAT, MASTER DB, USER MANAGEMENT)
-   ============================================================================= */
-
-/* Reset body & #app bottom padding/margin */
-html, body, html body #app {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Master Rule for ALL Section Pages */
-html body #app .page,
-html body #app .page.active,
-html body #app section.page,
-html body #app section.page.active,
-html body #loginPage.active,
-html body #dashboardPage.active,
-html body #inputPage.active,
-html body #riwayatPage.active,
-html body #masterDbPage.active,
-html body #userManagementPage.active,
-html body section#loginPage,
-html body section#dashboardPage,
-html body section#inputPage,
-html body section#riwayatPage,
-html body section#masterDbPage,
-html body section#userManagementPage {
-  box-sizing: border-box !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-}
-
-/* Flex/Fullscreen Pages Height: 1mm from screen bottom */
-html body #dashboardPage.active,
-html body #riwayatPage.active,
-html body #masterDbPage.active,
-html body #userManagementPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-}
-
-/* Ensure bottom-most child in any page sits 1mm from bottom */
-html body .page > div:last-child,
-html body .page > form:last-child,
-html body .page .box:last-child,
-html body .page .tableWrap:last-child,
-html body .page .login-card,
-html body #inputPage .btn-primary#btnSimpan,
-html body #inputPage .box:last-child,
-html body #userManagementPage .box:last-child {
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-}
-
-/* Mobile HP specific height override for 56px navbar */
-@media (max-width: 768px) {
-  html body #dashboardPage.active,
-  html body #riwayatPage.active,
-  html body #masterDbPage.active,
-  html body #userManagementPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-}
-
-
-/* =============================================================================
-   ULTIMATE PRECISION 1MM BOTTOM SPACING FOR ALL 6 PAGES (SINGLE SOURCE OF TRUTH)
-   (LOGIN, DASHBOARD, INPUT, RIWAYAT, MASTER DB, USER MANAGEMENT)
-   ============================================================================= */
-
-/* Reset body, html, #app */
-html, body, html body #app {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* Master Rule for ALL 6 Pages */
-html body #app .page,
-html body #app .page.active,
-html body #app section.page,
-html body #app section.page.active,
-html body #loginPage,
-html body #loginPage.active,
-html body #dashboardPage,
-html body #dashboardPage.active,
-html body #inputPage,
-html body #inputPage.active,
-html body #riwayatPage,
-html body #riwayatPage.active,
-html body #masterDbPage,
-html body #masterDbPage.active,
-html body #userManagementPage,
-html body #userManagementPage.active {
-  box-sizing: border-box !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-}
-
-/* 1. LOGIN PAGE */
-html body #loginPage,
-html body #loginPage.page,
-html body #loginPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #loginPage .login-card {
-  margin-bottom: 1mm !important;
-}
-
-/* 2. DASHBOARD PAGE */
-html body #dashboardPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #dashboardPage #detailDashboard {
-  margin-bottom: 0 !important;
-}
-
-/* 3. INPUT PAGE */
-html body #inputPage,
-html body #inputPage.page,
-html body #inputPage.active {
-  height: auto !important;
-  max-height: none !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #inputPage .box:last-child,
-html body #inputPage .btn-primary#btnSimpan,
-html body #inputPage #btnSimpan {
-  margin-bottom: 1mm !important;
-}
-
-/* 4. RIWAYAT PAGE */
-html body #riwayatPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #riwayatPage .tableWrap {
-  margin-bottom: 0 !important;
-}
-
-/* 5. MASTER DB PAGE */
-html body #masterDbPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #masterDbPage .box,
-html body #masterDbPage .tableWrap {
-  margin-bottom: 0 !important;
-}
-
-/* 6. USER MANAGEMENT PAGE */
-html body #userManagementPage,
-html body #userManagementPage.page,
-html body #userManagementPage.active {
-  height: auto !important;
-  max-height: none !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #userManagementPage .box:last-child,
-html body #userManagementPage .tableWrap:last-child,
-html body #userManagementPage > div:last-child {
-  margin-bottom: 1mm !important;
-}
-
-/* MOBILE HP OVERRIDE (max-width: 768px) FOR ALL 6 PAGES */
-@media (max-width: 768px) {
-  html body #dashboardPage.active,
-  html body #riwayatPage.active,
-  html body #masterDbPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 1mm !important;
-  }
-
-  html body #inputPage,
-  html body #userManagementPage {
-    padding-bottom: 0 !important;
-    margin-bottom: 1mm !important;
-  }
-
-  html body #inputPage .btn-primary#btnSimpan,
-  html body #inputPage #btnSimpan,
-  html body #userManagementPage .box:last-child,
-  html body #userManagementPage .tableWrap:last-child {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-  }
-}
-
-
-/* =============================================================================
-   MOBILE HP (MAX-WIDTH 768PX) STRICT 1MM BOTTOM BOUNDARY FIX FOR
-   INPUT FORM (#inputPage) AND USER MANAGEMENT (#userManagementPage)
-   ============================================================================= */
-
-@media (max-width: 768px) {
-  /* 1. INPUT FORM PAGE (#inputPage) MOBILE HP FIX */
-  html body #app #inputPage,
-  html body section#inputPage,
-  html body #inputPage.page,
-  html body #inputPage.active {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-
-  html body #inputPage .box,
-  html body #inputPage .box:last-child {
-    margin-bottom: 1mm !important;
-    padding-bottom: 6px !important;
-  }
-
-  html body #inputPage .btn-primary#btnSimpan,
-  html body #inputPage #btnSimpan {
-    margin-bottom: 0 !important;
-    margin-top: 10px !important;
-  }
-
-  /* 2. USER MANAGEMENT PAGE (#userManagementPage) MOBILE HP FIX */
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  html body #userManagementPage.page,
-  html body #userManagementPage.active {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-
-  html body #userManagementPage .box,
-  html body #userManagementPage .box:last-child {
-    margin-bottom: 1mm !important;
-    padding-bottom: 8px !important;
-  }
-
-  html body #userManagementPage .tableWrap,
-  html body #userManagementPage .tableWrap:last-child {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-  }
-}
-
-/* GLOBAL HIGH SPECIFICITY OVERRIDES FOR INPUT & USER MGMT BOTTOM BUTTONS/BOXES */
-html body #inputPage .btn-primary#btnSimpan {
-  margin-bottom: 0 !important;
-}
-
-html body #inputPage .box {
-  padding-bottom: 6px !important;
-  margin-bottom: 1mm !important;
-}
-
-html body #userManagementPage .box:last-child {
-  margin-bottom: 1mm !important;
-  padding-bottom: 8px !important;
-}
-
-
-/* =============================================================================
-   ULTIMATE MOBILE HP (MAX-WIDTH 768PX) STRICT 1MM BOTTOM BOUNDARY FIX FOR #inputPage
-   ============================================================================= */
-@media (max-width: 768px) {
-  html body #app #inputPage,
-  html body section#inputPage,
-  html body #inputPage.page,
-  html body #inputPage.active,
-  #inputPage,
-  .page#inputPage {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-
-  html body #inputPage .box,
-  html body section#inputPage .box,
-  #inputPage .box {
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-  }
-
-  html body #inputPage .btn-primary#btnSimpan,
-  html body #inputPage #btnSimpan,
-  html body #btnSimpan,
-  #btnSimpan,
-  .btn-primary#btnSimpan {
-    margin-bottom: 0 !important;
-    margin-top: 10px !important;
-  }
-}
-
-
-/* =============================================================================
-   MASTER 1MM BOTTOM SCREEN BOUNDARY & CARD STRETCHING FIX
-   (ELIMINATES WALLPAPER GAP BEHIND FORM CARD ON HP & DESKTOP)
-   ============================================================================= */
-
-/* MOBILE HP (MAX-WIDTH 768PX) */
-@media (max-width: 768px) {
-  html body #app #inputPage,
-  html body section#inputPage,
-  html body #inputPage.page,
-  html body #inputPage.active,
-  #inputPage {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #inputPage .box,
-  html body section#inputPage .box,
-  #inputPage .box {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 10px !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  html body #inputPage .btn-primary#btnSimpan,
-  html body #inputPage #btnSimpan,
-  #btnSimpan {
-    margin-bottom: 1mm !important;
-    margin-top: 14px !important;
-  }
-
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  html body #userManagementPage.page,
-  html body #userManagementPage.active,
-  #userManagementPage {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #userManagementPage .box:last-child,
-  html body #userManagementPage .tableWrap:last-child,
-  html body #userManagementPage > div:last-child {
-    margin-bottom: 1mm !important;
-  }
-}
-
-/* PC DESKTOP (MIN-WIDTH 769PX) */
-@media (min-width: 769px) {
-  html body #app #inputPage,
-  html body section#inputPage,
-  html body #inputPage.page,
-  html body #inputPage.active,
-  #inputPage {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-  }
-
-  html body #inputPage .box,
-  #inputPage .box {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 14px !important;
-  }
-
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  #userManagementPage {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-  }
-}
-
-
-/* =============================================================================
-   UNBEATABLE MASTER 1MM SCREEN BOUNDARY FOR ALL 6 PAGES (ELIMINATES 56PX GAP)
-   ============================================================================= */
-
-html body #app .page,
-html body #app .page.active,
-html body #app section.page,
-html body #app section.page.active,
-html body #loginPage,
-html body #loginPage.active,
-html body #dashboardPage,
-html body #dashboardPage.active,
-html body #inputPage,
-html body #inputPage.active,
-html body #riwayatPage,
-html body #riwayatPage.active,
-html body #masterDbPage,
-html body #masterDbPage.active,
-html body #userManagementPage,
-html body #userManagementPage.active {
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* For Full-height pages (Dashboard, Riwayat, MasterDB) */
-html body #dashboardPage.active,
-html body #riwayatPage.active,
-html body #masterDbPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-}
-
-/* For Scrollable Content pages (Input, UserManagement, Login) */
-html body #inputPage,
-html body #inputPage.active,
-html body #userManagementPage,
-html body #userManagementPage.active,
-html body #loginPage,
-html body #loginPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-}
-
-html body #inputPage .box,
-html body #userManagementPage .box {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 10px !important;
-  box-sizing: border-box !important;
-}
-
-html body #inputPage .btn-primary#btnSimpan,
-html body #inputPage #btnSimpan,
-#btnSimpan {
-  margin-bottom: 1mm !important;
-  margin-top: 14px !important;
-}
-
-
-/* =============================================================================
-   ULTIMATE HP (MAX-WIDTH 768PX) FLEX STRETCH FIX FOR 1MM BOTTOM SCREEN BOUNDARY:
-   DASHBOARD (#dashboardPage), DETAIL/RIWAYAT (#riwayatPage), MASTER DATA (#masterDbPage)
-   ============================================================================= */
-
-@media (max-width: 768px) {
-  /* 1. DASHBOARD PAGE HP STRETCH 1MM */
-  html body #app #dashboardPage,
-  html body section#dashboardPage,
-  html body #dashboardPage.page,
-  html body #dashboardPage.active,
-  #dashboardPage {
-    display: flex !important;
-    flex-direction: column !important;
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #dashboardPage .dashboardTop,
-  html body #dashboardPage #dashboardRecentTitle {
-    flex: 0 0 auto !important;
-  }
-
-  html body #dashboardPage #detailDashboard,
-  html body #detailDashboard {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-  html body #detailDashboard .tableWrap {
-    height: 100% !important;
-    margin: 0 !important;
-  }
-
-  /* 2. DETAIL / RIWAYAT PAGE HP STRETCH 1MM */
-  html body #app #riwayatPage,
-  html body section#riwayatPage,
-  html body #riwayatPage.page,
-  html body #riwayatPage.active,
-  #riwayatPage {
-    display: flex !important;
-    flex-direction: column !important;
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #riwayatPage .riwayatContent {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    flex: 1 1 100% !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    padding: 10px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-  }
-
-  html body #riwayatPage .searchToolbar {
-    flex: 0 0 auto !important;
-    margin-bottom: 8px !important;
-  }
-
-  html body #riwayatPage .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-
-  /* 3. MASTER DATABASE VIEW PAGE HP STRETCH 1MM */
-  html body #app #masterDbPage,
-  html body section#masterDbPage,
-  html body #masterDbPage.page,
-  html body #masterDbPage.active,
-  #masterDbPage {
-    display: flex !important;
-    flex-direction: column !important;
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #masterDbPage .box,
-  html body #masterDbPage .box-full {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    flex: 1 1 100% !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    padding: 10px !important;
-    box-sizing: border-box !important;
-    margin: 0 !important;
-  }
-
-  html body #masterDbPage .searchToolbar {
-    flex: 0 0 auto !important;
-    margin-bottom: 8px !important;
-  }
-
-  html body #masterDbPage .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-}
-
-
-/* =============================================================================
-   ULTIMATE MOBILE HP & PC ABSOLUTE 1MM BOTTOM SCREEN BOUNDARY OVERHAUL (ALL 6 PAGES)
-   ============================================================================= */
-
-/* UNIVERSAL RESET FOR CONTAINER BOUNDARIES */
-html, body, html body #app {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* 1. DASHBOARD PAGE (#dashboardPage) - HP & PC 1MM FLEX STRETCH */
-html body #app #dashboardPage,
-html body section#dashboardPage,
-html body #dashboardPage.page,
-html body #dashboardPage.active,
-#dashboardPage.active {
-  display: flex !important;
-  flex-direction: column !important;
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #dashboardPage .dashboardTop,
-html body #dashboardPage #dashboardRecentTitle {
-  flex: 0 0 auto !important;
-}
-
-html body #dashboardPage #detailDashboard,
-html body #detailDashboard {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin-bottom: 0 !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-}
-
-html body #detailDashboard .tableWrap {
-  height: 100% !important;
-  max-height: 100% !important;
-  margin: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* 2. INPUT FORM PAGE (#inputPage) - HP & PC 1MM CARD STRETCH */
-html body #app #inputPage,
-html body section#inputPage,
-html body #inputPage.page,
-html body #inputPage.active,
-#inputPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-html body #inputPage .box,
-html body section#inputPage .box,
-#inputPage .box {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 10px !important;
-  box-sizing: border-box !important;
-  background: var(--bg-box) !important;
-}
-
-html body #inputPage .btn-primary#btnSimpan,
-html body #inputPage #btnSimpan,
-#btnSimpan {
-  margin-bottom: 1mm !important;
-  margin-top: 14px !important;
-}
-
-/* 3. DETAIL / RIWAYAT PAGE (#riwayatPage) - HP & PC 1MM FLEX STRETCH */
-html body #app #riwayatPage,
-html body section#riwayatPage,
-html body #riwayatPage.page,
-html body #riwayatPage.active,
-#riwayatPage.active {
-  display: flex !important;
-  flex-direction: column !important;
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .riwayatContent {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  flex: 1 1 100% !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  padding: 10px !important;
-  box-sizing: border-box !important;
-  margin-bottom: 0 !important;
-}
-
-html body #riwayatPage .searchToolbar {
-  flex: 0 0 auto !important;
-  margin-bottom: 8px !important;
-}
-
-html body #riwayatPage .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-}
-
-/* 4. MASTER DATABASE PAGE (#masterDbPage) - HP & PC 1MM FLEX STRETCH */
-html body #app #masterDbPage,
-html body section#masterDbPage,
-html body #masterDbPage.page,
-html body #masterDbPage.active,
-#masterDbPage.active {
-  display: flex !important;
-  flex-direction: column !important;
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #masterDbPage .box,
-html body #masterDbPage .box-full {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  flex: 1 1 100% !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  padding: 10px !important;
-  box-sizing: border-box !important;
-  margin-bottom: 0 !important;
-}
-
-html body #masterDbPage .searchToolbar {
-  flex: 0 0 auto !important;
-  margin-bottom: 8px !important;
-}
-
-html body #masterDbPage .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-}
-
-/* 5. USER MANAGEMENT PAGE (#userManagementPage) - HP & PC 1MM STRETCH */
-html body #app #userManagementPage,
-html body section#userManagementPage,
-html body #userManagementPage.page,
-html body #userManagementPage.active,
-#userManagementPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-html body #userManagementPage .box:last-child,
-html body #userManagementPage .tableWrap:last-child {
-  margin-bottom: 1mm !important;
-  padding-bottom: 8px !important;
-}
-
-/* 6. LOGIN PAGE (#loginPage) - HP & PC 1MM STRETCH */
-html body #app #loginPage,
-html body section#loginPage,
-html body #loginPage.page,
-html body #loginPage.active,
-#loginPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-
-/* =============================================================================
-   ABSOLUTE 1MM BOTTOM HP SCREEN BOUNDARY FIX FOR DASHBOARD & RIWAYAT/DETAIL PAGE
-   ============================================================================= */
-
-@media (max-width: 768px) {
-  /* 1. DASHBOARD PAGE (#dashboardPage) HP FIX */
-  html body #app #dashboardPage,
-  html body section#dashboardPage,
-  html body #dashboardPage.page,
-  html body #dashboardPage.active,
-  #dashboardPage {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    box-sizing: border-box !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  html body #dashboardPage .dashboardTop,
-  html body #dashboardPage #dashboardRecentTitle {
-    flex: 0 0 auto !important;
-  }
-
-  html body #dashboardPage #detailDashboard,
-  html body #detailDashboard {
+  #modalGeminiApiKey .btnKosongkanKey {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
     flex: 1 1 auto !important;
-    min-height: calc(100vh - 240px - 1mm) !important;
-    min-height: calc(100dvh - 240px - 1mm) !important;
-    margin-top: 1mm !important;
-    margin-bottom: 1mm !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding-bottom: 0 !important;
-    box-sizing: border-box !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
+    text-align: center !important;
   }
-
-  html body #detailDashboard .tableWrap {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  /* 2. DETAIL / RIWAYAT PAGE (#riwayatPage) HP FIX */
-  html body #app #riwayatPage,
-  html body section#riwayatPage,
-  html body #riwayatPage.page,
-  html body #riwayatPage.active,
-  #riwayatPage {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    box-sizing: border-box !important;
+  #modalGeminiApiKey .modalKeyBtnRight {
     display: flex !important;
-    flex-direction: column !important;
-  }
-
-  html body #riwayatPage .riwayatContent,
-  html body section#riwayatPage .riwayatContent {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 6px !important;
-    box-sizing: border-box !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  html body #riwayatPage .tableWrap,
-  html body section#riwayatPage .tableWrap {
+    gap: 6px !important;
     flex: 1 1 auto !important;
-    margin-top: 1mm !important;
-    margin-bottom: 1mm !important;
-    padding-bottom: 0 !important;
-    box-sizing: border-box !important;
+    justify-content: flex-end !important;
+  }
+  #modalGeminiApiKey .modalKeyBtnRight button {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
   }
 }
 
-
-/* =============================================================================
-   ULTIMATE MIN-HEIGHT & 1MM BOTTOM BOUNDARY GUARANTEE FOR ALL 6 PAGES (HP & PC)
-   ============================================================================= */
-
-/* 1. DASHBOARD PAGE (#dashboardPage) GUARANTEE */
-html body #app #dashboardPage,
-html body section#dashboardPage,
-html body #dashboardPage.page,
-html body #dashboardPage.active,
-#dashboardPage {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-html body #dashboardPage #detailDashboard,
-html body #detailDashboard {
-  flex: 1 1 auto !important;
-  min-height: calc(100vh - 220px - 1mm) !important;
-  min-height: calc(100dvh - 220px - 1mm) !important;
-  margin-top: 1mm !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-}
-
-html body #detailDashboard .tableWrap {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-/* 2. DETAIL / RIWAYAT PAGE (#riwayatPage) GUARANTEE */
-html body #app #riwayatPage,
-html body section#riwayatPage,
-html body #riwayatPage.page,
-html body #riwayatPage.active,
-#riwayatPage {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-html body #riwayatPage .riwayatContent,
-html body section#riwayatPage .riwayatContent,
-#riwayatPage .riwayatContent {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 6px !important;
-  box-sizing: border-box !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-html body #riwayatPage .tableWrap,
-html body section#riwayatPage .tableWrap {
-  flex: 1 1 auto !important;
-  min-height: calc(100vh - 100px - 1mm) !important;
-  min-height: calc(100dvh - 100px - 1mm) !important;
-  margin-top: 1mm !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* 3. MASTER DATABASE PAGE (#masterDbPage) GUARANTEE */
-html body #app #masterDbPage,
-html body section#masterDbPage,
-html body #masterDbPage.page,
-html body #masterDbPage.active,
-#masterDbPage {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-html body #masterDbPage .box,
-html body #masterDbPage .box-full,
-#masterDbPage .box {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 6px !important;
-  box-sizing: border-box !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-html body #masterDbPage .tableWrap,
-html body section#masterDbPage .tableWrap {
-  flex: 1 1 auto !important;
-  min-height: calc(100vh - 120px - 1mm) !important;
-  min-height: calc(100dvh - 120px - 1mm) !important;
-  margin-top: 1mm !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-/* 4. INPUT FORM PAGE (#inputPage) GUARANTEE */
-html body #app #inputPage,
-html body section#inputPage,
-html body #inputPage.page,
-html body #inputPage.active,
-#inputPage {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-html body #inputPage .box,
-html body section#inputPage .box,
-#inputPage .box {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 8px !important;
-  box-sizing: border-box !important;
-  background: var(--bg-box) !important;
-}
-
-/* 5. USER MANAGEMENT PAGE (#userManagementPage) GUARANTEE */
-html body #app #userManagementPage,
-html body section#userManagementPage,
-html body #userManagementPage.page,
-html body #userManagementPage.active,
-#userManagementPage {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-bottom: 0 !important;
-  box-sizing: border-box !important;
-}
-
-html body #userManagementPage .box:last-child,
-html body #userManagementPage .tableWrap:last-child {
-  margin-bottom: 1mm !important;
-  padding-bottom: 8px !important;
-}
-
-
-/* =============================================================================
-   ABSOLUTE 100% 1MM BOTTOM BOUNDARY FIX FOR DASHBOARD PAGE ON HP MOBILE
-   ============================================================================= */
-
-@media (max-width: 768px) {
-  html body #app #dashboardPage,
-  html body section#dashboardPage,
-  html body #dashboardPage.page,
-  html body #dashboardPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #dashboardPage .dashboardTop {
-    flex: 0 0 auto !important;
-    margin-top: 0 !important;
-    margin-bottom: 2px !important;
-  }
-
-  html body #dashboardPage #dashboardRecentTitle {
-    flex: 0 0 auto !important;
-    margin-top: 2px !important;
-    margin-bottom: 2px !important;
-  }
-
-  html body #dashboardPage #detailDashboard,
-  html body #detailDashboard {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #detailDashboard .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #detailDashboard .tableWrap table.dashboardTable {
-    margin-bottom: 0 !important;
-  }
-
-  html body #detailDashboard .tableWrap table.dashboardTable tbody#lastData {
-    margin-bottom: 0 !important;
-  }
-}
-
-
-/* =============================================================================
-   PATENT FIXED TABLE DOWNWARD HEIGHT (1MM BOTTOM SCREEN BOUNDARY REGARDLESS OF DATA)
-   ============================================================================= */
-
-@media (max-width: 768px) {
-  /* 1. DASHBOARD PAGE TABLE (#dashboardPage) */
-  html body #app #dashboardPage,
-  html body section#dashboardPage,
-  html body #dashboardPage.page,
-  html body #dashboardPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #dashboardPage .dashboardTop,
-  html body #dashboardPage #dashboardRecentTitle {
-    flex: 0 0 auto !important;
-  }
-
-  html body #dashboardPage #detailDashboard,
-  html body #detailDashboard {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 0 !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #detailDashboard .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    box-sizing: border-box !important;
-  }
-
-  /* 2. DETAIL / RIWAYAT PAGE TABLE (#riwayatPage) */
-  html body #app #riwayatPage,
-  html body section#riwayatPage,
-  html body #riwayatPage.page,
-  html body #riwayatPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #riwayatPage .riwayatContent,
-  html body section#riwayatPage .riwayatContent {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 6px !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #riwayatPage h3,
-  html body #riwayatPage .searchToolbar {
-    flex: 0 0 auto !important;
-  }
-
-  html body #riwayatPage .tableWrap,
-  html body section#riwayatPage .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    box-sizing: border-box !important;
-  }
-
-  /* 3. MASTER DATABASE PAGE TABLE (#masterDbPage) */
-  html body #app #masterDbPage,
-  html body section#masterDbPage,
-  html body #masterDbPage.page,
-  html body #masterDbPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #masterDbPage .box,
-  html body #masterDbPage .box-full {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 6px !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #masterDbPage .box h3,
-  html body #masterDbPage .box .searchToolbar {
-    flex: 0 0 auto !important;
-  }
-
-  html body #masterDbPage .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    box-sizing: border-box !important;
-  }
-
-  /* 4. USER MANAGEMENT PAGE TABLE (#userManagementPage) */
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  html body #userManagementPage.page,
-  html body #userManagementPage.active {
-    height: calc(100vh - 1mm) !important;
-    height: calc(100dvh - 1mm) !important;
-    max-height: calc(100vh - 1mm) !important;
-    max-height: calc(100dvh - 1mm) !important;
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    margin-top: 0 !important;
-    margin-bottom: 1mm !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #userManagementPage .box:last-child {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    padding-bottom: 6px !important;
-    background: var(--bg-box) !important;
-    border-radius: 5px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-  }
-
-  html body #userManagementPage .box:last-child .tableWrap {
-    flex: 1 1 100% !important;
-    flex-grow: 1 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    overflow-x: auto !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    box-sizing: border-box !important;
-  }
-}
-
-
-/* =============================================================================
-   PATENT 1MM BOTTOM SCREEN BOUNDARY FOR 1 DATA ROW OR MANY DATA ROWS (ALL DEVICESS)
-   ============================================================================= */
-
-html body #app #dashboardPage,
-html body section#dashboardPage,
-html body #dashboardPage.page,
-html body #dashboardPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #dashboardPage #detailDashboard,
-html body #detailDashboard {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #detailDashboard .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-html body #app #riwayatPage,
-html body section#riwayatPage,
-html body #riwayatPage.page,
-html body #riwayatPage.active {
-  height: calc(100vh - 1mm) !important;
-  height: calc(100dvh - 1mm) !important;
-  max-height: calc(100vh - 1mm) !important;
-  max-height: calc(100dvh - 1mm) !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .riwayatContent,
-html body section#riwayatPage .riwayatContent {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 6px !important;
-  background: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .tableWrap,
-html body section#riwayatPage .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-
-/* =============================================================================
-   BULLETPROOF 1-ROW TABLE STRETCH FIX FOR MOBILE WEBVIEW & DESKTOP (1MM BOTTOM)
-   ============================================================================= */
-
-/* 1. DASHBOARD PAGE (#dashboardPage) */
-html body #app #dashboardPage,
-html body section#dashboardPage,
-html body #dashboardPage.page,
-html body #dashboardPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #dashboardPage #detailDashboard,
-html body #detailDashboard {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 235px - 1mm) !important;
-  min-height: calc(100dvh - 235px - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-  background-color: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #detailDashboard .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 235px - 1mm) !important;
-  min-height: calc(100dvh - 235px - 1mm) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background-color: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-/* 2. DETAIL / RIWAYAT PAGE (#riwayatPage) */
-html body #app #riwayatPage,
-html body section#riwayatPage,
-html body #riwayatPage.page,
-html body #riwayatPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .riwayatContent,
-html body section#riwayatPage .riwayatContent {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 6px !important;
-  background-color: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .tableWrap,
-html body section#riwayatPage .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 90px - 1mm) !important;
-  min-height: calc(100dvh - 90px - 1mm) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background-color: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-/* 3. MASTER DATABASE PAGE (#masterDbPage) */
-html body #app #masterDbPage,
-html body section#masterDbPage,
-html body #masterDbPage.page,
-html body #masterDbPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #masterDbPage .box,
-html body #masterDbPage .box-full {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 6px !important;
-  background-color: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #masterDbPage .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 95px - 1mm) !important;
-  min-height: calc(100dvh - 95px - 1mm) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background-color: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-/* 4. USER MANAGEMENT PAGE (#userManagementPage) */
-html body #app #userManagementPage,
-html body section#userManagementPage,
-html body #userManagementPage.page,
-html body #userManagementPage.active {
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 1mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #userManagementPage .box:last-child {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 1mm) !important;
-  min-height: calc(100dvh - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 6px !important;
-  background-color: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-}
-
-html body #userManagementPage .box:last-child .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  min-height: calc(100vh - 35px - 1mm) !important;
-  min-height: calc(100dvh - 35px - 1mm) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background-color: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-
-/* =============================================================================
-   ULTIMATE SOLID #detailDashboard CARD STRETCH FIX (1MM BOTTOM, NO TRANSPARENCY)
-   ============================================================================= */
-
-html body #dashboardPage #detailDashboard,
-html body #detailDashboard {
-  background: var(--bg-box) !important;
-  background-color: var(--bg-box) !important;
-  border-radius: 5px !important;
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  min-height: calc(100vh - 240px - 1mm) !important;
-  min-height: calc(100dvh - 240px - 1mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
-}
-
-html body #detailDashboard .tableWrap {
-  background: var(--bg-box) !important;
-  background-color: var(--bg-box) !important;
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  min-height: calc(100vh - 240px - 1mm) !important;
-  min-height: calc(100dvh - 240px - 1mm) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-html body #detailDashboard .tableWrap table.dashboardTable {
-  background: var(--bg-box) !important;
-  background-color: var(--bg-box) !important;
-}
-
-html body #detailDashboard .tableWrap table.dashboardTable tbody#lastData {
-  background: var(--bg-box) !important;
-  background-color: var(--bg-box) !important;
-}
-
-
-/* =============================================================================
-   PRECISION 0.5MM BOTTOM SCREEN BOUNDARY FOR RIWAYAT PAGE (#riwayatPage)
-   ============================================================================= */
-
-html body #app #riwayatPage,
-html body section#riwayatPage,
-html body #riwayatPage.page,
-html body #riwayatPage.active,
-#riwayatPage {
-  height: calc(100vh - 0.5mm) !important;
-  height: calc(100dvh - 0.5mm) !important;
-  max-height: calc(100vh - 0.5mm) !important;
-  max-height: calc(100dvh - 0.5mm) !important;
-  min-height: calc(100vh - 0.5mm) !important;
-  min-height: calc(100dvh - 0.5mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0.5mm !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  overflow: hidden !important;
-  box-sizing: border-box !important;
-}
-
-html body #riwayatPage .riwayatContent,
-html body section#riwayatPage .riwayatContent {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: calc(100vh - 0.5mm) !important;
-  min-height: calc(100dvh - 0.5mm) !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  padding-bottom: 4px !important;
-  background-color: var(--bg-box) !important;
-  border-radius: 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  box-sizing: border-box !important;
-  overflow: hidden !important;
-}
-
-html body #riwayatPage .tableWrap,
-html body section#riwayatPage .tableWrap {
-  flex: 1 1 100% !important;
-  flex-grow: 1 !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  min-height: calc(100vh - 90px - 0.5mm) !important;
-  min-height: calc(100dvh - 90px - 0.5mm) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: block !important;
-  background-color: var(--bg-box) !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  box-sizing: border-box !important;
-}
-
-@media (max-width: 768px) {
-  html body #app #riwayatPage,
-  html body section#riwayatPage,
-  html body #riwayatPage.page,
-  html body #riwayatPage.active,
-  #riwayatPage {
-    height: calc(100vh - 0.5mm) !important;
-    height: calc(100dvh - 0.5mm) !important;
-    max-height: calc(100vh - 0.5mm) !important;
-    max-height: calc(100dvh - 0.5mm) !important;
-    min-height: calc(100vh - 0.5mm) !important;
-    min-height: calc(100dvh - 0.5mm) !important;
-    margin-bottom: 0.5mm !important;
-    padding-bottom: 0 !important;
-  }
-
-  html body #riwayatPage .riwayatContent {
-    min-height: calc(100vh - 0.5mm) !important;
-    min-height: calc(100dvh - 0.5mm) !important;
-    margin-bottom: 0 !important;
-  }
-}
-
-
-/* =============================================================================
-   TOTAL MASTER 1MM HP BOUNDARY OVERHAUL FOR ALL 6 PAGES (UNIFIED & EQUAL)
-   ============================================================================= */
-
-@media (max-width: 768px) {
-  /* GLOBAL PAGE CONTAINER 1MM HP FIX */
-  html body #app .page,
-  html body #app .page.active,
-  html body #app section.page,
-  html body #app section.page.active {
-    box-sizing: border-box !important;
-    margin-top: 0 !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
-    margin-bottom: 1mm !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    width: calc(100vw - 1mm) !important;
-    max-width: calc(100vw - 1mm) !important;
-  }
-
-  /* 1. LOGIN PAGE (#loginPage) */
-  html body #app #loginPage,
-  html body section#loginPage,
-  html body #loginPage.page,
-  html body #loginPage.active {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-  html body #loginPage .loginBox,
-  html body #loginPage .box {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-
-  /* 2. DASHBOARD PAGE (#dashboardPage) */
-  html body #app #dashboardPage,
-  html body section#dashboardPage,
-  html body #dashboardPage.page,
-  html body #dashboardPage.active {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-  html body #dashboardPage #detailDashboard,
-  html body #detailDashboard {
-    min-height: calc(100vh - 235px - 1mm) !important;
-    min-height: calc(100dvh - 235px - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-    border-radius: 5px !important;
-  }
-  html body #detailDashboard .tableWrap {
-    min-height: calc(100vh - 235px - 1mm) !important;
-    min-height: calc(100dvh - 235px - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-
-  /* 3. INPUT FORM PAGE (#inputPage) */
-  html body #app #inputPage,
-  html body section#inputPage,
-  html body #inputPage.page,
-  html body #inputPage.active {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-  html body #inputPage .box {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-
-  /* 4. DETAIL / RIWAYAT PAGE (#riwayatPage) */
-  html body #app #riwayatPage,
-  html body section#riwayatPage,
-  html body #riwayatPage.page,
-  html body #riwayatPage.active {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-  html body #riwayatPage .riwayatContent,
-  html body section#riwayatPage .riwayatContent {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-  html body #riwayatPage .tableWrap,
-  html body section#riwayatPage .tableWrap {
-    min-height: calc(100vh - 90px - 1mm) !important;
-    min-height: calc(100dvh - 90px - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-
-  /* 5. MASTER DATABASE PAGE (#masterDbPage) */
-  html body #app #masterDbPage,
-  html body section#masterDbPage,
-  html body #masterDbPage.page,
-  html body #masterDbPage.active {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-  html body #masterDbPage .box,
-  html body #masterDbPage .box-full {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-  html body #masterDbPage .tableWrap {
-    min-height: calc(100vh - 95px - 1mm) !important;
-    min-height: calc(100dvh - 95px - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-
-  /* 6. USER MANAGEMENT PAGE (#userManagementPage) */
-  html body #app #userManagementPage,
-  html body section#userManagementPage,
-  html body #userManagementPage.page,
-  html body #userManagementPage.active {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-  }
-  html body #userManagementPage .box:last-child {
-    min-height: calc(100vh - 1mm) !important;
-    min-height: calc(100dvh - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-  html body #userManagementPage .box:last-child .tableWrap {
-    min-height: calc(100vh - 35px - 1mm) !important;
-    min-height: calc(100dvh - 35px - 1mm) !important;
-    margin-bottom: 0 !important;
-    background: var(--bg-box) !important;
-    background-color: var(--bg-box) !important;
-  }
-}
-
-
-/* =============================================================================
-   BLUR & COVER TOP HEADER ACTIONS (NOTIF BELL, BANTUAN, SUPABASE) WHEN HP MENU OPENS
-   ============================================================================= */
-
-.top-header-actions.blurred-by-menu,
-#mobileFabContainer.active ~ .top-header-actions,
-#mobileFabContainer.active ~ #app .top-header-actions,
-body:has(#mobileFabContainer.active) .top-header-actions,
-html body #mobileFabContainer.active ~ .top-header-actions {
-  filter: blur(4px) opacity(0.2) !important;
-  -webkit-filter: blur(4px) opacity(0.2) !important;
-  pointer-events: none !important;
-  z-index: 9999 !important;
-  transition: filter 0.2s ease, opacity 0.2s ease !important;
-}
-
-
-/* =============================================================================
-   TOTAL COVER & HIDE TOP HEADER ACTIONS (NOTIF BELL, BANTUAN, SUPABASE) WHEN HP MENU OPENS
-   ============================================================================= */
-
-body.mobile-fab-menu-open .top-header-actions,
-body.mobile-fab-menu-open #topHeaderActions,
-html body.mobile-fab-menu-open .top-header-actions {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-  z-index: -1 !important;
-}
-
-
-/* =============================================================================
-   GLOBAL ALL CLOSE X BUTTONS - BOLD THICK RED COLOR, NO CONTAINER / NO WRAPPER
-   ============================================================================= */
-
-.popupClose,
-.popupCloseV2,
-.popupCloseTTD,
-.chatClose,
-.mobileFabHeader button,
-button[onclick*="tutup"],
-button[onclick*="close"],
-button[title*="TUTUP"],
-button[title*="Tutup"],
-button[title*="tutup"] {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
+/* POPUP DETAIL PERMINTAAN (#popupDetail & #popupDetailBarangV2) - ENFORCE 90 DEGREE NORMAL CORNERS (FLAT/SHARP 0 RADIUS FOR HEADERS & TABLE HEADERS) */
+html body #popupDetail .popupHeader,
+html body #popupDetailBarangV2 .popupHeaderV2,
+html body #popupDetail .popupBoxDetail,
+html body #popupDetailBarangV2 .popupBoxDetailV2,
+html body #popupDetail table th,
+html body #popupDetailBarangV2 table th,
+html body #popupDetail .detailTable2 th,
+html body #popupDetailBarangV2 .detailTableV2 th,
+html body #popupDetail table thead,
+html body #popupDetailBarangV2 table thead,
+html body #popupDetail table thead tr,
+html body #popupDetailBarangV2 table thead tr,
+html body #popupDetail table th:first-child,
+html body #popupDetailBarangV2 table th:first-child,
+html body #popupDetail table th:last-child,
+html body #popupDetailBarangV2 table th:last-child,
+html body .detailTable2 th:first-child,
+html body .detailTableV2 th:first-child,
+html body .detailTable2 th:last-child,
+html body .detailTableV2 th:last-child,
+#popupDetail .popupHeader,
+#popupDetailBarangV2 .popupHeaderV2,
+.popupHeader,
+.popupHeaderV2,
+.detailHeaderV2,
+.detailTableV2 th,
+.detailTable2 th {
   border-radius: 0 !important;
-  color: #ef4444 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}
+
+/* MASTER ENFORCED 1CM TOP & BOTTOM GAP FOR ALL DETAIL, TAMBAH TOKO, PDF, CHAT, NOTIFIKASI & AKUN POPUPS */
+html body #popupDetailBarangV2.popupOverlay,
+html body #popupDetail.popupOverlay,
+html body #popupTambahToko.popupOverlay,
+html body #pdfModal.popupOverlay,
+html body #popupPdfModelsModal.popupOverlay,
+html body #popupBantuan.popupOverlay,
+html body #popupBantuan.popupBantuan,
+html body .popupBantuan,
+html body #popupNotifList.popupOverlay,
+html body #popupAkun.popupAkun,
+html body #popupAkun.popupOverlay,
+html body .popupAkun {
+  padding-top: 1cm !important;
+  padding-bottom: 1cm !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+html body #popupDetailBarangV2 .popupBoxDetailV2,
+html body #popupDetail .popupBoxDetail,
+html body .popupBoxDetailV2,
+html body .popupBoxDetail,
+html body #popupTambahToko .popupBox,
+html body #pdfModal .popupBox,
+html body #popupPdfModelsModal .popupBox,
+html body #popupBantuan .chatBox,
+html body .popupBantuan .chatBox,
+html body .chatBox,
+html body #popupNotifList .popupNotifCard,
+html body #popupAkun .akunBox,
+html body .popupAkun .akunBox,
+html body .akunBox {
+  height: calc(100vh - 2cm) !important;
+  height: calc(100dvh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
+  max-height: calc(100dvh - 2cm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  border-radius: 5px !important;
+margin-bottom: 0 !important;
+}
+
+/* EXACT 2MM BOTTOM GAP FROM TABLE BOUNDARY TO POPUP BOTTOM WALL (#popupTambahToko) */
+html body #popupTambahToko .popupBody,
+#popupTambahToko .popupBody {
+  padding-top: 10px !important;
+  padding-left: 3mm !important;
+  padding-right: 3mm !important;
+  padding-bottom: 2mm !important;
+  overflow: hidden !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+html body #popupTambahToko .popupBody > div:last-child,
+#popupTambahToko .popupBody > div:last-child {
+  flex: 1 !important;
+  height: 100% !important;
+  max-height: none !important;
+  margin-bottom: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* REJECT POPUP TOP RIGHT CLOSE BUTTON FOR MOBILE & DESKTOP */
+html body .rejectHeaderPopup,
+html body #rejectOverlay .rejectHeaderPopup,
+.rejectHeaderPopup {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html body .rejectHeaderPopup .popupClose,
+html body #rejectOverlay .rejectHeaderPopup .popupClose,
+.rejectHeaderPopup .popupClose {
+  margin-left: auto !important;
+  cursor: pointer !important;
   font-size: 26px !important;
   font-weight: 900 !important;
   line-height: 1 !important;
-  width: auto !important;
-  height: auto !important;
   padding: 0 4px !important;
-  margin: 0 !important;
-  cursor: pointer !important;
-  text-shadow: none !important;
-  transition: transform 0.15s ease, opacity 0.15s ease !important;
-}
-
-.popupClose:hover,
-.popupCloseV2:hover,
-.popupCloseTTD:hover,
-.chatClose:hover,
-.mobileFabHeader button:hover,
-button[onclick*="tutup"]:hover,
-button[onclick*="close"]:hover,
-button[title*="TUTUP"]:hover,
-button[title*="Tutup"]:hover {
-  color: #dc2626 !important;
   background: transparent !important;
-  background-color: transparent !important;
-  transform: scale(1.2) !important;
+  border: none !important;
+  color: #ffffff !important;
 }
 
+}
 
 /* =============================================================================
-   PATENT RED X CLOSE BUTTONS (NO CIRCLE, NO BOX, NO BORDER, PATENT RED COLOR #EF4444)
+   MODAL POPUP GEMINI API KEY - RESPONSIVE HP DENGAN JARAK 2MM KE LAYAR
    ============================================================================= */
+#modalGeminiApiKey {
+  z-index: 100000000 !important;
+  padding: 2mm !important;
+  box-sizing: border-box !important;
+}
 
-.popupClose,
-.popupCloseV2,
-.popupCloseTTD,
-.chatClose,
-.mobileFabHeader button,
-button[onclick*="tutup"],
-button[onclick*="close"],
-button[onclick*="toggleMobileFabMenu"],
-button[title*="TUTUP"],
-button[title*="Tutup"],
-button[title*="tutup"] {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: none !important;
+#modalGeminiApiKey .modalKeyBox {
+  width: calc(100vw - 4mm) !important;
+  max-width: 460px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  #modalGeminiApiKey {
+    padding: 2mm !important;
+  }
+  #modalGeminiApiKey .modalKeyBox {
+    width: calc(100vw - 4mm) !important;
+    max-width: calc(100vw - 4mm) !important;
+    border-radius: 12px !important;
+  }
+  #modalGeminiApiKey .modalKeyHeader {
+    padding: 10px 12px !important;
+  }
+  #modalGeminiApiKey .modalKeyHeader span {
+    font-size: 12px !important;
+  }
+  #modalGeminiApiKey .modalKeyBody {
+    padding: 12px 10px !important;
+    gap: 10px !important;
+  }
+  #modalGeminiApiKey .modalKeyActions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: space-between !important;
+  }
+  #modalGeminiApiKey .btnKosongkanKey {
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+    flex: 1 1 auto !important;
+    text-align: center !important;
+  }
+  #modalGeminiApiKey .modalKeyBtnRight {
+    display: flex !important;
+    gap: 6px !important;
+    flex: 1 1 auto !important;
+    justify-content: flex-end !important;
+  }
+  #modalGeminiApiKey .modalKeyBtnRight button {
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+  }
+}
+
+/* POPUP DETAIL PERMINTAAN (#popupDetail & #popupDetailBarangV2) - ENFORCE 90 DEGREE NORMAL CORNERS (FLAT/SHARP 0 RADIUS FOR HEADERS & TABLE HEADERS) */
+html body #popupDetail .popupHeader,
+html body #popupDetailBarangV2 .popupHeaderV2,
+html body #popupDetail .popupBoxDetail,
+html body #popupDetailBarangV2 .popupBoxDetailV2,
+html body #popupDetail table th,
+html body #popupDetailBarangV2 table th,
+html body #popupDetail .detailTable2 th,
+html body #popupDetailBarangV2 .detailTableV2 th,
+html body #popupDetail table thead,
+html body #popupDetailBarangV2 table thead,
+html body #popupDetail table thead tr,
+html body #popupDetailBarangV2 table thead tr,
+html body #popupDetail table th:first-child,
+html body #popupDetailBarangV2 table th:first-child,
+html body #popupDetail table th:last-child,
+html body #popupDetailBarangV2 table th:last-child,
+html body .detailTable2 th:first-child,
+html body .detailTableV2 th:first-child,
+html body .detailTable2 th:last-child,
+html body .detailTableV2 th:last-child,
+#popupDetail .popupHeader,
+#popupDetailBarangV2 .popupHeaderV2,
+.popupHeader,
+.popupHeaderV2,
+.detailHeaderV2,
+.detailTableV2 th,
+.detailTable2 th {
   border-radius: 0 !important;
-  outline: none !important;
-  box-shadow: none !important;
-  color: #ef4444 !important;
-  font-size: 28px !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  width: auto !important;
-  height: auto !important;
-  min-width: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}
+
+/* MASTER ENFORCED 1CM TOP & BOTTOM GAP FOR ALL DETAIL, TAMBAH TOKO, PDF, CHAT, NOTIFIKASI & AKUN POPUPS */
+html body #popupDetailBarangV2.popupOverlay,
+html body #popupDetail.popupOverlay,
+html body #popupTambahToko.popupOverlay,
+html body #pdfModal.popupOverlay,
+html body #popupPdfModelsModal.popupOverlay,
+html body #popupBantuan.popupOverlay,
+html body #popupBantuan.popupBantuan,
+html body .popupBantuan,
+html body #popupNotifList.popupOverlay,
+html body #popupAkun.popupAkun,
+html body #popupAkun.popupOverlay,
+html body .popupAkun {
+  padding-top: 1cm !important;
+  padding-bottom: 1cm !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+html body #popupDetailBarangV2 .popupBoxDetailV2,
+html body #popupDetail .popupBoxDetail,
+html body .popupBoxDetailV2,
+html body .popupBoxDetail,
+html body #popupTambahToko .popupBox,
+html body #pdfModal .popupBox,
+html body #popupPdfModelsModal .popupBox,
+html body #popupBantuan .chatBox,
+html body .popupBantuan .chatBox,
+html body .chatBox,
+html body #popupNotifList .popupNotifCard,
+html body #popupAkun .akunBox,
+html body .popupAkun .akunBox,
+html body .akunBox {
+  height: calc(100vh - 2cm) !important;
+  height: calc(100dvh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
+  max-height: calc(100dvh - 2cm) !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  border-radius: 5px !important;
+  -webkit-clip-path: inset(0 round 5px) !important;
+  clip-path: inset(0 round 5px) !important;
+}
+
+html body #popupAkun .akunBox,
+html body .popupAkun .akunBox,
+html body .akunBox {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+html body #popupDetailBarangV2 #popupBodyV2,
+html body #popupDetail #popupBody {
+  flex: 1 1 0px !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
   min-height: 0 !important;
-  padding: 0 4px !important;
+  padding: 0 !important;
   margin: 0 !important;
-  cursor: pointer !important;
-  text-shadow: none !important;
-  -webkit-appearance: none !important;
-  appearance: none !important;
 }
 
-.popupClose:hover,
-.popupClose:active,
-.popupClose:focus,
-.popupCloseV2:hover,
-.popupCloseV2:active,
-.popupCloseTTD:hover,
-.popupCloseTTD:active,
-.chatClose:hover,
-.chatClose:active,
-.mobileFabHeader button:hover,
-.mobileFabHeader button:active,
-button[onclick*="tutup"]:hover,
-button[onclick*="tutup"]:active,
-button[onclick*="close"]:hover,
-button[onclick*="close"]:active,
-button[onclick*="toggleMobileFabMenu"]:hover,
-button[onclick*="toggleMobileFabMenu"]:active,
-button[title*="TUTUP"]:hover,
-button[title*="TUTUP"]:active {
-  color: #ef4444 !important;
-  background: transparent !important;
-  background-color: transparent !important;
+html body .popupCardBodyContainerV2 {
+  flex: 1 1 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+  padding: 4px 0 0 0 !important;
+  margin: 0 !important;
+  justify-content: space-between !important;
+}
+
+html body #popupDetailBarangV2 .tableCardV2.tableWrap,
+html body #popupDetailBarangV2 .tableWrap,
+html body #popupDetail .tableWrap,
+html body .tableCardV2.tableWrap,
+html body .tableCardV2 {
+  flex: 1 1 0px !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-bottom: 2mm !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+html body #popupDetailBarangV2 .popupDetailActionsV2,
+html body #popupDetail .popupDetailActions,
+html body .popupDetailActionsV2 {
+  margin-top: auto !important;
+  margin-bottom: 2mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 14px !important;
+  padding-right: 14px !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ==========================================================================
+   POPUP USER MANAGEMENT MODAL (1CM ATAS-BAWAH, 2MM KANAN-KIRI FULL, SCROLL 4 ARAH)
+   ========================================================================== */
+#popupUserManagementModal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  z-index: 999999 !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1cm 2mm !important; /* DIBATASI 1CM ATAS-BAWAH & 2MM KANAN-KIRI */
+  box-sizing: border-box !important;
+}
+
+#popupUserManagementModal.show {
+  display: flex !important;
+}
+
+/* SOLID THEME-MATCHED BACKGROUND UNTUK SELURUH CARD PENGATURAN ADMIN (TIDAK TRANSPARAN) */
+#userManagementPage .box,
+#userManagementPage .boxCard,
+#userManagementPage div.box,
+html body #userManagementPage .box {
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+div[id*="Modal"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.80) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.userManagementBoxPopup {
+  width: calc(100vw - 4mm) !important;
+  max-width: calc(100vw - 4mm) !important;
+  height: calc(100vh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+  color: var(--text-main) !important;
+  border-radius: 5px !important;
+  border: 1px solid var(--border-color) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  margin: auto !important;
+}
+
+.userManagementHeader {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 8px 12px !important;
+  background: var(--bg-body) !important;
+  background-color: var(--bg-body) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  flex-shrink: 0 !important;
+  border-radius: 0 !important; /* 90 DERAJAT SIKU */
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}
+
+.btnTutupUserModal {
+  width: 32px !important;
+  height: 32px !important;
+  background: #0f766e !important; /* TEAL BUTTON */
+  color: #ffffff !important;
   border: none !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  padding: 0 !important;
+}
+
+.btnTutupUserModal:hover {
+  background: #115e59 !important;
+  transform: scale(1.05) !important;
+}
+
+.userManagementToolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  padding: 8px 12px !important;
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  flex-shrink: 0 !important;
+  flex-wrap: wrap !important;
   border-radius: 0 !important;
+}
+
+.userManagementTableWrap {
+  flex: 1 1 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow-y: auto !important; /* SCROLL ATAS-BAWAH */
+  overflow-x: auto !important; /* SCROLL KANAN-KIRI */
+  -webkit-overflow-scrolling: touch !important;
+  background: var(--bg-box) !important;
+  background-color: var(--bg-box) !important;
+  box-sizing: border-box !important;
+  border-radius: 0 !important;
+}
+
+.userModalTable {
+  width: 100% !important;
+  min-width: 820px !important; /* MEMASTIKAN BISA DI-SCROLL KANAN-KIRI DI LAYAR HP */
+  border-collapse: collapse !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: var(--bg-box) !important;
+}
+
+.userModalTable thead,
+.userModalTable thead tr {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99 !important;
+  background-color: var(--primary) !important;
+}
+
+.userModalTable thead th,
+.userModalTable th,
+.userModalTable th:first-child,
+.userModalTable th:last-child {
+  border-radius: 0 !important; /* 90 DERAJAT SIKU */
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+  background-color: var(--primary) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  letter-spacing: normal !important;
+  text-transform: uppercase !important;
+  padding: 10px 12px !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.35) !important;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2) !important;
+}
+
+@media (max-width: 768px) {
+  #popupUserManagementModal {
+    padding: 1cm 2mm !important; /* 1CM ATAS-BAWAH & 2MM KANAN-KIRI DI HP */
+  }
+
+  .userManagementBoxPopup {
+    width: calc(100vw - 4mm) !important;
+    max-width: calc(100vw - 4mm) !important;
+    height: calc(100vh - 2cm) !important;
+    max-height: calc(100vh - 2cm) !important;
+    border-radius: 5px !important;
+  }
+}
+
+/* INLINE BUTTON ROTATING SPINNER & INNER POPUP LOADING */
+.btnSpinner {
+  display: inline-block !important;
+  width: 14px !important;
+  height: 14px !important;
+  border: 2px solid rgba(255, 255, 255, 0.35) !important;
+  border-top-color: #ffffff !important;
+  border-radius: 50% !important;
+  animation: spinSmooth 0.6s linear infinite !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}
+
+.popupInnerLoading {
+  position: absolute !important;
+  inset: 0 !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10000010 !important;
+  border-radius: 5px !important;
+  border: none !important;
   box-shadow: none !important;
-  outline: none !important;
-  transform: scale(1.15) !important;
 }
 
-
-/* =============================================================================
-   PC DESKTOP SCROLL AUTO-HIDE MENU BUTTON WHEN TABLE SCROLLED TO TOP
-   ============================================================================= */
-
-@media (min-width: 769px) {
-  .btnMenuPC, .pcMenuBtn, #btnFloatingMenuPC {
-    transition: opacity 0.25s ease, transform 0.25s ease !important;
-  }
+.popupInnerMsg {
+  display: none !important;
 }
 
+.spinnerBox,
+.miniSpinnerBox {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: auto !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+  z-index: 2147483647 !important;
+}
 
-/* =============================================================================
-   PC DESKTOP 1CM BOTTOM SCROLL SPACE AFTER LAST ROW IN DASHBOARD & RIWAYAT TABLES
-   ============================================================================= */
+.spinner {
+  width: 58px !important;
+  height: 58px !important;
+  position: relative !important;
+  border-radius: 50% !important;
+  border: 4px solid rgba(255, 255, 255, 0.12) !important;
+  border-top: 4px solid #38bdf8 !important;
+  border-right: 4px solid #818cf8 !important;
+  animation: spinSmooth 0.85s linear infinite !important;
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8)) !important;
+  box-sizing: border-box !important;
+}
 
-@media (min-width: 769px) {
-  html body #detailDashboard .tableWrap table.dashboardTable,
-  html body #detailDashboard .tableWrap table,
-  html body #riwayatPage .tableWrap table.historyTable,
-  html body #riwayatPage .tableWrap table,
-  html body #masterDbPage .tableWrap table.masterTable,
-  html body #masterDbPage .tableWrap table {
-    margin-bottom: 1cm !important;
-  }
+.spinner::after {
+  content: '' !important;
+  position: absolute !important;
+  top: 6px !important;
+  left: 6px !important;
+  right: 6px !important;
+  bottom: 6px !important;
+  border-radius: 50% !important;
+  border: 3px solid transparent !important;
+  border-top: 3px solid #34d399 !important;
+  border-left: 3px solid #38bdf8 !important;
+  animation: spinReverse 1.1s linear infinite !important;
+  box-sizing: border-box !important;
+}
 
-  html body #detailDashboard .tableWrap table tbody#lastData tr:last-child td,
-  html body #riwayatPage .tableWrap table tbody#riwayatData tr:last-child td,
-  html body #masterDbPage .tableWrap table tbody tr:last-child td {
-    padding-bottom: 1cm !important;
-  }
+.loadingText,
+#loadingText {
+  color: #ffffff !important;
+  font-size: 13.5px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+  text-align: center !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+  max-width: 280px !important;
+  line-height: 1.4 !important;
+}
 
-  html body #detailDashboard .tableWrap::after,
-  html body #riwayatPage .tableWrap::after,
-  html body #masterDbPage .tableWrap::after {
-    content: '' !important;
-    display: block !important;
-    height: 1cm !important;
-    width: 100% !important;
-    pointer-events: none !important;
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinSmooth {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinReverse {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes spinnerPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.spinner::after,
+.miniSpinner::after,
+.popupInnerSpinner::after {
+  content: '' !important;
+  position: absolute !important;
+  inset: 5px !important;
+  border-radius: 50% !important;
+  border: 3px solid transparent !important;
+  border-top-color: #34d399 !important;
+  border-left-color: #38bdf8 !important;
+  animation: spinReverse 0.95s linear infinite !important;
+  box-sizing: border-box !important;
+}
+
+.loadingText,
+#loadingText,
+.miniLoadingText,
+#miniCenterLoadingText,
+.popupInnerMsg {
+  display: none !important;
+}
+
+/* UNIVERSAL (PC & HP) STRETCH & EXACT 2MM BOTTOM BUTTON ANCHOR FOR DETAIL DATA POPUP (#popupDetailBarangV2) */
+html body #popupDetailBarangV2.popupOverlay,
+html body #popupDetail.popupOverlay {
+  padding: 1cm 4px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+html body #popupDetailBarangV2 .popupBoxDetailV2,
+html body .popupBoxDetailV2 {
+  height: calc(100vh - 2cm) !important;
+  height: calc(100dvh - 2cm) !important;
+  max-height: calc(100vh - 2cm) !important;
+  max-height: calc(100dvh - 2cm) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  margin: auto !important;
+  padding: 0 !important;
+}
+
+html body #popupDetailBarangV2 #popupBodyV2,
+html body #popupDetail #popupBody {
+  flex: 1 1 0px !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+html body #popupDetailBarangV2 .popupCardBodyContainerV2,
+html body .popupCardBodyContainerV2 {
+  flex: 1 1 100% !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 4px 0 0 0 !important;
+  margin: 0 !important;
+}
+
+html body #popupDetailBarangV2 .tableCardV2.tableWrap,
+html body #popupDetailBarangV2 .tableCardV2,
+html body #popupDetailBarangV2 .tableWrap,
+html body .tableCardV2.tableWrap,
+html body .tableCardV2 {
+  flex: 1 1 0px !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  min-height: 0 !important;
+  margin-top: 4px !important;
+  margin-bottom: 2mm !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  background: var(--bg-box) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 5px !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}
+
+html body #popupDetailBarangV2 .detailTableV2 {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+html body #popupDetailBarangV2 .popupDetailActionsV2,
+html body #popupDetail .popupDetailActions,
+html body .popupDetailActionsV2 {
+  margin-top: 0 !important;
+  margin-bottom: 2mm !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 14px !important;
+  padding-right: 14px !important;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
