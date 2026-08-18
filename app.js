@@ -1,13 +1,55 @@
-// 1. SUPABASE CLIENT & CREDENTIALS
-const SUPABASE_URL = 'https://vnlylgbkjmztnvjjgpjw.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_C7-RE-meqDyD8iXvp4COew_9Yhn8SWS';
-const SUPABASE_SECRET_KEY = 'sb_secret_9pTnKospBREpQH-QFngvnA_01fidjs7';
-const SUPABASE_JWKS_URL = 'https://vnlylgbkjmztnvjjgpjw.supabase.co/auth/v1/.well-known/jwks.json';
+function getReqPhotosList(req) {
+  if (!req) return [];
+  let p = req.photos || req.foto || [];
+  if (typeof p === 'string') {
+    try { p = JSON.parse(p); } catch(e) { if (p.startsWith('http') || p.startsWith('data:')) p = [p]; else p = []; }
+  }
+  if (!Array.isArray(p)) p = [];
+  return p.filter(x => !!x && typeof x === 'string' && x.trim().length > 0);
+}
+window.getReqPhotosList = getReqPhotosList;
 
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY) : null;
+// 1. SUPABASE CLIENT & CREDENTIALS
+const SUPABASE_URL = 'https://tnhepvaukhjrorpvjavs.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_dLGnjkQ8ipzPH7MgGBeSFg_cZ_H5zlA';
+const SUPABASE_JWKS_URL = 'https://tnhepvaukhjrorpvjavs.supabase.co/auth/v1/.well-known/jwks.json';
+
+const supabaseAuthOptions = {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storageKey: 'app_supabase_auth'
+  }
+};
+
+const supabase = (window.supabase && typeof window.supabase.createClient === 'function') ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, supabaseAuthOptions) : null;
+const supabaseAdmin = supabase;
+window.supabase = supabase;
+window.supabaseClient = supabase;
+window.supabaseAdmin = supabase;
 
 window.isFirebaseOnline = true;
 window.isSupabaseOnline = true;
+
+function klikStatusKoneksiServer() {
+  const isOnline = (typeof navigator !== 'undefined' && navigator.onLine !== false) && (window.isSupabaseOnline !== false);
+  if (isOnline) {
+    if (typeof showNotif === 'function') {
+      showNotif('TERHUBUNG KE SUPABASE CLOUD\n\nStatus: Online & Database Cloud Realtime Aktif.', 'success');
+    } else {
+      alert('TERHUBUNG KE SUPABASE CLOUD (Online & Realtime)');
+    }
+  } else {
+    if (typeof showNotif === 'function') {
+      showNotif('KONEKSI SUPABASE OFFLINE / TERPUTUS\n\nSilakan periksa koneksi internet atau jaringan Anda.', 'warning');
+    } else {
+      alert('KONEKSI SUPABASE OFFLINE / TERPUTUS');
+    }
+  }
+}
+window.klikStatusKoneksiServer = klikStatusKoneksiServer;
+window.bukaModalCloudUsage = klikStatusKoneksiServer;
 
 function updateGlobalConnectionDotStatus() {
   const dot = document.getElementById('firebaseOnlineDot');
@@ -19,33 +61,19 @@ function updateGlobalConnectionDotStatus() {
   if (fb && sb) {
     dot.style.background = '#10b981';
     dot.style.boxShadow = '0 0 10px #10b981';
-    dot.title = 'STATUS SERVER ONLINE: TERHUBUNG (KLIK UNTUK LIHAT KUOTA & PENGGUNAAN)';
+    dot.title = 'STATUS KONEKSI: TERHUBUNG KE SUPABASE (KLIK UNTUK LIHAT STATUS)';
   } else if (fb || sb) {
     dot.style.background = '#f59e0b';
     dot.style.boxShadow = '0 0 10px #f59e0b';
-    dot.title = 'STATUS SERVER: KONEKSI STABIL (KLIK UNTUK LIHAT KUOTA & PENGGUNAAN)';
+    dot.title = 'STATUS KONEKSI: TERHUBUNG (KLIK UNTUK LIHAT STATUS)';
   } else {
     dot.style.background = '#ef4444';
     dot.style.boxShadow = '0 0 10px #ef4444';
-    dot.title = 'STATUS SERVER: OFFLINE / TERPUTUS (KLIK UNTUK LIHAT KUOTA & PENGGUNAAN)';
+    dot.title = 'STATUS SERVER: OFFLINE / TERPUTUS (KLIK UNTUK LIHAT STATUS)';
   }
-  dot.onclick = () => bukaModalCloudUsage();
+  dot.onclick = () => klikStatusKoneksiServer();
 }
 window.updateGlobalConnectionDotStatus = updateGlobalConnectionDotStatus;
-
-async function bukaModalCloudUsage() {
-  const modal = document.getElementById('popupCloudUsageModal');
-  if (!modal) return;
-  modal.style.display = 'flex';
-  await muatMetrikKapasitasDatabase(false);
-}
-window.bukaModalCloudUsage = bukaModalCloudUsage;
-
-function tutupModalCloudUsage() {
-  const modal = document.getElementById('popupCloudUsageModal');
-  if (modal) modal.style.display = 'none';
-}
-window.tutupModalCloudUsage = tutupModalCloudUsage;
 
 async function muatMetrikKapasitasDatabase(isRefresh = false) {
   if (isRefresh) {
@@ -343,6 +371,16 @@ const TTD_DB_KEY = 'STORE_TTD_DB_V7_CLEAN';
 const SESSION_KEY = 'STORE_ACTIVE_SESSION_V7_CLEAN';
 const THEME_KEY = 'STORE_ACTIVE_THEME_V7_CLEAN';
 const DESIGN_MODE_KEY = 'STORE_DESIGN_MODE_V7_CLEAN';
+const ADMIN_REMINDER_TIME_KEY = 'STORE_ADMIN_REMINDER_TIME_V7_CLEAN';
+const DELETED_USERS_KEY = 'STORE_DELETED_USERS_V7_CLEAN';
+const DELETED_STORES_KEY = 'STORE_DELETED_STORES_V7_CLEAN';
+const DELETED_REQUESTS_KEY = 'STORE_DELETED_REQUESTS_V7_CLEAN';
+const STORES_DB_KEY = 'STORE_STORES_DB_V7_CLEAN';
+const TOKO_DB_KEY = 'STORE_TOKO_DB_V7_CLEAN';
+const KODE_UNIT_MAP_KEY = 'STORE_KODE_UNIT_MAP_V7_CLEAN';
+const NOTIFICATIONS_DB_KEY = 'STORE_NOTIFICATIONS_DB_V7_CLEAN';
+const FEATURE_PHOTOS_KEY = 'STORE_FEATURE_PHOTOS_V7_CLEAN';
+const FIREBASE_USER_CONFIG_KEY = 'STORE_FIREBASE_USER_CONFIG_V7_CLEAN';
 
 // NORMAL DESIGN MODE ONLY
 const DESIGN_MODES = [
@@ -406,6 +444,9 @@ function updateBodyClasses(specificTheme) {
   }
   if (typeof applyAppBackground === 'function') {
     applyAppBackground(null, false);
+  }
+  if (typeof applyAdaptiveTextColors === 'function') {
+    applyAdaptiveTextColors();
   }
 }
 window.updateBodyClasses = updateBodyClasses;
@@ -475,8 +516,101 @@ window.gantiBackgroundApp = gantiBackgroundApp;
 // ==========================================================================
 const BG_OPACITY_KEY = 'STORE_BG_OPACITY_VAL_V1';
 
+function isCurrentThemeDark() {
+  const body = document.body;
+  if (!body) return true;
+  if (body.classList.contains('light-mode') || 
+      body.classList.contains('classic-mode') || 
+      body.classList.contains('forest-mode') || 
+      body.classList.contains('sunset-mode') || 
+      body.classList.contains('ocean-mode')) {
+    return false;
+  }
+  return true;
+}
+window.isCurrentThemeDark = isCurrentThemeDark;
+
+function applyAdaptiveTextColors(numVal) {
+  let num;
+  if (typeof numVal !== 'undefined' && numVal !== null) {
+    num = typeof numVal === 'number' ? numVal : (parseFloat(numVal) || 0);
+  } else {
+    try {
+      num = parseFloat(localStorage.getItem(BG_OPACITY_KEY) || '48') || 48;
+    } catch(e) {
+      num = 48;
+    }
+  }
+
+  const isHighOpacity = num > 30; // > 30% -> PUTIH (#ffffff) untuk SEMUA TEMA
+  const isDark = isCurrentThemeDark();
+  // <= 30% -> HITAM (#000000) untuk TEMA TERANG, PUTIH (#ffffff) untuk TEMA GELAP
+  const targetColor = isHighOpacity ? '#ffffff' : (isDark ? '#ffffff' : '#000000');
+  const needsShadow = isHighOpacity;
+  
+  document.documentElement.style.setProperty('--adaptive-header-color', targetColor);
+
+  // 1. uselogin (Nama User)
+  const namaUserEl = document.getElementById('namaUser');
+  if (namaUserEl) {
+    namaUserEl.style.setProperty('color', targetColor, 'important');
+    if (needsShadow) {
+      namaUserEl.style.setProperty('text-shadow', '0 1px 4px rgba(0,0,0,0.6)', 'important');
+    } else {
+      namaUserEl.style.removeProperty('text-shadow');
+    }
+  }
+
+  // 2. area & kategori user
+  const areaUserEl = document.getElementById('areaUser');
+  if (areaUserEl) {
+    areaUserEl.style.setProperty('color', targetColor, 'important');
+    if (needsShadow) {
+      areaUserEl.style.setProperty('text-shadow', '0 1px 3px rgba(0,0,0,0.6)', 'important');
+    } else {
+      areaUserEl.style.removeProperty('text-shadow');
+    }
+  }
+
+  // 3. Judul Tabel (DI DASHBOARD)
+  const dashboardTitleEl = document.getElementById('dashboardRecentTitle');
+  if (dashboardTitleEl) {
+    dashboardTitleEl.style.setProperty('color', targetColor, 'important');
+    if (needsShadow) {
+      dashboardTitleEl.style.setProperty('text-shadow', '0 1px 4px rgba(0,0,0,0.6)', 'important');
+    } else {
+      dashboardTitleEl.style.removeProperty('text-shadow');
+    }
+  }
+
+  // 4. DETAIL DATA PERMINTAAN (Di detaildata/riwayat page)
+  const riwayatTitleEl = document.getElementById('riwayatPageTitle') || document.querySelector('#riwayatPage .riwayatContent > h3');
+  if (riwayatTitleEl) {
+    riwayatTitleEl.style.setProperty('color', targetColor, 'important');
+    if (needsShadow) {
+      riwayatTitleEl.style.setProperty('text-shadow', '0 1px 4px rgba(0,0,0,0.6)', 'important');
+    } else {
+      riwayatTitleEl.style.removeProperty('text-shadow');
+    }
+  }
+
+  // RESET / PASTIKAN DETAIL PERMINTAAN & FORM PERMINTAAN TOKO TETAP SESUAI TEMA BAWAAN
+  const judulDetailEl = document.getElementById('judulDetailPermintaan');
+  if (judulDetailEl) {
+    judulDetailEl.style.setProperty('color', 'var(--primary)', 'important');
+    judulDetailEl.style.removeProperty('text-shadow');
+  }
+
+  const formPermintaanTitleEl = document.querySelector('#inputPage .box h3:first-child');
+  if (formPermintaanTitleEl) {
+    formPermintaanTitleEl.style.removeProperty('color');
+    formPermintaanTitleEl.style.removeProperty('text-shadow');
+  }
+}
+
 function ubahTransparansiBackground(val) {
-  const opacityFloat = (parseFloat(val) / 100).toFixed(2);
+  const numVal = parseFloat(val) || 0;
+  const opacityFloat = (numVal / 100).toFixed(2);
   document.documentElement.style.setProperty('--bg-opacity-val', opacityFloat);
   
   const bgEl = document.querySelector('.aesthetic-bg-image');
@@ -486,6 +620,8 @@ function ubahTransparansiBackground(val) {
 
   const valText = document.getElementById('bgOpacityValText');
   if (valText) valText.textContent = `${val}%`;
+
+  applyAdaptiveTextColors(numVal);
 
   try {
     localStorage.setItem(BG_OPACITY_KEY, val);
@@ -504,15 +640,19 @@ function loadSavedBgOpacity() {
   const valText = document.getElementById('bgOpacityValText');
   if (valText) valText.textContent = `${savedVal}%`;
 
-  const opacityFloat = (parseFloat(savedVal) / 100).toFixed(2);
+  const numVal = parseFloat(savedVal) || 0;
+  const opacityFloat = (numVal / 100).toFixed(2);
   document.documentElement.style.setProperty('--bg-opacity-val', opacityFloat);
   
   const bgEl = document.querySelector('.aesthetic-bg-image');
   if (bgEl) {
     bgEl.style.setProperty('opacity', opacityFloat, 'important');
   }
+
+  applyAdaptiveTextColors(numVal);
 }
 
+window.applyAdaptiveTextColors = applyAdaptiveTextColors;
 window.ubahTransparansiBackground = ubahTransparansiBackground;
 window.loadSavedBgOpacity = loadSavedBgOpacity;
 
@@ -574,18 +714,11 @@ window.loadSavedDesignMode = loadSavedDesignMode;
 window.gantiDesignMode = gantiDesignMode;
 window.toggleDesignMode = toggleDesignMode;
 window.updateBodyClasses = updateBodyClasses;
-const STORES_DB_KEY = 'STORE_CUSTOM_TOKO_LIST_V7_CLEAN';
-const DELETED_STORES_KEY = 'STORE_DELETED_TOKO_LIST_V7_CLEAN';
-const NOTIFICATIONS_DB_KEY = 'STORE_SYSTEM_NOTIFICATIONS_V7_CLEAN';
-const KODE_UNIT_MAP_KEY = 'STORE_KODE_UNIT_MAP_V7_CLEAN';
-const FEATURE_PHOTOS_KEY = 'STORE_FEATURE_PHOTOS_V7_CLEAN';
-const DELETED_REQUESTS_KEY = 'STORE_DELETED_REQUESTS_V7_CLEAN';
-const DELETED_USERS_KEY = 'STORE_DELETED_USERS_V7_CLEAN';
+
 const FONTE_TOKEN_KEY = 'STORE_FONTE_TOKEN_KEY_V7_CLEAN';
 const ADMIN_REMINDER_KEY = 'STORE_ADMIN_REMINDER_KEY_V7_CLEAN';
 const ADMIN_SECRET_KEY_STORAGE_KEY = 'STORE_ADMIN_SECRET_KEY_V7_CLEAN';
 const ADMIN_SCRIPT_URL_KEY = 'STORE_ADMIN_SCRIPT_URL_V7_CLEAN';
-const FIREBASE_USER_CONFIG_KEY = 'STORE_FIREBASE_USER_CONFIG_V7_CLEAN';
 const GLOBAL_THEME_KEY = 'STORE_GLOBAL_APP_THEME_V7_CLEAN';
 const LOCAL_USER_THEME_KEY = 'STORE_LOCAL_USER_THEME_V7_CLEAN';
 const LAST_ADMIN_THEME_TIME_KEY = 'STORE_LAST_ADMIN_THEME_TIME_V7_CLEAN';
@@ -612,11 +745,6 @@ function applyThemeToDocument(theme) {
 window.applyThemeToDocument = applyThemeToDocument;
 
 async function setGlobalAdminTheme(themeName) {
-  const isSysAdmin = currentUser && (
-    String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
-    String(currentUser.username || '').toUpperCase() === 'ADMIN'
-  );
-
   const now = Date.now();
 
   if (typeof appStorage !== 'undefined') {
@@ -628,73 +756,27 @@ async function setGlobalAdminTheme(themeName) {
   try { localStorage.setItem(LOCAL_USER_THEME_KEY, themeName); } catch(e) {}
   try { localStorage.setItem(LAST_ADMIN_THEME_TIME_KEY, String(now)); } catch(e) {}
   applyThemeToDocument(themeName);
-
-  if (isSysAdmin) {
-    if (typeof supabase !== 'undefined' && supabase) {
-      try {
-        try {
-          await supabase.from('lookup').upsert({
-            key: 'global_theme',
-            value: { theme: valStr },
-            updated_at: new Date().toISOString()
-          }, { onConflict: 'key' });
-        } catch (e) {}
-
-        const themeRow = {
-          id: '__SYSTEM_GLOBAL_THEME__',
-          no_surat: '__SYSTEM_GLOBAL_THEME__',
-          tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-          toko: 'SYSTEM',
-          area: 'ALL',
-          jenis: 'SYSTEM',
-          catatan: JSON.stringify({ theme: themeName, updatedBy: currentUser.username, time: now }),
-          items: [],
-          photos: [],
-          status: 'DONE',
-          service_approve: true,
-          created_by: 'ADMIN',
-          created_at: new Date().toISOString()
-        };
-        await supabase.from('permintaan_toko').upsert(themeRow);
-      } catch(e) {
-        console.warn('[SUPABASE GLOBAL THEME SAVE ERROR]:', e);
-      }
-    }
-
-    if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-      try {
-        dbRealtime.ref('settings/global_theme').set({ theme: themeName, updatedBy: currentUser.username, time: now });
-      } catch(e) {}
-    }
-
-    // Theme notification silent
-  } else {
-    // Theme notification silent
-  }
 }
 window.setGlobalAdminTheme = setGlobalAdminTheme;
 
 function toggleTheme() {
-  const isSysAdmin = currentUser && (
-    String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
-    String(currentUser.username || '').toUpperCase() === 'ADMIN'
-  );
-
   const currentTheme = getActiveAppliedTheme();
   const newTheme = (currentTheme === 'light') ? 'dark' : 'light';
 
-  if (isSysAdmin) {
-    // ADMIN: CHANGE THEME FOR ALL DEVICES GLOBALLY
-    setGlobalAdminTheme(newTheme);
-  } else {
-    // NON-ADMIN USER: SAVE & APPLY THEME PREFERENCE ON LOCAL DEVICE ONLY
-    if (typeof appStorage !== 'undefined') {
-      appStorage.setItem(LOCAL_USER_THEME_KEY, newTheme);
-    }
-    try { localStorage.setItem(LOCAL_USER_THEME_KEY, newTheme); } catch(e) {}
-    applyThemeToDocument(newTheme);
-    // Theme notification silent
+  // HANYA DISIMPAN DI LOKAL PENYIMPANAN (LOCALSTORAGE & APPSTORAGE), TIDAK DIKIRIM KE SUPABASE
+  if (typeof appStorage !== 'undefined') {
+    appStorage.setItem(LOCAL_USER_THEME_KEY, newTheme);
+    appStorage.setItem(THEME_KEY, newTheme);
+    appStorage.setItem('APP_SELECTED_THEME', newTheme);
   }
+  try { localStorage.setItem(LOCAL_USER_THEME_KEY, newTheme); } catch(e) {}
+  try { localStorage.setItem(THEME_KEY, newTheme); } catch(e) {}
+  try { localStorage.setItem('APP_SELECTED_THEME', newTheme); } catch(e) {}
+
+  if (currentUser) {
+    currentUser.theme = newTheme;
+  }
+  applyThemeToDocument(newTheme);
 }
 window.toggleTheme = toggleTheme;
 
@@ -825,13 +907,14 @@ function tambahNotifikasiSistem(targetRoles, targetArea, message, noSurat = '') 
   if (alreadyExists) return;
 
   const newNotif = {
-    id: `NTF-${Date.now()}-${Math.floor(Math.random()*1000)}`,
+    id: `NTF-${Date.now()}-${Math.floor(Math.random()*10000)}`,
     targetRoles: normalizedRoles,
     targetArea: targetArea || 'ALL',
     message: message,
     noSurat: noSurat,
     time: `${getFormattedDateDDMMYYYY()} ${new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}`,
-    readBy: []
+    readBy: [],
+    timestamp: Date.now()
   };
   notifs.unshift(newNotif);
   if (notifs.length > 100) notifs.pop();
@@ -840,40 +923,16 @@ function tambahNotifikasiSistem(targetRoles, targetArea, message, noSurat = '') 
   appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(payload));
   try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(payload)); } catch(e) {}
 
-  if (typeof supabase !== 'undefined' && supabase) {
+  if (typeof updateNotifBadgeCount === 'function') updateNotifBadgeCount();
+
+  // SYNC KE FIREBASE FIRESTORE SECARA REALTIME
+  if (typeof dbFirestore !== 'undefined' && dbFirestore) {
     try {
-      supabase.from('notifications').upsert({
-        id: newNotif.id,
-        target_roles: newNotif.targetRoles,
-        target_area: newNotif.targetArea,
-        message: newNotif.message,
-        no_surat: newNotif.noSurat,
-        time: newNotif.time,
-        read_by: newNotif.readBy || []
-      }).catch(e => console.warn('[SUPABASE NOTIF TABLE NOTICE]:', e));
-
-      const systemNotifRow = {
-        id: '__SYSTEM_NOTIFICATIONS__',
-        no_surat: '__SYSTEM_NOTIFICATIONS__',
-        tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-        toko: 'SYSTEM',
-        area: 'ALL',
-        jenis: 'SYSTEM',
-        catatan: JSON.stringify(payload),
-        items: [],
-        photos: [],
-        status: 'DONE',
-        service_approve: true,
-        created_by: 'SYSTEM',
-        created_at: new Date().toISOString()
-      };
-      supabase.from('permintaan_toko').upsert(systemNotifRow).then(({ error }) => {
-        if (error) console.warn('[SUPABASE NOTIF SAVE NOTICE]:', error.message);
-      });
-    } catch(e) {}
+      dbFirestore.collection('notifications').doc(newNotif.id).set(newNotif).catch(e => console.warn('[FIRESTORE NOTIF SAVE ERROR]:', e));
+    } catch(e) {
+      console.warn('[FIRESTORE NOTIF EXCEPTION]:', e);
+    }
   }
-
-  updateNotifBellCounter();
 }
 
 function getAccessibleNotifications() {
@@ -891,7 +950,7 @@ function getAccessibleNotifications() {
 
     if (isSysAdmin) return true;
 
-    // 1. STRICT AREA FILTER: MUST MATCH USER'S AREA OR ALL (DM HANDLES ALL AREAS GLOBALLY)
+    // 1. STRICT AREA FILTER: MUST MATCH USER'S AREA OR ALL
     const targetArea = String(n.targetArea || 'ALL').toUpperCase();
     const areaMatch = (targetArea === 'ALL' || userArea === 'ALL' || userCat === 'DM' || isAreaMatch(userArea, targetArea));
     if (!areaMatch) return false;
@@ -925,187 +984,7 @@ function getAccessibleNotifications() {
     return true;
   });
 
-  const clearedAt = getSystemNotifsClearedTimestamp();
-
-  // 4. DYNAMIC SYNTHESIS ACCORDING TO SPECIFIC ROLES & AREA
-  // A. UNTUK SERVICE (PPRV SERVICE / PENDING - MENUNGGU APPROVAL SERVICE IN USER'S AREA)
-  if (userCat === 'SERVICE' || isSysAdmin) {
-    const servicePendingReqs = requests.filter(r => {
-      if (clearedAt && r.createdAt) {
-        const reqTime = new Date(r.createdAt).getTime();
-        if (reqTime <= clearedAt) return false;
-      }
-      const areaMatched = (!r.area || userArea === 'ALL' || isSysAdmin || isAreaMatch(userArea, r.area));
-      const isWaitingService = (!r.serviceApprove && r.status === 'PENDING');
-      return areaMatched && isWaitingService;
-    });
-
-    servicePendingReqs.forEach(r => {
-      const exists = filtered.some(n => n.noSurat === r.noSurat && String(n.message || '').includes('SERVICE'));
-      if (!exists) {
-        filtered.unshift({
-          id: `NTF-SRV-${r.noSurat}`,
-          targetRoles: ['SERVICE'],
-          targetArea: r.area || userArea,
-          message: `PERMINTAAN BARU #${r.noSurat} DARI ${r.toko}. MOHON APPROVAL SERVICE.`,
-          noSurat: r.noSurat,
-          time: r.tanggalInput || r.createdAt || getFormattedDateDDMMYYYY(),
-          readBy: []
-        });
-      }
-    });
-
-    // A2. UNTUK SERVICE (NOTIFIKASI DARI DM KETIKA DI-APPROVE ATAU DI-TOLAK OLEH DM)
-    const dmApprovedReqs = requests.filter(r => {
-      if (clearedAt && r.createdAt) {
-        const reqTime = new Date(r.createdAt).getTime();
-        if (reqTime <= clearedAt) return false;
-      }
-      const areaMatched = (!r.area || userArea === 'ALL' || isSysAdmin || isAreaMatch(userArea, r.area));
-      const isApprovedByDm = (r.serviceApprove === true && r.status === 'APPROVE');
-      return areaMatched && isApprovedByDm;
-    });
-
-    dmApprovedReqs.forEach(r => {
-      const exists = filtered.some(n => n.noSurat === r.noSurat && String(n.message || '').includes('DISETUJUI DM'));
-      if (!exists) {
-        filtered.unshift({
-          id: `NTF-SRV-DM-APP-${r.noSurat}`,
-          targetRoles: ['SERVICE'],
-          targetArea: r.area || userArea,
-          message: `PERMINTAAN #${r.noSurat} DARI ${r.toko} TELAH DISETUJUI DM. SILAKAN DIPROSES.`,
-          noSurat: r.noSurat,
-          time: r.tanggalInput || r.createdAt || getFormattedDateDDMMYYYY(),
-          readBy: []
-        });
-      }
-    });
-
-    const dmRejectedReqs = requests.filter(r => {
-      if (clearedAt && r.createdAt) {
-        const reqTime = new Date(r.createdAt).getTime();
-        if (reqTime <= clearedAt) return false;
-      }
-      const isAreaMatch = (!r.area || r.area.toUpperCase() === userArea || userArea === 'ALL' || isSysAdmin);
-      const isRejectedByDm = (r.status === 'REJECT' && String(r.catatan || '').includes('DM'));
-      return isAreaMatch && isRejectedByDm;
-    });
-
-    dmRejectedReqs.forEach(r => {
-      const exists = filtered.some(n => n.noSurat === r.noSurat && String(n.message || '').includes('DITOLAK DM'));
-      if (!exists) {
-        filtered.unshift({
-          id: `NTF-SRV-DM-REJ-${r.noSurat}`,
-          targetRoles: ['SERVICE'],
-          targetArea: r.area || userArea,
-          message: `PERMINTAAN #${r.noSurat} DARI ${r.toko} DITOLAK DM. CATATAN: ${r.catatan || '-'}`,
-          noSurat: r.noSurat,
-          time: r.tanggalInput || r.createdAt || getFormattedDateDDMMYYYY(),
-          readBy: []
-        });
-      }
-    });
-  }
-
-  // B. UNTUK DM (TUNGGU DM - MENUNGGU APPROVAL DM DARI SEMUA AREA)
-  if (userCat === 'DM' || isSysAdmin) {
-    const dmPendingReqs = requests.filter(r => {
-      if (clearedAt && r.createdAt) {
-        const reqTime = new Date(r.createdAt).getTime();
-        if (reqTime <= clearedAt) return false;
-      }
-      const isWaitingDm = (r.serviceApprove === true && r.status === 'PENDING');
-      return isWaitingDm;
-    });
-
-    dmPendingReqs.forEach(r => {
-      const exists = filtered.some(n => n.noSurat === r.noSurat && String(n.message || '').includes('DM'));
-      if (!exists) {
-        filtered.unshift({
-          id: `NTF-DM-${r.noSurat}`,
-          targetRoles: ['DM'],
-          targetArea: 'ALL',
-          message: `MOHON APPROVAL DM: Permintaan #${r.noSurat} dari ${r.toko} (${r.area}) telah disetujui Service & menanti Approval DM Anda.`,
-          noSurat: r.noSurat,
-          time: r.tanggalInput || r.createdAt || getFormattedDateDDMMYYYY(),
-          readBy: []
-        });
-      }
-    });
-  }
-
-  // C. UNTUK CREATOR / TOKO / SALES
-  if (userCat === 'TOKO' || userCat === 'SALES') {
-    const tokoPendingReqs = requests.filter(r => {
-      if (clearedAt && r.createdAt) {
-        const reqTime = new Date(r.createdAt).getTime();
-        if (reqTime <= clearedAt) return false;
-      }
-      const isMine = (
-        r.userId === currentUser.id ||
-        String(r.createdBy || '').toUpperCase() === userUname ||
-        String(r.createdBy || '').toUpperCase() === userFullName ||
-        String(r.toko || '').toUpperCase() === userFullName
-      );
-      return isMine && r.status === 'PENDING';
-    });
-
-    tokoPendingReqs.forEach(r => {
-      const exists = filtered.some(n => n.noSurat === r.noSurat);
-      if (!exists) {
-        const stageMsg = r.serviceApprove ? 'SEDANG MENUNGGU APPROVAL DM' : 'SEDANG MENUNGGU APPROVAL SERVICE';
-        filtered.unshift({
-          id: `NTF-TK-${r.noSurat}`,
-          targetRoles: ['TOKO', 'SALES'],
-          targetArea: r.area || userArea,
-          message: `PERMINTAAN Anda #${r.noSurat} (${stageMsg}).`,
-          noSurat: r.noSurat,
-          time: r.tanggalInput || r.createdAt || getFormattedDateDDMMYYYY(),
-          readBy: []
-        });
-      }
-    });
-
-    const tokoRejectedReqs = requests.filter(r => {
-      if (clearedAt && r.createdAt) {
-        const reqTime = new Date(r.createdAt).getTime();
-        if (reqTime <= clearedAt) return false;
-      }
-      const isMine = (
-        r.userId === currentUser.id ||
-        String(r.createdBy || '').toUpperCase() === userUname ||
-        String(r.createdBy || '').toUpperCase() === userFullName ||
-        String(r.toko || '').toUpperCase() === userFullName
-      );
-      return isMine && r.status === 'REJECT';
-    });
-
-    tokoRejectedReqs.forEach(r => {
-      const exists = filtered.some(n => n.noSurat === r.noSurat && String(n.message || '').includes('DITOLAK'));
-      if (!exists) {
-        filtered.unshift({
-          id: `NTF-TK-REJ-${r.noSurat}`,
-          targetRoles: ['TOKO', 'SALES'],
-          targetArea: r.area || userArea,
-          message: `PERMINTAAN #${r.noSurat} DITOLAK. CATATAN: ${r.catatan || '-'}`,
-          noSurat: r.noSurat,
-          time: r.tanggalInput || r.createdAt || getFormattedDateDDMMYYYY(),
-          readBy: []
-        });
-      }
-    });
-  }
-
   return filtered;
-}
-
-let globalRealtimeLoopInterval = null;
-
-function startGlobalRealtimeLoop() {
-  if (globalRealtimeLoopInterval) {
-    clearInterval(globalRealtimeLoopInterval);
-    globalRealtimeLoopInterval = null;
-  }
 }
 
 function updateNotifBellCounter() {
@@ -1162,24 +1041,23 @@ function loadNotificationList() {
   if (!container) return;
   container.innerHTML = '';
 
-  const isSysAdmin = currentUser && (
-    String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
-    String(currentUser.username || '').toUpperCase() === 'ADMIN'
-  );
   const btnHapusNotif = document.getElementById('btnHapusSemuaNotifSystem');
   if (btnHapusNotif) {
-    btnHapusNotif.style.display = isSysAdmin ? 'inline-block' : 'none';
+    btnHapusNotif.style.display = currentUser ? 'inline-block' : 'none';
   }
 
   const userNotifs = getAccessibleNotifications();
 
-  if (userNotifs.length === 0) {
-    container.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted); font-size:12.5px;">BELUM ADA NOTIFIKASI MASUK.</div>`;
+  if (!userNotifs || userNotifs.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:35px 20px; color:var(--text-muted); font-size:13px; font-weight:600;">
+      <span class="material-symbols-rounded" style="font-size:36px; color:#94a3b8; display:block; margin-bottom:8px;">notifications_off</span>
+      BELUM ADA NOTIFIKASI MASUK.
+    </div>`;
     return;
   }
 
   userNotifs.forEach(n => {
-    const isRead = n.readBy.includes(currentUser.id) || n.readBy.includes(currentUser.username);
+    const isRead = n.readBy && (n.readBy.includes(currentUser.id) || n.readBy.includes(currentUser.username));
     const item = document.createElement('div');
     item.style.cssText = `
       padding: 12px;
@@ -1203,11 +1081,26 @@ function loadNotificationList() {
         <div style="font-size: 12.5px; font-weight: ${isRead ? '500' : '700'}; color: var(--text-main); line-height: 1.4;">
           ${n.message}
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 10px; color: var(--text-muted);">
-          <span>${n.time}</span>
-          ${n.noSurat ? `<span style="color: var(--primary); font-weight: 600;">#${n.noSurat}</span>` : ''}
-        </div>
-      </div>
+                                        <table class="pdf-info-table" style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 20px; font-size: 12px; background: transparent; border: none;">
+          <tr>
+            <td style="padding: 4px 0; width: 85px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap;">NO SURAT</td>
+            <td style="padding: 4px 12px 4px 8px; width: 14px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 20px 4px 0; width: 100%; font-weight: 800; color: #0284c7; border: none; letter-spacing: 0.2px;">${req.noSurat}</td>
+            
+            <td style="padding: 4px 0; width: 75px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">TANGGAL</td>
+            <td style="padding: 4px 12px 4px 8px; width: 14px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 0; width: 105px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">${(typeof formatDateDDMMYYYYString === 'function') ? formatDateDDMMYYYYString(req.tanggal) : (req.tanggal || '-')}</td>
+          </tr>
+          <tr>
+            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; white-space: nowrap;">TOKO</td>
+            <td style="padding: 4px 12px 4px 8px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 20px 4px 0; font-weight: 800; color: #0f172a; border: none; text-transform: uppercase;">${req.toko}</td>
+            
+            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">JENIS</td>
+            <td style="padding: 4px 12px 4px 8px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; text-transform: uppercase; white-space: nowrap; text-align: left;">${req.jenis || 'DEFAULT'}</td>
+          </tr>
+        </table>
       ${!isRead ? `<div style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; margin-top: 6px; flex-shrink: 0;"></div>` : ''}
     `;
     container.appendChild(item);
@@ -1365,66 +1258,51 @@ function markAllNotifAsRead(silent = false) {
 }
 window.markAllNotifAsRead = markAllNotifAsRead;
 
-function hapusSemuaNotifikasiSystem() {
-  const isSysAdmin = currentUser && (
-    String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
-    String(currentUser.username || '').toUpperCase() === 'ADMIN'
-  );
-  if (!isSysAdmin) {
-    showNotif('FUNGSI MENGHAPUS SEMUA NOTIFIKASI HANYA DAPAT DILAKUKAN OLEH AKUN ADMIN!', 'warning');
+async function hapusSemuaNotifikasiSystem() {
+  if (!currentUser) {
+    showNotif('SILAKAN LOGIN TERLEBIH DAHULU!', 'warning');
     return;
   }
 
-  showConfirm('YAKIN INGIN MENGHAPUS SEMUA NOTIFIKASI DARI SISTEM?', async () => {
+  showConfirm('YAKIN INGIN MENGHAPUS SEMUA NOTIFIKASI DARI SISTEM & PENYIMPANAN?', function() {
     showLoading('MENGHAPUS SEMUA NOTIFIKASI...');
-    try {
-      const emptyNotifsPayload = {
-        clearedAt: Date.now(),
-        items: []
-      };
+    setTimeout(async () => {
+      try {
+        const nowMs = Date.now();
+        const emptyNotifsPayload = {
+          clearedAt: nowMs,
+          items: []
+        };
 
-      // 1. KOSONGKAN PENYIMPANAN LOKAL METADATA & ITEMS
-      appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyNotifsPayload));
-      try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyNotifsPayload)); } catch(e) {}
+        // 1. KOSONGKAN PENYIMPANAN LOKAL METADATA & ITEMS
+        appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyNotifsPayload));
+        try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyNotifsPayload)); } catch(e) {}
+        try { localStorage.setItem('LAST_NOTIF_CLEARED_TIMESTAMP', String(nowMs)); } catch(e) {}
 
-      // 2. SINKRONKAN PERSISTEN LANGSUNG KE SUPABASE CLOUD DATABASE
-      if (typeof supabase !== 'undefined' && supabase) {
-        try {
-          const systemNotifRow = {
-            id: '__SYSTEM_NOTIFICATIONS__',
-            no_surat: '__SYSTEM_NOTIFICATIONS__',
-            tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-            toko: 'SYSTEM',
-            area: 'ALL',
-            jenis: 'SYSTEM',
-            catatan: JSON.stringify(emptyNotifsPayload),
-            items: [],
-            photos: [],
-            status: 'DONE',
-            service_approve: true,
-            created_by: 'SYSTEM',
-            created_at: new Date().toISOString()
-          };
-          await supabase.from('permintaan_toko').upsert(systemNotifRow);
-        } catch(sbErr) {
-          console.warn('[SUPABASE NOTIF DELETE ERROR]:', sbErr);
+        // 2. KOSONGKAN DI FIREBASE FIRESTORE
+        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+          try {
+            const notifSnap = await dbFirestore.collection('notifications').get();
+            const batch = dbFirestore.batch();
+            notifSnap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+          } catch(err) {
+            console.warn('[FIRESTORE DELETE ALL NOTIFS NOTICE]:', err);
+          }
         }
-      }
 
-      // 3. PUSH KE DATABASE UTAMA LAIN
-      if (typeof pushCentralCloudDB === 'function') {
-        await pushCentralCloudDB();
-      }
+        // 3. REFRESH TAMPILAN POPUP NOTIFIKASI & LONCENG SEKETIKA
+        if (typeof loadNotificationList === 'function') loadNotificationList();
+        if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+        if (typeof updateNotifBadgeCount === 'function') updateNotifBadgeCount();
 
-      hideLoading();
-      updateNotifBellCounter();
-      if (typeof loadNotificationList === 'function') loadNotificationList();
-      showNotif('SELURUH NOTIFIKASI BERHASIL DIHAPUS!', 'success');
-    } catch (err) {
-      hideLoading();
-      console.error('[HAPUS NOTIFIKASI ERROR]:', err);
-      showNotif('GAGAL MENGHAPUS NOTIFIKASI: ' + (err.message || err), 'error');
-    }
+        hideLoading();
+        showNotif('SEMUA NOTIFIKASI BERHASIL DIHAPUS BERSIH!', 'success');
+      } catch (err) {
+        hideLoading();
+        showNotif('GAGAL MENGHAPUS NOTIFIKASI: ' + (err.message || err), 'danger');
+      }
+    }, 200);
   });
 }
 window.hapusSemuaNotifikasiSystem = hapusSemuaNotifikasiSystem;
@@ -1563,7 +1441,9 @@ let filterStatusRiwayat = '';
 let dashboardFilterStatus = 'PENDING';
 let modeEdit = false;
 let editNoSurat = '';
-let confirmCallback = null;
+var confirmCallback = null;
+var confirmCancelCallback = null;
+
 let isAdminChat = false;
 let currentRoom = '';
 let currentChatUser = '';
@@ -1698,13 +1578,19 @@ function initPullToRefresh() {
   // PULL DOWN REFRESH DISABLED PER USER DIRECTIVE
 }
 
-// FUNGSI REMINDER DM & SERVICE TELAH DIHAPUS PER USER DIRECTIVE
+// FUNGSI REMINDER DM & SERVICE TELAH DIHAPUS PER USER DIRECTIVE (NO-OP STUBS TO PREVENT RUNTIME ERRORS)
 function getAdminReminderEnabled() { return false; }
+function getAdminReminderTime() { return '09:00'; }
 function updateAdminReminderUI() {}
+function loadAdminReminderTimeInput() {}
 function checkAndTriggerPendingReminders() { return { success: true, skipped: true }; }
 function startAdminReminderTimeChecker() {}
 window.getAdminReminderEnabled = getAdminReminderEnabled;
+window.getAdminReminderTime = getAdminReminderTime;
 window.updateAdminReminderUI = updateAdminReminderUI;
+window.loadAdminReminderTimeInput = loadAdminReminderTimeInput;
+window.checkAndTriggerPendingReminders = checkAndTriggerPendingReminders;
+window.startAdminReminderTimeChecker = startAdminReminderTimeChecker;
 
 
 let cloudSyncInterval = null;
@@ -1778,6 +1664,164 @@ function getActiveFirebaseConfig() {
   return DEFAULT_FIREBASE_CONFIG;
 }
 
+// ==========================================
+// FIREBASE FIRESTORE: REAL-TIME CHAT & NOTIFIKASI
+// ==========================================
+let unsubscribeFirestoreChat = null;
+let unsubscribeFirestoreNotif = null;
+
+function startFirebaseRealtimeChatListener() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+  if (!dbFirestore && typeof firebase.firestore === 'function') {
+    try { dbFirestore = firebase.firestore(); } catch(e) {}
+  }
+  if (!dbFirestore) return;
+
+  if (unsubscribeFirestoreChat) {
+    try { unsubscribeFirestoreChat(); } catch(e) {}
+  }
+
+  try {
+    unsubscribeFirestoreChat = dbFirestore.collection('chat_messages')
+      .orderBy('timestamp', 'asc')
+      .limitToLast(300)
+      .onSnapshot(snapshot => {
+        if (!snapshot || snapshot.empty) return;
+        const remoteChats = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (data && data.id) remoteChats.push(data);
+        });
+
+        if (remoteChats.length > 0) {
+          const localChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
+          const localMap = new Map();
+          localChats.forEach(c => { if (c && c.id) localMap.set(c.id, c); });
+          remoteChats.forEach(c => { localMap.set(c.id, c); });
+          const merged = Array.from(localMap.values());
+          appStorage.setItem(CHAT_DB_KEY, JSON.stringify(merged));
+
+          if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
+          if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
+          if (typeof updateChatBadge === 'function') updateChatBadge();
+          if (typeof renderUserList === 'function') renderUserList();
+        }
+      }, err => {
+        console.warn('[FIRESTORE CHAT REALTIME LISTENER]:', err);
+      });
+  } catch (e) {
+    console.warn('[FIRESTORE CHAT INIT EXCEPTION]:', e);
+  }
+}
+window.startFirebaseRealtimeChatListener = startFirebaseRealtimeChatListener;
+
+function startFirebaseRealtimeNotifListener() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+  if (!dbFirestore && typeof firebase.firestore === 'function') {
+    try { dbFirestore = firebase.firestore(); } catch(e) {}
+  }
+  if (!dbFirestore) return;
+
+  if (unsubscribeFirestoreNotif) {
+    try { unsubscribeFirestoreNotif(); } catch(e) {}
+  }
+
+  try {
+    unsubscribeFirestoreNotif = dbFirestore.collection('notifications')
+      .orderBy('timestamp', 'desc')
+      .limit(100)
+      .onSnapshot(snapshot => {
+        if (!snapshot || snapshot.empty) {
+          // KOSONGKAN JIKA DI DATABASE FIRESTORE SUDAH DIHAPUS
+          const emptyPayload = { clearedAt: Date.now(), items: [] };
+          appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyPayload));
+          try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyPayload)); } catch(e) {}
+          if (typeof loadNotificationList === 'function') loadNotificationList();
+          if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+          return;
+        }
+
+        const remoteNotifs = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (data && data.id) remoteNotifs.push(data);
+        });
+
+        if (remoteNotifs.length > 0) {
+          const currentNotifs = getSystemNotifications();
+          const map = new Map();
+          currentNotifs.forEach(n => { if (n && n.id) map.set(n.id, n); });
+          remoteNotifs.forEach(n => { map.set(n.id, n); });
+          const merged = Array.from(map.values()).sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+          
+          appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(merged));
+          if (typeof loadNotificationList === 'function') loadNotificationList();
+          if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+        }
+      }, err => {
+        console.warn('[FIRESTORE NOTIF REALTIME LISTENER]:', err);
+      });
+  } catch (e) {
+    console.warn('[FIRESTORE NOTIF INIT EXCEPTION]:', e);
+  }
+}
+window.startFirebaseRealtimeNotifListener = startFirebaseRealtimeNotifListener;
+
+
+let unsubscribeFirestoreAppSettings = null;
+
+function startFirebaseRealtimeAppSettingsListener() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+  if (!dbFirestore && typeof firebase.firestore === 'function') {
+    try { dbFirestore = firebase.firestore(); } catch(e) {}
+  }
+  if (!dbFirestore) return;
+
+  if (unsubscribeFirestoreAppSettings) {
+    try { unsubscribeFirestoreAppSettings(); } catch(e) {}
+  }
+
+  try {
+    unsubscribeFirestoreAppSettings = dbFirestore.collection('app_settings').doc('config')
+      .onSnapshot(doc => {
+        if (!doc || !doc.exists) return;
+        const data = doc.data();
+        if (!data) return;
+
+        // 1. KODE UNIT MAP (EXCEL LOOKUP) -> SIMPAN KE LOKAL PENYIMPANAN
+        if (data.kodeUnitMap && typeof data.kodeUnitMap === 'object') {
+          const val = JSON.stringify(data.kodeUnitMap);
+          appStorage.setItem(KODE_UNIT_MAP_KEY, val);
+          try { localStorage.setItem(KODE_UNIT_MAP_KEY, val); } catch(e) {}
+        }
+
+        // 2. FEATURE PHOTOS
+        if (data.featurePhotos !== undefined && data.featurePhotos !== null) {
+          const valStr = String(data.featurePhotos);
+          appStorage.setItem(FEATURE_PHOTOS_KEY, valStr);
+          try { localStorage.setItem(FEATURE_PHOTOS_KEY, valStr); } catch(e) {}
+          if (typeof updatePhotoSectionVisibility === 'function') updatePhotoSectionVisibility();
+        }
+
+        // 3. THEME
+        if (data.theme) {
+          appStorage.setItem(GLOBAL_THEME_KEY, String(data.theme));
+        }
+
+        // 4. FONTE TOKEN
+        if (data.fonteToken) {
+          appStorage.setItem(FONTE_TOKEN_KEY, String(data.fonteToken));
+          try { localStorage.setItem(FONTE_TOKEN_KEY, String(data.fonteToken)); } catch(e) {}
+        }
+      }, err => {
+        console.warn('[FIRESTORE APP_SETTINGS REALTIME LISTENER]:', err);
+      });
+  } catch (e) {
+    console.warn('[FIRESTORE APP_SETTINGS INIT EXCEPTION]:', e);
+  }
+}
+window.startFirebaseRealtimeAppSettingsListener = startFirebaseRealtimeAppSettingsListener;
+
 function initFirebaseDB() {
   try {
     if (typeof firebase !== 'undefined') {
@@ -1788,164 +1832,29 @@ function initFirebaseDB() {
         firebaseApp = firebase.app();
       }
 
-      // FIRESTORE ENGINE (CHAT & NOTIFIKASI SAJA)
       if (typeof firebase.firestore === 'function') {
         try {
           dbFirestore = firebase.firestore();
+          window.dbFirestore = dbFirestore;
 
           const dot = document.getElementById('firebaseOnlineDot');
           if (dot) {
             dot.style.background = '#10b981';
             dot.style.boxShadow = '0 0 10px #10b981';
-            dot.title = `ONLINE: TERHUBUNG (${activeConfig.projectId})`;
+            dot.title = `ONLINE: FIRESTORE CHAT & NOTIFIKASI AKTIF (${activeConfig.projectId})`;
           }
 
-          // REAL-TIME SNAPSHOT LISTENER UNTUK CHAT & SETTINGS PUSAT
-          dbFirestore.collection('app_settings').doc('config').onSnapshot(doc => {
-            if (doc.exists) {
-              const cfg = doc.data() || {};
-              if (cfg.notifications) appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(cfg.notifications));
-              if (cfg.chatMessages) appStorage.setItem(CHAT_DB_KEY, JSON.stringify(cfg.chatMessages));
-              if (cfg.chatRooms) appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(cfg.chatRooms));
-              if (cfg.theme) {
-                appStorage.setItem(THEME_KEY, cfg.theme);
-                if (typeof loadSavedTheme === 'function') loadSavedTheme();
-              }
-              if (cfg.designMode) {
-                appStorage.setItem(DESIGN_MODE_KEY, cfg.designMode);
-                if (typeof loadSavedDesignMode === 'function') loadSavedDesignMode();
-              }
-              if (cfg.fonteToken) appStorage.setItem(FONTE_TOKEN_KEY, cfg.fonteToken);
-              if (cfg.adminReminder !== undefined) {
-                const rVal = String(cfg.adminReminder);
-                appStorage.setItem(ADMIN_REMINDER_KEY, rVal);
-                try { localStorage.setItem(ADMIN_REMINDER_KEY, rVal); } catch(e) {}
-                if (typeof updateAdminReminderUI === 'function') updateAdminReminderUI();
-              }
-              if (cfg.adminReminderTime) {
-                const tVal = String(cfg.adminReminderTime);
-                appStorage.setItem(ADMIN_REMINDER_TIME_KEY, tVal);
-                try { localStorage.setItem(ADMIN_REMINDER_TIME_KEY, tVal); } catch(e) {}
-                if (typeof loadAdminReminderTimeInput === 'function') loadAdminReminderTimeInput();
-              }
-              if (cfg.featurePhotos !== undefined) {
-                const curVal = appStorage.getItem(FEATURE_PHOTOS_KEY);
-                const newVal = String(cfg.featurePhotos);
-                if (curVal !== newVal) {
-                  appStorage.setItem(FEATURE_PHOTOS_KEY, newVal);
-                  if (typeof updatePhotoSectionVisibility === 'function') updatePhotoSectionVisibility();
-                }
-              }
-              if (cfg.kodeUnitMap) {
-                const existingMap = JSON.parse(appStorage.getItem(KODE_UNIT_MAP_KEY) || '{}');
-                const mergedMap = { ...existingMap, ...cfg.kodeUnitMap };
-                appStorage.setItem(KODE_UNIT_MAP_KEY, JSON.stringify(mergedMap));
-              }
-              if (cfg.firebaseConfig) {
-                const curLocal = appStorage.getItem(FIREBASE_USER_CONFIG_KEY);
-                const newStr = typeof cfg.firebaseConfig === 'string' ? cfg.firebaseConfig : JSON.stringify(cfg.firebaseConfig);
-                if (curLocal !== newStr && newStr !== 'null') {
-                  appStorage.setItem(FIREBASE_USER_CONFIG_KEY, newStr);
-                  if (typeof loadFirebaseConfigInput === 'function') loadFirebaseConfigInput();
-                  initFirebaseDB();
-                }
-              }
-
-              if (typeof refreshActiveChatUI === 'function') {
-                refreshActiveChatUI();
-              }
-            }
-          }, err => {
-            console.warn("[FIRESTORE CONFIG SNAPSHOT NOTICE]:", err.message);
-          });
-
-          // JIKA FIRESTORE BERHASIL DIINISIALISASI, SET BULAT HIJAU
-          if (typeof updateGlobalConnectionDotStatus === 'function') {
-            updateGlobalConnectionDotStatus();
-          }
+          // AKTIFKAN REAL-TIME LISTENER CHAT & NOTIFIKASI VIA FIRESTORE
+          startFirebaseRealtimeChatListener();
+          startFirebaseRealtimeNotifListener();
+          startFirebaseRealtimeAppSettingsListener();
         } catch (e) {
-          console.warn("[FIRESTORE INIT NOTICE]:", e.message);
+          console.warn('[FIRESTORE INIT NOTICE]:', e);
         }
       }
-
-      // REALTIME DATABASE (JIKA ADANYA CONFIG DATABASEURL)
-      if (activeConfig.databaseURL && typeof firebase.database === 'function') {
-        try {
-          dbRealtime = firebase.database();
-          // Listener real-time status upload foto
-          dbRealtime.ref('settings/featurePhotos').on('value', (snap) => {
-            const val = snap.val();
-            if (val !== null && val !== undefined) {
-              const strVal = String(val);
-              appStorage.setItem(FEATURE_PHOTOS_KEY, strVal);
-              try { localStorage.setItem(FEATURE_PHOTOS_KEY, strVal); } catch(e) {}
-              if (typeof updatePhotoSectionVisibility === 'function') {
-                updatePhotoSectionVisibility();
-              }
-            }
-          });
-          // Listener real-time tema global
-          dbRealtime.ref('settings/global_theme').on('value', (snap) => {
-            const val = snap.val();
-            if (val) {
-              const themeName = (typeof val === 'object' && val.theme) ? val.theme : String(val);
-              appStorage.setItem(GLOBAL_THEME_KEY, themeName);
-              appStorage.setItem(THEME_KEY, themeName);
-              try { localStorage.setItem('APP_SELECTED_THEME', themeName); } catch(e) {}
-              if (typeof updateBodyClasses === 'function') updateBodyClasses(themeName);
-              if (typeof loadSavedTheme === 'function') loadSavedTheme();
-            }
-          });
-          // Listener real-time token Fonte WhatsApp
-          dbRealtime.ref('settings/fonteToken').on('value', (snap) => {
-            const val = snap.val();
-            if (val !== null && val !== undefined) {
-              const strVal = String(val);
-              appStorage.setItem(FONTE_TOKEN_KEY, strVal);
-              try { localStorage.setItem(FONTE_TOKEN_KEY, strVal); } catch(e) {}
-              if (typeof loadFonteToken === 'function') loadFonteToken();
-            }
-          });
-          // Listener real-time admin reminder
-          dbRealtime.ref('settings/adminReminder').on('value', (snap) => {
-            const val = snap.val();
-            if (val !== null && val !== undefined) {
-              const strVal = String(val);
-              appStorage.setItem(ADMIN_REMINDER_KEY, strVal);
-              try { localStorage.setItem(ADMIN_REMINDER_KEY, strVal); } catch(e) {}
-              if (typeof updateAdminReminderUI === 'function') updateAdminReminderUI();
-            }
-          });
-          dbRealtime.ref('settings/adminReminderTime').on('value', (snap) => {
-            const val = snap.val();
-            if (val !== null && val !== undefined) {
-              const strVal = String(val);
-              appStorage.setItem(ADMIN_REMINDER_TIME_KEY, strVal);
-              try { localStorage.setItem(ADMIN_REMINDER_TIME_KEY, strVal); } catch(e) {}
-              if (typeof loadAdminReminderTimeInput === 'function') loadAdminReminderTimeInput();
-            }
-          });
-        } catch (e) {
-          dbRealtime = null;
-        }
-      }
-
-      const statusBadge = document.getElementById('firebaseStatusBadge');
-      if (statusBadge) {
-        statusBadge.textContent = `STATUS: TERHUBUNG KE FIREBASE ONLINE (${activeConfig.projectId})`;
-        statusBadge.style.color = '#10b981';
-      }
-
-      console.log(`[FIREBASE ONLINE ENGINE]: Connected to ${activeConfig.projectId}`);
     }
-  } catch (err) {
-    const dot = document.getElementById('firebaseOnlineDot');
-    if (dot) {
-      dot.style.background = '#ef4444';
-      dot.style.boxShadow = 'none';
-      dot.title = 'ONLINE: TERPUTUS / DISKONEK';
-    }
-    console.warn("[FIREBASE ENGINE NOTICE]:", err.message);
+  } catch (e) {
+    console.warn('[FIREBASE DB INIT NOTICE]:', e);
   }
 }
 
@@ -1993,7 +1902,7 @@ let supabaseRealtimeChannel = null;
 // ==========================================
 // 1. SUPABASE REALTIME ENGINE (EVENT-DRIVEN)
 // ==========================================
-function initSupabaseRealtimeEngine() {
+async function initSupabaseRealtimeEngine() {
   if (typeof supabase === 'undefined' || !supabase) return;
 
   if (supabaseRealtimeChannel) {
@@ -2036,6 +1945,18 @@ function initSupabaseRealtimeEngine() {
             if (event.payload.theme) {
               if (typeof applyGlobalThemeToApp === 'function') applyGlobalThemeToApp(event.payload.theme);
             }
+          }
+        }
+      )
+      .on(
+        'broadcast',
+        { event: 'user_data_changed' },
+        async () => {
+          if (typeof syncSupabaseUsersToLocalCache === 'function') {
+            await syncSupabaseUsersToLocalCache();
+          }
+          if (typeof loadUsersManagement === 'function') {
+            loadUsersManagement();
           }
         }
       )
@@ -2272,6 +2193,10 @@ function handleRealtimePermintaanToko(payload) {
       } catch (e) {
         console.warn('[REALTIME GLOBAL THEME ERROR]:', e);
       }
+      return;
+    }
+
+    if (rawNoSurat === '__SYSTEM_USERS_MASTER__') {
       return;
     }
 
@@ -2549,23 +2474,59 @@ function handleRealtimeUserChange(payload) {
         phone: String(u.phone || '').trim(),
         category: String(u.category || 'TOKO').trim().toUpperCase(),
         area: String(u.area || 'BDG').trim().toUpperCase(),
+        ttd: u.ttd || '',
         createdAt: u.created_at || (typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '')
       };
 
-      const idx = users.findIndex(x => x && (x.id === formatted.id || String(x.username).toUpperCase() === formatted.username.toUpperCase()));
+      const idx = users.findIndex(x => x && ((x.id && formatted.id && String(x.id) === String(formatted.id)) || (x.username && formatted.username && String(x.username).toUpperCase() === formatted.username.toUpperCase())));
       if (idx !== -1) {
         users[idx] = { ...users[idx], ...formatted };
       } else {
         users.push(formatted);
       }
+
       appStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
       try { localStorage.setItem(USERS_DB_KEY, JSON.stringify(users)); } catch(e) {}
-      if (typeof loadUsersManagement === 'function' && document.getElementById('userTableBody')) loadUsersManagement();
+
+      if (currentUser && ((formatted.id && currentUser.id === formatted.id) || (formatted.username && currentUser.username.toUpperCase() === formatted.username.toUpperCase()))) {
+        currentUser = { ...currentUser, ...formatted };
+        appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+        try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch(e) {}
+        // UPDATE REAL-TIME POPUP AKUN & HEADER
+        const elNama = document.getElementById('akunNama');
+        if (elNama) elNama.value = currentUser.fullName || '';
+        const elHP = document.getElementById('akunHP');
+        if (elHP) elHP.value = currentUser.phone || '-';
+        const elArea = document.getElementById('akunArea');
+        if (elArea) elArea.value = `${currentUser.area} - ${AREA_MAP[currentUser.area] || currentUser.area}`;
+        const elKat = document.getElementById('akunKategori');
+        if (elKat) elKat.value = currentUser.category || '';
+        const headerUser = document.getElementById('headerUser');
+        if (headerUser) headerUser.textContent = currentUser.fullName || currentUser.username;
+        const welcomeUser = document.getElementById('welcomeUser');
+        if (welcomeUser) welcomeUser.textContent = currentUser.fullName || currentUser.username;
+        const displayNama = document.getElementById('displayUserFullName');
+        if (displayNama) displayNama.textContent = currentUser.fullName || currentUser.username;
+      }
+
+      if (typeof loadDashboard === 'function') loadDashboard();
+      if (typeof loadUsersManagement === 'function') loadUsersManagement();
+      if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
     } else if (eventType === 'DELETE' && payload.old) {
-      users = users.filter(x => x.id !== payload.old.id && String(x.username).toUpperCase() !== String(payload.old.username).toUpperCase());
+      const delId = payload.old.id ? String(payload.old.id) : '';
+      const delUname = payload.old.username ? String(payload.old.username).toUpperCase() : '';
+      users = users.filter(x => {
+        if (!x) return false;
+        if (delId && x.id && String(x.id) === delId) return false;
+        if (delUname && x.username && String(x.username).toUpperCase() === delUname) return false;
+        return true;
+      });
+
       appStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
       try { localStorage.setItem(USERS_DB_KEY, JSON.stringify(users)); } catch(e) {}
-      if (typeof loadUsersManagement === 'function' && document.getElementById('userTableBody')) loadUsersManagement();
+
+      if (typeof loadUsersManagement === 'function') loadUsersManagement();
+      if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
     }
   } catch(e) {}
 }
@@ -2586,7 +2547,7 @@ function handleRealtimeStoreChange(payload) {
         createdBy: String(s.created_by || s.createdBy || 'ADMIN').trim()
       };
 
-      const idx = stores.findIndex(x => x.id === formatted.id || (x.fullName && x.fullName.toUpperCase() === formatted.fullName.toUpperCase()));
+      const idx = stores.findIndex(x => x && ((x.id && formatted.id && String(x.id) === String(formatted.id)) || (x.fullName && formatted.fullName && String(x.fullName).toUpperCase() === formatted.fullName.toUpperCase())));
       if (idx !== -1) {
         stores[idx] = { ...stores[idx], ...formatted };
       } else {
@@ -2597,7 +2558,14 @@ function handleRealtimeStoreChange(payload) {
       if (typeof updateStoreDropdownOptions === 'function') updateStoreDropdownOptions();
       if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
     } else if (eventType === 'DELETE' && payload.old) {
-      stores = stores.filter(x => x.id !== payload.old.id && String(x.fullName).toUpperCase() !== String(payload.old.full_name).toUpperCase());
+      const delId = payload.old.id ? String(payload.old.id) : '';
+      const delName = payload.old.full_name ? String(payload.old.full_name).toUpperCase() : (payload.old.fullName ? String(payload.old.fullName).toUpperCase() : '');
+      stores = stores.filter(x => {
+        if (!x) return false;
+        if (delId && x.id && String(x.id) === delId) return false;
+        if (delName && x.fullName && String(x.fullName).toUpperCase() === delName) return false;
+        return true;
+      });
       appStorage.setItem(STORES_DB_KEY, JSON.stringify(stores));
       try { localStorage.setItem(STORES_DB_KEY, JSON.stringify(stores)); } catch(e) {}
       if (typeof updateStoreDropdownOptions === 'function') updateStoreDropdownOptions();
@@ -2753,12 +2721,22 @@ async function syncSupabaseRequestsToLocalCache() {
       if (cat === 'TOKO') {
         query = query.or(`user_id.eq.${currentUser.id},toko.ilike.%${currentUser.fullName}%`);
       } else if (cat === 'SERVICE') {
-        if (userArea !== 'ALL' && userArea !== 'TSM') {
-          query = query.eq('area', userArea);
+        const areaList = typeof getUserAreaList === 'function' ? getUserAreaList(userArea) : [];
+        if (!areaList.includes('ALL') && areaList.length > 0 && !areaList.includes('TSM')) {
+          if (areaList.length === 1) {
+            query = query.eq('area', areaList[0]);
+          } else {
+            query = query.in('area', areaList);
+          }
         }
       } else if (cat === 'DM') {
-        if (userArea !== 'ALL') {
-          query = query.eq('area', userArea);
+        const areaList = typeof getUserAreaList === 'function' ? getUserAreaList(userArea) : [];
+        if (!areaList.includes('ALL') && areaList.length > 0) {
+          if (areaList.length === 1) {
+            query = query.eq('area', areaList[0]);
+          } else {
+            query = query.in('area', areaList);
+          }
         }
       }
     }
@@ -2799,24 +2777,50 @@ async function syncSupabaseUsersToLocalCache() {
           .map(v => String(v).trim().toUpperCase())
       );
 
-      const formatted = supaUsers
-        .map(u => ({
-          id: u.id,
-          username: String(u.username || '').trim(),
+      const localUsers = typeof getUsersFromDB === 'function' ? getUsersFromDB() : [];
+      const mergedMap = new Map();
+
+      localUsers.forEach(u => {
+        if (u && u.username) {
+          const key = String(u.username).trim().toUpperCase();
+          if (!delUsers.has(key) && !delUsers.has(String(u.id || '').toUpperCase())) {
+            mergedMap.set(key, u);
+          }
+        }
+      });
+
+      supaUsers.forEach(u => {
+        if (!u || !u.username) return;
+        const username = String(u.username).trim();
+        const key = username.toUpperCase();
+        if (delUsers.has(key) || delUsers.has(String(u.id || '').toUpperCase())) return;
+
+        const supaObj = {
+          id: u.id || username,
+          username: username,
           password: String(u.password || '').trim(),
           fullName: String(u.full_name || u.fullName || '').trim(),
           storeCode: String(u.store_code || u.storeCode || '').trim(),
           phone: String(u.phone || '').trim(),
           category: String(u.category || 'TOKO').trim().toUpperCase(),
           area: String(u.area || 'BDG').trim().toUpperCase(),
+          ttd: u.ttd || '',
           createdAt: u.created_at || (typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '')
-        }))
-        .filter(u => u.username && !delUsers.has(String(u.id).toUpperCase()) && !delUsers.has(String(u.username).toUpperCase()));
+        };
 
+        if (mergedMap.has(key)) {
+          const localObj = mergedMap.get(key);
+          mergedMap.set(key, { ...supaObj, ...localObj, ttd: localObj.ttd || supaObj.ttd || '' });
+        } else {
+          mergedMap.set(key, supaObj);
+        }
+      });
+
+      const formatted = Array.from(mergedMap.values());
       if (formatted.length > 0) {
         if (typeof SEED_USERS !== 'undefined' && Array.isArray(SEED_USERS)) {
           SEED_USERS.forEach(su => {
-            if (su && su.username && !formatted.some(x => x.username.toUpperCase() === su.username.toUpperCase()) && !delUsers.has(su.username.toUpperCase())) {
+            if (su && su.username && su.username.toUpperCase() === 'ADMIN' && !formatted.some(x => x.username.toUpperCase() === 'ADMIN') && !delUsers.has('ADMIN')) {
               formatted.unshift(su);
             }
           });
@@ -2831,6 +2835,44 @@ async function syncSupabaseUsersToLocalCache() {
   }
 }
 window.syncSupabaseUsersToLocalCache = syncSupabaseUsersToLocalCache;
+
+async function simpanUserKeSupabase(userObj) {
+  const client = (typeof supabase !== 'undefined' && supabase) ? supabase : null;
+  if (!client || !userObj) return;
+  try {
+    const username = String(userObj.username || userObj.id || '').trim();
+    if (!username) return;
+
+    const payload = {
+      id: userObj.id || ('USR-' + username),
+      username: username,
+      password: String(userObj.password || '1').trim(),
+      full_name: String(userObj.fullName || userObj.full_name || username).trim(),
+      store_code: String(userObj.storeCode || userObj.store_code || '').trim().toUpperCase(),
+      phone: String(userObj.phone || '-').trim(),
+      category: String(userObj.category || 'TOKO').trim().toUpperCase(),
+      area: String(userObj.area || 'BDG').trim().toUpperCase(),
+      created_at: userObj.createdAt || userObj.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error: err1 } = await client.from('users').upsert(payload, { onConflict: 'id' });
+    if (err1) {
+      const { error: err2 } = await client.from('users').upsert(payload, { onConflict: 'username' });
+      if (err2) {
+        console.warn('[SUPABASE USER UPSERT]:', err2.message || err1.message);
+      }
+    }
+  } catch (e) {
+    console.warn('[SUPABASE USER UPSERT EXCEPTION]:', e);
+  }
+}
+window.simpanUserKeSupabase = simpanUserKeSupabase;
+
+async function broadcastSystemUsersMasterToSupabase() {
+  return;
+}
+window.broadcastSystemUsersMasterToSupabase = broadcastSystemUsersMasterToSupabase;
 
 async function syncSupabaseNotifsAndChatToLocalCache() {
   if (typeof supabase === 'undefined' || !supabase) return;
@@ -3244,7 +3286,7 @@ async function pushCentralCloudDB(target = null) {
           toko: 'SYSTEM',
           area: 'ALL',
           jenis: 'SYSTEM',
-          catatan: JSON.stringify({ featurePhotos: photoFeatureVal, enabled: isPhotoEnabled, time: Date.now(), by: currentUser?.username || 'ADMIN' }),
+          catatan: JSON.stringify({ featurePhotos: photoFeatureVal, enabled: isPhotoEnabled, time: Date.now(), by: (currentUser && currentUser.username ? currentUser.username : 'USER') || 'ADMIN' }),
           items: [],
           photos: [],
           status: 'DONE',
@@ -3263,7 +3305,7 @@ async function pushCentralCloudDB(target = null) {
             toko: 'SYSTEM',
             area: 'ALL',
             jenis: 'SYSTEM',
-            catatan: JSON.stringify({ fonteToken: currentFonteToken, time: Date.now(), by: currentUser?.username || 'ADMIN' }),
+            catatan: JSON.stringify({ fonteToken: currentFonteToken, time: Date.now(), by: (currentUser && currentUser.username ? currentUser.username : 'USER') || 'ADMIN' }),
             items: [],
             photos: [],
             status: 'DONE',
@@ -3274,46 +3316,10 @@ async function pushCentralCloudDB(target = null) {
           await supabase.from('permintaan_toko').upsert(systemFonteRow);
 
           try {
-            await supabase.from('lookup').upsert({
-              key: 'fonteToken',
-              value: currentFonteToken,
-              updated_at: new Date().toISOString()
-            });
+            await supabase.from('lookup').upsert({ key: 'fonteToken', value: currentFonteToken,
+              updated_at: new Date().toISOString() }, { onConflict: 'key' });
           } catch(e) {}
         }
-
-        const isReminderEnabled = getAdminReminderEnabled();
-        const reminderTimeVal = getAdminReminderTime();
-        const reminderEnabledVal = isReminderEnabled ? 'true' : 'false';
-        const systemReminderRow = {
-          id: '__SYSTEM_REMINDER_SETTINGS__',
-          no_surat: '__SYSTEM_REMINDER_SETTINGS__',
-          tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-          toko: 'SYSTEM',
-          area: 'ALL',
-          jenis: 'SYSTEM',
-          catatan: JSON.stringify({ adminReminder: reminderEnabledVal, adminReminderTime: reminderTimeVal, time: Date.now(), by: currentUser?.username || 'ADMIN' }),
-          items: [],
-          photos: [],
-          status: 'DONE',
-          service_approve: true,
-          created_by: 'SYSTEM',
-          created_at: new Date().toISOString()
-        };
-        await supabase.from('permintaan_toko').upsert(systemReminderRow);
-
-        try {
-          await supabase.from('lookup').upsert({
-            key: 'adminReminder',
-            value: reminderEnabledVal,
-            updated_at: new Date().toISOString()
-          });
-          await supabase.from('lookup').upsert({
-            key: 'adminReminderTime',
-            value: reminderTimeVal,
-            updated_at: new Date().toISOString()
-          });
-        } catch(e) {}
 
         // Push Chat Messages to Supabase (Lookup & Permintaan_Toko)
         try {
@@ -3383,8 +3389,6 @@ async function pushCentralCloudDB(target = null) {
         const theme = appStorage.getItem(THEME_KEY) || 'dark-mode';
         const designMode = getSavedDesignMode();
         const fonteToken = getFonteToken();
-        const adminReminder = getAdminReminderEnabled();
-        const adminReminderTime = getAdminReminderTime();
         const featurePhotos = getFeaturePhotosEnabled();
         const kodeUnitMap = getKodeUnitMap();
 
@@ -3399,8 +3403,6 @@ async function pushCentralCloudDB(target = null) {
           theme: theme,
           designMode: designMode,
           fonteToken: fonteToken,
-          adminReminder: adminReminder,
-          adminReminderTime: adminReminderTime,
           featurePhotos: featurePhotos,
           kodeUnitMap: kodeUnitMap,
           firebaseConfig: parsedFbCfg,
@@ -3426,8 +3428,6 @@ async function pushCentralCloudDB(target = null) {
         dbRealtime.ref('settings').set({
           theme: appStorage.getItem(THEME_KEY) || 'dark-mode',
           fonteToken: getFonteToken(),
-          adminReminder: getAdminReminderEnabled(),
-          adminReminderTime: getAdminReminderTime(),
           featurePhotos: getFeaturePhotosEnabled()
         });
       } catch (err) {
@@ -3483,12 +3483,12 @@ async function setFeaturePhotosEnabled(enabled) {
         toko: 'SYSTEM',
         area: 'ALL',
         jenis: 'SYSTEM',
-        catatan: JSON.stringify({ featurePhotos: valStr, enabled: !!enabled, time: Date.now(), by: currentUser?.username || 'ADMIN' }),
+        catatan: JSON.stringify({ featurePhotos: valStr, enabled: !!enabled, time: Date.now(), by: (currentUser && currentUser.username ? currentUser.username : 'USER') || 'ADMIN' }),
         items: [],
         photos: [],
         status: 'DONE',
         service_approve: true,
-        created_by: currentUser?.fullName || 'ADMIN',
+        created_by: (currentUser && currentUser.fullName ? currentUser.fullName : 'ADMIN') || 'ADMIN',
         created_at: new Date().toISOString()
       };
       await safeSupabaseUpsertPermintaan(photoSystemRow);
@@ -3570,7 +3570,7 @@ function updatePhotoSectionVisibility() {
     adminCard.style.display = (currentUser && (currentUser.category === 'ADMIN' || currentUser.username === 'ADMIN')) ? 'flex' : 'none';
   }
 
-  if (typeof loadRiwayat === 'function' && document.getElementById('riwayatPage')?.classList.contains('active')) {
+  if (typeof loadRiwayat === 'function' && (document.getElementById('riwayatPage') && document.getElementById('riwayatPage').classList.contains('active'))) {
     loadRiwayat();
   }
 }
@@ -3583,30 +3583,35 @@ window.updatePhotoSectionVisibility = updatePhotoSectionVisibility;
 function normalizeUserList(users) {
   if (!Array.isArray(users)) return [];
 
-  const seen = new Set();
-  const cleaned = [];
+  const map = new Map();
 
   users.forEach(user => {
     if (!user || !user.username) return;
     const username = String(user.username).trim();
     if (!username) return;
     const key = username.toUpperCase();
-    if (seen.has(key)) return;
-    seen.add(key);
 
-    cleaned.push({
+    const formatted = {
       ...user,
+      id: user.id || username,
       username,
       fullName: String(user.fullName || '').trim(),
       password: String(user.password || '').trim(),
       storeCode: String(user.storeCode || '').trim().toUpperCase(),
       phone: String(user.phone || '').trim(),
       category: String(user.category || 'TOKO').trim().toUpperCase(),
-      area: String(user.area || 'BDG').trim().toUpperCase()
-    });
+      area: String(user.area || 'BDG').trim().toUpperCase(),
+      ttd: user.ttd || ''
+    };
+
+    if (map.has(key)) {
+      map.set(key, { ...map.get(key), ...formatted });
+    } else {
+      map.set(key, formatted);
+    }
   });
 
-  return cleaned;
+  return Array.from(map.values());
 }
 
 function clearAllAppCacheAndData(force = false) {
@@ -3645,7 +3650,7 @@ function clearAllAppCacheAndData(force = false) {
 
   sessionKeys.forEach(key => {
     try { localStorage.removeItem(key); } catch (err) {}
-    try { window.appStorage?.removeItem?.(key); } catch (err) {}
+    try { if (window.appStorage && typeof window.appStorage.removeItem === 'function') window.appStorage.removeItem(key); } catch (err) {}
   });
 
   if (window.appStorage) {
@@ -3870,32 +3875,33 @@ function getUsersFromDB() {
   users = normalizeUserList(users);
 
   try {
-    const deletedUserIds = JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]');
-    if (Array.isArray(deletedUserIds) && deletedUserIds.length > 0) {
-      users = users.filter(u => u && !deletedUserIds.includes(u.id) && !deletedUserIds.includes(u.username));
+    const delSet = new Set(
+      (JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]') || [])
+        .filter(Boolean)
+        .map(v => String(v).trim().toUpperCase())
+    );
+    if (delSet.size > 0) {
+      users = users.filter(u => {
+        if (!u) return false;
+        const uId = String(u.id || '').trim().toUpperCase();
+        const uName = String(u.username || '').trim().toUpperCase();
+        return !delSet.has(uId) && !delSet.has(uName);
+      });
     }
   } catch (e) {}
 
-  const defaultUsernamesToRemove = ['SERVICE_TSM', 'DM_TSM', 'TOKO_1', 'SALES_1'];
   let updated = false;
-
-  users = users.filter(u => {
-    if (u && u.username && defaultUsernamesToRemove.includes(String(u.username).toUpperCase())) {
-      updated = true;
-      return false;
-    }
-    return true;
-  });
-
   const adminIndex = users.findIndex(u => u && u.username && String(u.username).toUpperCase() === 'ADMIN');
   if (adminIndex !== -1) {
-    if (users[adminIndex].password !== '0') {
+    if (!users[adminIndex].password && users[adminIndex].password !== '0') {
       users[adminIndex].password = '0';
       updated = true;
     }
   } else {
-    users.push({ ...SEED_USERS[0] });
-    updated = true;
+    if (typeof SEED_USERS !== 'undefined' && SEED_USERS[0]) {
+      users.push({ ...SEED_USERS[0] });
+      updated = true;
+    }
   }
 
   if (updated || !users.length) {
@@ -3909,9 +3915,20 @@ function getUsersFromDB() {
 function saveUsersToDB(users, targetUser = null) {
   const normalizedUsers = normalizeUserList(Array.isArray(users) ? users : []);
   appStorage.setItem(USERS_DB_KEY, JSON.stringify(normalizedUsers));
-  if (typeof pushCentralCloudDB === 'function') {
-    pushCentralCloudDB(targetUser ? (targetUser.type ? targetUser : { type: 'USER', data: targetUser }) : null);
+  try { localStorage.setItem(USERS_DB_KEY, JSON.stringify(normalizedUsers)); } catch(e) {}
+
+  if (targetUser && typeof targetUser === 'object' && targetUser.username) {
+    if (typeof simpanUserKeSupabase === 'function') {
+      simpanUserKeSupabase(targetUser).catch(() => {});
+    }
+  } else if (Array.isArray(normalizedUsers)) {
+    normalizedUsers.forEach(u => {
+      if (u && u.username && typeof simpanUserKeSupabase === 'function') {
+        simpanUserKeSupabase(u).catch(() => {});
+      }
+    });
   }
+
   if (currentUser) {
     if (typeof loadDashboard === 'function') loadDashboard();
     if (typeof loadRiwayat === 'function') loadRiwayat();
@@ -3953,11 +3970,8 @@ async function simpanFonteToken() {
   if (typeof supabase !== 'undefined' && supabase) {
     try {
       // Upsert ke tabel lookup
-      await supabase.from('lookup').upsert({
-        key: 'fonteToken',
-        value: token,
-        updated_at: new Date().toISOString()
-      });
+      await supabase.from('lookup').upsert({ key: 'fonteToken', value: token,
+        updated_at: new Date().toISOString() }, { onConflict: 'key' });
 
       // Broadcast row sistem permintaan_toko ke seluruh perangkat
       const systemFonteRow = {
@@ -3967,12 +3981,12 @@ async function simpanFonteToken() {
         toko: 'SYSTEM',
         area: 'ALL',
         jenis: 'SYSTEM',
-        catatan: JSON.stringify({ fonteToken: token, time: Date.now(), by: currentUser?.username || 'ADMIN' }),
+        catatan: JSON.stringify({ fonteToken: token, time: Date.now(), by: (currentUser && currentUser.username ? currentUser.username : 'USER') || 'ADMIN' }),
         items: [],
         photos: [],
         status: 'DONE',
         service_approve: true,
-        created_by: currentUser?.fullName || 'ADMIN',
+        created_by: (currentUser && currentUser.fullName ? currentUser.fullName : 'ADMIN') || 'ADMIN',
         created_at: new Date().toISOString()
       };
       await supabase.from('permintaan_toko').upsert(systemFonteRow);
@@ -4218,12 +4232,12 @@ window.kirimNotifikasiWA = kirimNotifikasiWA;
 async function setGlobalAdminTheme(themeId) {
   if (!themeId) return;
   const nowTime = Date.now();
-  const themeObj = { theme: themeId, time: nowTime, admin: currentUser ? currentUser.username : 'ADMIN' };
-  const themeStr = JSON.stringify(themeObj);
 
-  appStorage.setItem(GLOBAL_THEME_KEY, themeId);
-  appStorage.setItem(THEME_KEY, themeId);
-  appStorage.setItem(LAST_ADMIN_THEME_TIME_KEY, String(nowTime));
+  if (typeof appStorage !== 'undefined') {
+    appStorage.setItem(GLOBAL_THEME_KEY, themeId);
+    appStorage.setItem(THEME_KEY, themeId);
+    appStorage.setItem(LAST_ADMIN_THEME_TIME_KEY, String(nowTime));
+  }
 
   try { localStorage.setItem(GLOBAL_THEME_KEY, themeId); } catch(e) {}
   try { localStorage.setItem(THEME_KEY, themeId); } catch(e) {}
@@ -4233,42 +4247,6 @@ async function setGlobalAdminTheme(themeId) {
   const idx = THEME_MODES.findIndex(m => m.id === themeId);
   if (idx !== -1) currentThemeIndex = idx;
   updateBodyClasses(themeId);
-
-  const sb = (typeof supabase !== 'undefined' && supabase) ? supabase : null;
-  if (sb) {
-    try {
-      const themeRow = {
-        id: '__SYSTEM_GLOBAL_THEME__',
-        no_surat: '__SYSTEM_GLOBAL_THEME__',
-        tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-        toko: 'SYSTEM',
-        area: 'ALL',
-        jenis: 'SYSTEM',
-        catatan: themeStr,
-        items: [],
-        photos: [],
-        status: 'DONE',
-        service_approve: true,
-        created_by: 'SYSTEM',
-        created_at: new Date().toISOString()
-      };
-      await sb.from('permintaan_toko').upsert(themeRow);
-      console.log('⚡ [SUPABASE GLOBAL THEME BROADCAST SUCCESS]:', themeId);
-    } catch(err) {
-      console.warn('[SUPABASE GLOBAL THEME BROADCAST NOTICE]:', err);
-    }
-  }
-
-  if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-    try {
-      await dbFirestore.collection('app_settings').doc('global_theme').set(themeObj, { merge: true });
-    } catch(e) {}
-  }
-  if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-    try {
-      await dbRealtime.ref('settings/global_theme').set(themeObj);
-    } catch(e) {}
-  }
 }
 window.setGlobalAdminTheme = setGlobalAdminTheme;
 
@@ -4279,73 +4257,74 @@ async function bersihkanFotoSupabase(mode = 'SELESAI') {
   );
 
   if (!isSysAdmin) {
-    showNotif('HANYA ADMIN UTAMA YANG MEMILIKI HAK AKSES BERSIHKAN FOTO!', 'warning');
+    showNotif('HANYA ADMIN YANG DAPAT MENGHAPUS FOTO!', 'warning');
     return;
   }
 
   const modeText = mode === 'SEMUA' ? 'SEMUA FOTO DOKUMEN' : 'FOTO DOKUMEN STATUS SELESAI & REJECT';
-  showConfirm(`APAKAH ANDA YAKIN INGIN MENGHAPUS ${modeText}?\n\n(Tindakan ini akan mengosongkan data foto untuk menghemat ruang memori. Rincian data permintaan tidak akan terhapus).`, async () => {
-    showLoading('MEMPROSES PEMBERSIHAN FOTO...');
-    try {
-      const sb = (typeof supabase !== 'undefined' && supabase) ? supabase : null;
-      let countUpdated = 0;
-      let allPhotoUrlsToDelete = [];
+  showConfirm(`APAKAH ANDA YAKIN INGIN MENGHAPUS ${modeText}?
 
-      // 1. Fetch target records from Supabase
-      if (sb) {
-        let query = sb.from('permintaan_toko').select('no_surat, photos, status');
-        if (mode !== 'SEMUA') {
-          query = query.in('status', ['DONE', 'REJECT', 'SELESAI', 'DONE_SERVICE']);
-        }
-        const { data: rows, error: fetchErr } = await query;
-        if (!fetchErr && Array.isArray(rows)) {
-          for (const row of rows) {
-            if (row.no_surat && row.no_surat.startsWith('PRMT/')) {
-              let pArr = [];
-              if (Array.isArray(row.photos)) {
-                pArr = row.photos;
-              } else if (typeof row.photos === 'string' && row.photos.trim()) {
-                try { pArr = JSON.parse(row.photos); } catch(e) {}
-              }
+(Tindakan ini akan mengosongkan data foto untuk menghemat ruang memori. Rincian data permintaan tidak akan terhapus).`, function() {
+    var _asyncTask = async function() {
+      showLoading('MEMPROSES PEMBERSIHAN FOTO...');
+      try {
+        const sb = (typeof supabase !== 'undefined' && supabase) ? supabase : null;
+        let countUpdated = 0;
+        let allPhotoUrlsToDelete = [];
 
-              if (Array.isArray(pArr) && pArr.length > 0) {
-                allPhotoUrlsToDelete.push(...pArr);
-                countUpdated++;
+        if (sb) {
+          let query = sb.from('permintaan_toko').select('no_surat, photos, status');
+          if (mode !== 'SEMUA') {
+            query = query.in('status', ['DONE', 'REJECT', 'SELESAI', 'DONE_SERVICE']);
+          }
+          const { data: rows, error: fetchErr } = await query;
+          if (!fetchErr && Array.isArray(rows)) {
+            for (const row of rows) {
+              if (row.no_surat && row.no_surat.startsWith('PRMT/')) {
+                let pArr = [];
+                if (Array.isArray(row.photos)) {
+                  pArr = row.photos;
+                } else if (typeof row.photos === 'string' && row.photos.trim()) {
+                  try { pArr = JSON.parse(row.photos); } catch(e) {}
+                }
+
+                if (Array.isArray(pArr) && pArr.length > 0) {
+                  allPhotoUrlsToDelete.push(...pArr);
+                  countUpdated++;
+                }
+                await sb.from('permintaan_toko').update({ photos: [] }).eq('no_surat', row.no_surat);
               }
-              // Update row in Supabase table
-              await sb.from('permintaan_toko').update({ photos: [] }).eq('no_surat', row.no_surat);
             }
           }
         }
-      }
 
-      // 2. Delete collected files from Supabase Storage buckets if any exist
-      if (allPhotoUrlsToDelete.length > 0 && typeof deletePhotosFromSupabaseStorage === 'function') {
-        await deletePhotosFromSupabaseStorage(allPhotoUrlsToDelete);
-      }
-
-      // 3. Update local requests cache
-      const requests = getRequestsFromDB();
-      requests.forEach(r => {
-        if (mode === 'SEMUA' || r.status === 'DONE' || r.status === 'REJECT' || r.status === 'SELESAI' || r.status === 'DONE_SERVICE') {
-          r.photos = [];
+        if (allPhotoUrlsToDelete.length > 0 && typeof deletePhotosFromSupabaseStorage === 'function') {
+          await deletePhotosFromSupabaseStorage(allPhotoUrlsToDelete);
         }
-      });
-      saveRequestsToDB(requests);
 
-      if (typeof syncSupabaseRequestsToLocalCache === 'function') {
-        await syncSupabaseRequestsToLocalCache();
+        const requests = getRequestsFromDB();
+        requests.forEach(r => {
+          if (mode === 'SEMUA' || r.status === 'DONE' || r.status === 'REJECT' || r.status === 'SELESAI' || r.status === 'DONE_SERVICE') {
+            r.photos = [];
+          }
+        });
+        saveRequestsToDB(requests);
+
+        if (typeof syncSupabaseRequestsToLocalCache === 'function') {
+          await syncSupabaseRequestsToLocalCache();
+        }
+
+        hideLoading();
+        showNotif(`BERHASIL MENGHAPUS FOTO! (${countUpdated} DOKUMEN DIBERSIHKAN)`, 'info');
+        loadRiwayat();
+        loadDashboard();
+      } catch(err) {
+        hideLoading();
+        console.error('[SUPABASE DELETE PHOTOS ERROR]:', err);
+        showNotif(`GAGAL MENGHAPUS FOTO: ${err.message || err}`, 'warning');
       }
-
-      hideLoading();
-      showNotif(`BERHASIL MENGHAPUS FOTO! (${countUpdated} DOKUMEN DIBERSIHKAN)`, 'info');
-      loadRiwayat();
-      loadDashboard();
-    } catch(err) {
-      hideLoading();
-      console.error('[SUPABASE DELETE PHOTOS ERROR]:', err);
-      showNotif(`GAGAL MENGHAPUS FOTO: ${err.message || err}`, 'warning');
-    }
+    };
+    _asyncTask();
   });
 }
 window.bersihkanFotoSupabase = bersihkanFotoSupabase;
@@ -4361,7 +4340,8 @@ async function hapusSemuaFotoBiasa() {
     return;
   }
 
-  showConfirm('APAKAH ANDA YAKIN INGIN MENGHAPUS SEMUA FOTO DARI APLIKASI?', async () => {
+  showConfirm('APAKAH ANDA YAKIN INGIN MENGHAPUS SEMUA FOTO DARI APLIKASI?', function() {
+    var _asyncTask = async function() {
     showLoading('MENGHAPUS SEMUA FOTO...');
     try {
       let totalStorageFilesDeleted = 0;
@@ -4413,13 +4393,16 @@ async function hapusSemuaFotoBiasa() {
       console.error('[HAPUS FOTO ERROR]:', err);
       showNotif('GAGAL MENGHAPUS FOTO: ' + (err.message || err), 'warning');
     }
+    };
+    _asyncTask();
   });
 }
 window.hapusSemuaFotoBiasa = hapusSemuaFotoBiasa;
 
 async function hapusFotoDokumenBiasa(noSurat) {
   if (!noSurat) return;
-  showConfirm(`HAPUS FOTO PADA DOKUMEN #${noSurat}?`, async () => {
+  showConfirm(`HAPUS FOTO PADA DOKUMEN #${noSurat}?`, function() {
+    var _asyncTask = async function() {
     showLoading('MENGHAPUS FOTO DOKUMEN...');
     try {
       const requests = getRequestsFromDB();
@@ -4451,6 +4434,8 @@ async function hapusFotoDokumenBiasa(noSurat) {
       hideLoading();
       showNotif('GAGAL MENGHAPUS FOTO: ' + (err.message || err), 'warning');
     }
+    };
+    _asyncTask();
   });
 }
 window.hapusFotoDokumenBiasa = hapusFotoDokumenBiasa;
@@ -4467,54 +4452,20 @@ function toggleTheme() {
   try {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('APP_SELECTED_THEME', t.id);
+      localStorage.setItem('LOCAL_USER_THEME', t.id);
+      localStorage.setItem('APP_THEME', t.id);
     }
   } catch(e) {}
-  appStorage.setItem(THEME_KEY, t.id);
-  appStorage.setItem(LOCAL_USER_THEME_KEY, t.id);
-  appStorage.setItem('STORE_USER_THEME_TIME', String(now));
+  if (typeof appStorage !== 'undefined') {
+    appStorage.setItem(THEME_KEY, t.id);
+    appStorage.setItem(LOCAL_USER_THEME_KEY, t.id);
+    appStorage.setItem('STORE_USER_THEME_TIME', String(now));
+  }
   updateBodyClasses();
 
   if (currentUser) {
     currentUser.theme = t.id;
   }
-
-  // JIKA AKUN YANG LOGIN ADALAH ADMIN, DISINKRONKAN TEMA KE SELURUH PERANGKAT REALTIME VIA CLOUD
-  const isAdminUser = currentUser && (
-    String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
-    String(currentUser.username || '').toUpperCase() === 'ADMIN'
-  );
-
-  if (isAdminUser) {
-    appStorage.setItem(GLOBAL_THEME_KEY, t.id);
-    appStorage.setItem(LAST_ADMIN_THEME_TIME_KEY, String(now));
-
-    if (typeof supabase !== 'undefined' && supabase) {
-      const themePayload = {
-        id: '__SYSTEM_GLOBAL_THEME__',
-        no_surat: '__SYSTEM_GLOBAL_THEME__',
-        tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-        toko: 'SYSTEM',
-        area: 'ALL',
-        jenis: 'SYSTEM',
-        catatan: JSON.stringify({ theme: t.id, time: now, by: currentUser.username }),
-        items: [],
-        photos: [],
-        status: 'DONE',
-        service_approve: true,
-        created_by: currentUser.fullName || 'ADMIN',
-        created_at: new Date().toISOString()
-      };
-
-      supabase.from('permintaan_toko').upsert(themePayload).then(({ error }) => {
-        if (!error) {
-          console.log('⚡ [SUPABASE GLOBAL THEME SYNC SUCCESS]: Tema disebar ke semua perangkat!', t.id);
-          // Theme notification removed as requested
-        }
-      }).catch(e => console.warn('[SUPABASE GLOBAL THEME EXCEPTION]:', e));
-    }
-  }
-
-  if (typeof pushCentralCloudDB === 'function') pushCentralCloudDB();
 }
 
 function updateThemeIcon() {
@@ -4555,6 +4506,8 @@ async function clearLocalStorageKeepThemeAndTTD() {
     const fonteToken = typeof getFonteToken === 'function' ? getFonteToken() : '';
     const secretKey = typeof getSavedAdminSecretKey === 'function' ? getSavedAdminSecretKey() : '';
     const fbConfig = appStorage.getItem(FIREBASE_USER_CONFIG_KEY) || (typeof localStorage !== 'undefined' ? localStorage.getItem(FIREBASE_USER_CONFIG_KEY) : null);
+    const geminiKey = appStorage.getItem('gemini_api_key') || (typeof localStorage !== 'undefined' ? localStorage.getItem('gemini_api_key') : null);
+    const geminiKeyUpper = appStorage.getItem('GEMINI_API_KEY') || (typeof localStorage !== 'undefined' ? localStorage.getItem('GEMINI_API_KEY') : null);
 
     // 4. CLEAR STORAGE & BROWSER CACHES
     if (typeof appStorage !== 'undefined' && appStorage.clear) {
@@ -4623,6 +4576,14 @@ async function clearLocalStorageKeepThemeAndTTD() {
       appStorage.setItem(FIREBASE_USER_CONFIG_KEY, fbConfig);
       try { localStorage.setItem(FIREBASE_USER_CONFIG_KEY, fbConfig); } catch(e) {}
     }
+    if (geminiKey) {
+      appStorage.setItem('gemini_api_key', geminiKey);
+      try { localStorage.setItem('gemini_api_key', geminiKey); } catch(e) {}
+    }
+    if (geminiKeyUpper) {
+      appStorage.setItem('GEMINI_API_KEY', geminiKeyUpper);
+      try { localStorage.setItem('GEMINI_API_KEY', geminiKeyUpper); } catch(e) {}
+    }
 
     // 8. RE-APPLY THEME IMMEDIATELY
     if (typeof applyThemeToDocument === 'function') {
@@ -4642,10 +4603,6 @@ function loadRememberedCredentials() {
       savedCredsStr = localStorage.getItem(STORE_REMEMBER_LOGIN_CREDS_KEY);
     }
   } catch(e) {}
-
-  const uEl = document.getElementById('username');
-  const pEl = document.getElementById('password');
-  const remEl = document.getElementById('rememberMe');
 
   if (savedCredsStr) {
     try {
@@ -4691,7 +4648,7 @@ async function prosesLogin() {
 
   const u = uEl.value.trim().toUpperCase();
   const p = pEl.value.trim();
-  const remember = document.getElementById('rememberMe')?.checked === true;
+  const remember = (document.getElementById('rememberMe') && document.getElementById('rememberMe').checked) === true;
 
   if (!u || !p) {
     showNotif('USERNAME DAN PASSWORD WAJIB DIISI!', 'warning');
@@ -4783,9 +4740,9 @@ async function catatLogLogin(username, nama, area, status) {
   if (typeof supabase !== 'undefined' && supabase) {
     try {
       await supabase.from('lookup').upsert({
-        key: `login_log_${Date.now()}`,
+        key: `login_log_${Date.now()}_${Math.floor(Math.random()*1000)}`,
         value: { username, nama, area, status, time: new Date().toISOString() }
-      });
+      }, { onConflict: 'key' });
     } catch (e) {}
   }
 }
@@ -4798,11 +4755,12 @@ function fillLogin(u, p) {
   prosesLogin();
 }
 
-function logout() {
+async function logout() {
   const confirmMsg = isFormDirtyOrFilled() 
     ? 'ADA DATA PERMINTAAN YANG BELUM DISIMPAN. YAKIN INGIN LOGOUT & KELUAR DARI APLIKASI?' 
     : 'YAKIN INGIN KELUAR DARI APLIKASI?';
-  showConfirm(confirmMsg, async () => {
+  showConfirm(confirmMsg, function() {
+    var _asyncTask = async function() {
     let rememberedCreds = null;
     try {
       rememberedCreds = appStorage.getItem(STORE_REMEMBER_LOGIN_CREDS_KEY);
@@ -4814,6 +4772,11 @@ function logout() {
     currentUser = null;
     appStorage.removeItem(SESSION_KEY);
 
+    // BERSIHKAN PENYIMPANAN LOKAL PERANGKAT (KECUALI TTD, TEMA & KEY GEMINI)
+    if (typeof clearLocalStorageKeepThemeAndTTD === 'function') {
+      await clearLocalStorageKeepThemeAndTTD();
+    }
+
     if (rememberedCreds) {
       try {
         appStorage.setItem(STORE_REMEMBER_LOGIN_CREDS_KEY, rememberedCreds);
@@ -4823,7 +4786,7 @@ function logout() {
       } catch (e) {}
     }
 
-    tutupAkun();
+    tutupAkun(true);
     tutupNotificationModal();
     const popupBantuan = document.getElementById('popupBantuan');
     if (popupBantuan) popupBantuan.classList.remove('show');
@@ -4837,6 +4800,8 @@ function logout() {
       loadRememberedCredentials();
     }
     if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+    };
+    _asyncTask();
   });
 }
 
@@ -4913,15 +4878,13 @@ async function bukaMainApp() {
 
   if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
   if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
-  if (typeof updateAdminReminderUI === 'function') updateAdminReminderUI();
-  if (typeof startAdminReminderTimeChecker === 'function') startAdminReminderTimeChecker();
-  if (typeof checkAndTriggerPendingReminders === 'function') checkAndTriggerPendingReminders(false);
   if (typeof checkUrlDirectNoSuratOpen === 'function') checkUrlDirectNoSuratOpen();
 }
 window.bukaMainApp = bukaMainApp;
 
 async function eksekusiHapusPenyimpananLokal() {
-  showConfirm('PERBARUI SEMUA DATA DENGAN DATA TERBARU DARI SERVER?', async () => {
+  showConfirm('PERBARUI SEMUA DATA DENGAN DATA TERBARU DARI SERVER?', function() {
+    var _asyncTask = async function() {
     showLoading('MEMUAT DATA TERBARU...');
     try {
       await clearLocalStorageKeepThemeAndTTD();
@@ -4943,41 +4906,48 @@ async function eksekusiHapusPenyimpananLokal() {
       hideLoading();
       showNotif('GAGAL MEMPERBARUI DATA: ' + (err.message || err), 'warning');
     }
+    };
+    _asyncTask();
   });
 }
 window.eksekusiHapusPenyimpananLokal = eksekusiHapusPenyimpananLokal;
 
 async function hapusSemuaPenyimpananLokalApk() {
-  showConfirm('APAKAH ANDA YAKIN INGIN MENGHAPUS SEMUA PENYIMPANAN LOKAL APLIKASI?\n\nSeluruh data cache lokal, sesi login, dan penyimpanan browser di perangkat ini akan dibersihkan total dan halaman akan dimuat ulang.', async () => {
-    showLoading('BERSIHKAN PENYIMPANAN LOKAL APK...');
-    setTimeout(() => {
-      try {
-        if (typeof appStorage !== 'undefined' && appStorage && typeof appStorage.clear === 'function') {
-          appStorage.clear();
+  showConfirm(`APAKAH ANDA YAKIN INGIN MENGHAPUS SEMUA PENYIMPANAN LOKAL APLIKASI?\n\nSeluruh data cache lokal, sesi login, dan penyimpanan browser di perangkat ini akan dibersihkan total dan halaman akan dimuat ulang.`, function() {
+    var _asyncTask = async function() {
+      showLoading('BERSIHKAN PENYIMPANAN LOKAL APK...');
+      setTimeout(() => {
+        try {
+          if (typeof appStorage !== 'undefined' && appStorage && typeof appStorage.clear === 'function') {
+            appStorage.clear();
+          }
+          if (typeof localStorage !== 'undefined' && localStorage) {
+            localStorage.clear();
+          }
+          if (typeof sessionStorage !== 'undefined' && sessionStorage) {
+            sessionStorage.clear();
+          }
+          if (typeof caches !== 'undefined' && caches.keys) {
+            caches.keys().then(names => {
+              for (let name of names) caches.delete(name);
+            }).catch(e => {});
+          }
+          if (typeof indexedDB !== 'undefined' && indexedDB.databases) {
+            indexedDB.databases().then(dbs => {
+              if (Array.isArray(dbs)) {
+                dbs.forEach(db => {
+                  if (db && db.name) indexedDB.deleteDatabase(db.name);
+                });
+              }
+            }).catch(e => {});
+          }
+        } catch(e) {
+          console.warn('[HAPUS LOKAL APK ERROR]:', e);
         }
-        if (typeof localStorage !== 'undefined' && localStorage) {
-          localStorage.clear();
-        }
-        if (typeof sessionStorage !== 'undefined' && sessionStorage) {
-          sessionStorage.clear();
-        }
-        if (typeof caches !== 'undefined' && caches.keys) {
-          caches.keys().then(names => {
-            for (let name of names) caches.delete(name);
-          }).catch(e => {});
-        }
-        if (typeof indexedDB !== 'undefined' && indexedDB.databases) {
-          indexedDB.databases().then(dbs => {
-            dbs.forEach(db => {
-              if (db.name) indexedDB.deleteDatabase(db.name);
-            });
-          }).catch(e => {});
-        }
-      } catch(e) {
-        console.warn('[HAPUS LOKAL APK ERROR]:', e);
-      }
-      window.location.reload();
-    }, 500);
+        window.location.reload();
+      }, 500);
+    };
+    _asyncTask();
   });
 }
 window.hapusSemuaPenyimpananLokalApk = hapusSemuaPenyimpananLokalApk;
@@ -5038,6 +5008,7 @@ function showPage(pageId) {
   closeAllPopups();
   pindahHalaman(pageId);
   aturTampilanLonceng(pageId);
+  if (typeof applyAdaptiveTextColors === 'function') applyAdaptiveTextColors();
 }
 
 function aturTampilanLonceng(pageId) {
@@ -5078,6 +5049,7 @@ function aturTampilanLonceng(pageId) {
 
 let mobileBackspaceCount = 0;
 let mobileBackspaceTimer = null;
+let backClickTimestamps = [];
 
 function pushPopupHistoryState() {
   try {
@@ -5085,31 +5057,54 @@ function pushPopupHistoryState() {
   } catch (e) {}
 }
 
-function initMobileBackButtonEngine() {
+function seedDashboardHistoryState() {
   try {
-    history.pushState({ page: 'dashboardPage' }, '', location.href);
-  } catch(e) {}
+    history.pushState({ isDashboardGuard: true, page: 'dashboardPage' }, '', location.href);
+  } catch (e) {}
+}
+
+function initMobileBackButtonEngine() {
+  seedDashboardHistoryState();
 
   window.addEventListener('popstate', (e) => {
+    const modalGemini = document.getElementById('modalGeminiApiKey');
+    const isGeminiOpen = modalGemini && (modalGemini.classList.contains('show') || modalGemini.style.display === 'flex' || modalGemini.style.display === 'block');
+    if (isGeminiOpen) {
+      if (typeof tutupModalGeminiApiKey === 'function') tutupModalGeminiApiKey();
+      return;
+    }
+
     const popTTD = document.getElementById('popupTTD');
     const isTtdOpen = popTTD && (popTTD.classList.contains('show') || popTTD.style.display === 'flex' || popTTD.style.display === 'block');
 
-    // JIKA POPUP TTD TERBUKA & DI-BACK DARI HP -> KEMBALI KE POPUP AKUN
+    // JIKA POPUP TTD TERBUKA & DI-BACK DARI HP -> TUTUP POPUP TTD (POPUP AKUN DI BELAKANGNYA TETAP AKTIF UNTUK BACK SELANJUTNYA)
     if (isTtdOpen) {
       if (typeof tutupTTD === 'function') tutupTTD();
-      if (typeof bukaAkun === 'function') bukaAkun();
-      try { history.pushState({ page: getCurrentActivePageId() }, '', location.href); } catch(err) {}
-      if (typeof aturTampilanLonceng === 'function') aturTampilanLonceng(getCurrentActivePageId());
       return;
+    }
+
+    const popAkun = document.getElementById('popupAkun');
+    const isAkunOpen = popAkun && (popAkun.classList.contains('show') || popAkun.style.display === 'flex' || popAkun.style.display === 'block');
+    if (isAkunOpen) {
+      if (typeof isAkunDirty === 'function' && isAkunDirty()) {
+        seedDashboardHistoryState();
+        if (typeof tutupAkun === 'function') tutupAkun();
+        return;
+      } else {
+        if (typeof tutupAkun === 'function') tutupAkun(true);
+        return;
+      }
     }
 
     const openModals = [
       document.getElementById('popupUserManagementModal'),
       document.getElementById('artemisOverlay'),
       document.getElementById('popupDetail'),
+      document.getElementById('popupDetailBarangV2'),
+      document.getElementById('popupEditStatusPart'),
+      document.getElementById('popupEditKeteranganPartSingle'),
       document.getElementById('popupNotifList'),
       document.getElementById('popupBantuan'),
-      document.getElementById('popupAkun'),
       document.getElementById('popupUserForm'),
       document.getElementById('pdfModal'),
       document.getElementById('rejectOverlay'),
@@ -5117,37 +5112,40 @@ function initMobileBackButtonEngine() {
       document.getElementById('popupPdfModelsModal'),
       document.getElementById('confirmOverlay'),
       document.getElementById('imageViewer'),
-      document.getElementById('scannerModal')
+      document.getElementById('scannerModal'),
+      document.getElementById('modalGeminiApiKey'),
+      document.getElementById('excelTemplateOverlay')
     ];
 
     let closedAnyModal = false;
     openModals.forEach(m => {
       if (m && (m.classList.contains('show') || m.style.display === 'flex' || m.style.display === 'block')) {
         m.classList.remove('show');
-        m.style.display = 'none';
+        m.style.setProperty('display', 'none', 'important');
         closedAnyModal = true;
       }
     });
 
     if (closedAnyModal) {
       if (typeof closeArtemisModal === 'function') closeArtemisModal();
+      if (typeof tutupModalEditStatusPart === 'function') tutupModalEditStatusPart();
+      if (typeof tutupModalEditKetPartSingle === 'function') tutupModalEditKetPartSingle();
+      if (typeof tutupDetailBarangV2 === 'function') tutupDetailBarangV2();
       if (typeof tutupScanner === 'function') tutupScanner();
       if (typeof tutupImageViewer === 'function') tutupImageViewer();
+      if (typeof closeExcelTemplateModal === 'function') closeExcelTemplateModal();
       
-      // JAGA AGAR TOMBOL ICON HEADER (LONCENG & BANTUAN) TETAP TERSEDIA DI DASHBOARD
       const activePage = getCurrentActivePageId();
       if (typeof aturTampilanLonceng === 'function') {
         aturTampilanLonceng(activePage);
       }
-
-      try { history.pushState({ page: activePage }, '', location.href); } catch(err) {}
       return;
     }
 
     const currentActivePage = getCurrentActivePageId();
 
     if (currentActivePage === 'inputPage' && isFormDirtyOrFilled()) {
-      try { history.pushState({ page: 'inputPage' }, '', location.href); } catch(err) {}
+      seedDashboardHistoryState();
       
       const confirmMsg = modeEdit ? 'KELUAR DARI MENU EDIT?' : 'KELUAR DARI FORM PERMINTAAN? (DATA YANG DIISI AKAN HILANG)';
       showConfirm(confirmMsg, () => {
@@ -5160,22 +5158,30 @@ function initMobileBackButtonEngine() {
 
     if (currentActivePage !== 'dashboardPage' && currentActivePage !== 'loginPage') {
       pindahHalaman('dashboardPage', false);
-      try { history.pushState({ page: 'dashboardPage' }, '', location.href); } catch(err) {}
-      if (typeof mobileBackspaceCount !== 'undefined') mobileBackspaceCount = 0;
+      seedDashboardHistoryState();
+      backClickTimestamps = [];
       return;
     }
 
     if (currentActivePage === 'dashboardPage') {
-      if (typeof mobileBackspaceCount === 'undefined') window.mobileBackspaceCount = 0;
-      mobileBackspaceCount++;
+      const now = Date.now();
+      // Filter klik back HP dalam durasi < 1 detik (1000ms)
+      backClickTimestamps = backClickTimestamps.filter(t => (now - t) <= 1000);
+      backClickTimestamps.push(now);
 
-      if (typeof mobileBackspaceTimer !== 'undefined' && mobileBackspaceTimer) clearTimeout(mobileBackspaceTimer);
-      window.mobileBackspaceTimer = setTimeout(() => {
-        mobileBackspaceCount = 0;
-      }, 3500);
-
-      if (mobileBackspaceCount < 5) {
-        try { history.pushState({ page: 'dashboardPage' }, '', location.href); } catch(err) {}
+      if (backClickTimestamps.length >= 3) {
+        // 3X KLIK BACK DALAM DURASI < 1 DETIK: KELUAR APLIKASI WEB TANPA POPUP APAPUN
+        console.log('[APP EXIT] 3x Rapid back press <1s detected on Dashboard. Exiting Web App...');
+        backClickTimestamps = [];
+        try {
+          if (window.navigator && window.navigator.app && typeof window.navigator.app.exitApp === 'function') {
+            window.navigator.app.exitApp();
+          }
+        } catch(e) {}
+        // Tanpa pushState agar browser secara alami keluar dari aplikasi web
+      } else {
+        // Kurang dari 3x klik dalam 1 detik: Tetap di Dashboard
+        seedDashboardHistoryState();
       }
     }
   });
@@ -5310,6 +5316,10 @@ function pindahHalaman(pageId, pushHistory = true) {
     const topHeader = document.getElementById('topHeaderActions');
     if (topHeader) topHeader.style.display = 'flex';
     aturTampilanLonceng(pageId);
+    try {
+      let savedVal = localStorage.getItem(BG_OPACITY_KEY) || '48';
+      if (typeof applyAdaptiveTextColors === 'function') applyAdaptiveTextColors(savedVal);
+    } catch(e) {}
   }
 
   if (pageId === 'dashboardPage') {
@@ -5368,6 +5378,11 @@ function loadDashboard() {
   if (nameEl) nameEl.textContent = currentUser.fullName;
   if (areaEl) areaEl.textContent = `${currentUser.category} - ${formatUserAreaDisplay(currentUser.area)}`;
 
+  try {
+    let savedVal = localStorage.getItem(BG_OPACITY_KEY) || '48';
+    if (typeof applyAdaptiveTextColors === 'function') applyAdaptiveTextColors(savedVal);
+  } catch(e) {}
+
   const data = getAccessibleRequests();
 
   const pending = data.filter(r => r.status === 'PENDING').length;
@@ -5400,6 +5415,7 @@ function loadDashboard() {
   if (titleEl) {
     const iconName = dashboardFilterStatus === 'PENDING' ? 'hourglass_top' : (dashboardFilterStatus === 'APPROVE' ? 'verified' : (dashboardFilterStatus === 'REJECT' ? 'cancel' : 'task_alt'));
     titleEl.innerHTML = `<span class="material-symbols-rounded" style="color: var(--primary); font-size: 22px;">${iconName}</span> PERMINTAAN ${dashboardFilterStatus}`;
+    if (typeof applyAdaptiveTextColors === 'function') applyAdaptiveTextColors();
   }
 
   const lastDataContainer = document.getElementById('lastData');
@@ -5871,24 +5887,154 @@ function pilihFoto() {
   if (fileInput) fileInput.click();
 }
 
-async function uploadPhotoToSupabaseStorage(file) {
+async function uploadSignatureDataUrlToSupabaseStorage(dataUrl, customFileName = null) {
+  if (!dataUrl || typeof dataUrl !== 'string') return '';
+  const trimmed = dataUrl.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  if (!trimmed.startsWith('data:image/')) return trimmed;
+
   const sb = (typeof supabase !== 'undefined' && supabase) ? supabase : ((typeof window.supabaseClient !== 'undefined' && window.supabaseClient) ? window.supabaseClient : null);
-  if (sb) {
+
+  if (sb && sb.storage) {
     try {
-      const fileName = `FOTO_${Date.now()}_${Math.floor(Math.random()*1000)}.jpg`;
+      const res = await fetch(trimmed);
+      const blob = await res.blob();
+      const fileName = customFileName || `TTD_${Date.now()}_${Math.floor(Math.random()*1000)}.png`;
+      const file = new File([blob], fileName, { type: 'image/png' });
+
       const { data, error } = await sb.storage.from('photos').upload(fileName, file, { cacheControl: '3600', upsert: true });
       if (!error && data) {
         const { data: pubData } = sb.storage.from('photos').getPublicUrl(fileName);
-        if (pubData && pubData.publicUrl) return pubData.publicUrl;
+        if (pubData && pubData.publicUrl) {
+          console.log('⚡ [TTD STORAGE UPLOAD SUCCESS]:', pubData.publicUrl);
+          return pubData.publicUrl;
+        }
       } else if (error) {
-        console.warn('[SUPABASE STORAGE NOTICE]: RLS Policy / Storage block, menggunakan fallback kompresi:', error.message);
+        console.warn('[TTD STORAGE UPLOAD ERROR]:', error.message);
       }
-    } catch (e) {
-      console.warn('[SUPABASE STORAGE EXCEPTION]:', e);
+    } catch(e) {
+      console.warn('[STORAGE TTD UPLOAD NOTICE]:', e);
     }
   }
-  return await kompresiFoto(file, 400, 0.4);
+
+  try {
+    const img = new Image();
+    img.src = trimmed;
+    await new Promise(r => { img.onload = r; img.onerror = r; });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.min(150, img.width || 150);
+    canvas.height = Math.min(60, img.height || 60);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/png', 0.4);
+  } catch(e) {
+    return trimmed;
+  }
 }
+window.uploadSignatureDataUrlToSupabaseStorage = uploadSignatureDataUrlToSupabaseStorage;
+
+async function migrasiTtdBase64KeUrl() {
+  if (typeof supabase === 'undefined' || !supabase) return;
+  try {
+    const requests = typeof getRequestsFromDB === 'function' ? getRequestsFromDB() : [];
+    let updatedAny = false;
+
+    for (let r of requests) {
+      if (!r) continue;
+      let changedRow = false;
+
+      if (r.serviceTTD && r.serviceTTD.startsWith('data:image/')) {
+        const newUrl = await uploadSignatureDataUrlToSupabaseStorage(r.serviceTTD, `TTD_SRV_${r.noSurat.replace(/[\/\.]/g, '_')}.png`);
+        if (newUrl && newUrl !== r.serviceTTD) {
+          r.serviceTTD = newUrl;
+          changedRow = true;
+        }
+      }
+      if (r.dmTTD && r.dmTTD.startsWith('data:image/')) {
+        const newUrl = await uploadSignatureDataUrlToSupabaseStorage(r.dmTTD, `TTD_DM_${r.noSurat.replace(/[\/\.]/g, '_')}.png`);
+        if (newUrl && newUrl !== r.dmTTD) {
+          r.dmTTD = newUrl;
+          changedRow = true;
+        }
+      }
+      if (r.pemohonTTD && r.pemohonTTD.startsWith('data:image/')) {
+        const newUrl = await uploadSignatureDataUrlToSupabaseStorage(r.pemohonTTD, `TTD_TK_${r.noSurat.replace(/[\/\.]/g, '_')}.png`);
+        if (newUrl && newUrl !== r.pemohonTTD) {
+          r.pemohonTTD = newUrl;
+          changedRow = true;
+        }
+      }
+
+      if (Array.isArray(r.log) && r.log.length > 5) {
+        r.log = r.log.slice(-5);
+        changedRow = true;
+      }
+
+      if (changedRow) {
+        updatedAny = true;
+        const docId = String(r.noSurat).replace(/[\/\.]/g, '_');
+        await supabase.from('permintaan_toko').update({
+          service_ttd: r.serviceTTD || '',
+          dm_ttd: r.dmTTD || '',
+          pemohon_ttd: r.pemohonTTD || '',
+          log: r.log || []
+        }).eq('no_surat', r.noSurat).catch(() => {});
+      }
+    }
+
+    if (updatedAny) {
+      saveRequestsToDB(requests);
+      console.log('⚡ [TTD BASE64 TO URL MIGRATION COMPLETE]: Base64 TTDs converted to Supabase Storage URLs!');
+    }
+  } catch(e) {
+    console.warn('[TTD MIGRATION EXCEPTION]:', e);
+  }
+}
+window.migrasiTtdBase64KeUrl = migrasiTtdBase64KeUrl;
+
+async function uploadPhotoToSupabaseStorage(fileOrBlob) {
+  if (!fileOrBlob) return '';
+
+  // 1. KOMPRESI GAMBAR TERLEBIH DAHULU (Max 720px, Quality 0.65 JPEG -> ~40-60 KB)
+  let compressedDataUrl = '';
+  if (typeof fileOrBlob === 'string' && fileOrBlob.startsWith('data:image/')) {
+    compressedDataUrl = fileOrBlob;
+  } else {
+    try {
+      compressedDataUrl = await kompresiFoto(fileOrBlob, 720, 0.65);
+    } catch(e) {
+      console.warn('[KOMPRESI FOTO NOTICE]:', e);
+    }
+  }
+
+  // 2. UNGGAH HASIL KOMPRESI TERSEBUT KE SUPABASE STORAGE BUCKET 'photos'
+  const sb = (typeof supabase !== 'undefined' && supabase) ? supabase : ((typeof window.supabaseClient !== 'undefined' && window.supabaseClient) ? window.supabaseClient : null);
+
+  if (sb && sb.storage && compressedDataUrl && compressedDataUrl.startsWith('data:image/')) {
+    try {
+      const res = await fetch(compressedDataUrl);
+      const blob = await res.blob();
+      const fileName = `FOTO_${Date.now()}_${Math.floor(Math.random()*10000)}.jpg`;
+      const fileToUpload = new File([blob], fileName, { type: 'image/jpeg' });
+
+      const { data, error } = await sb.storage.from('photos').upload(fileName, fileToUpload, { cacheControl: '3600', upsert: true });
+      if (!error && data) {
+        const { data: pubData } = sb.storage.from('photos').getPublicUrl(fileName);
+        if (pubData && pubData.publicUrl) {
+          console.log('⚡ [STORAGE PHOTO UPLOAD SUCCESS]:', pubData.publicUrl);
+          return pubData.publicUrl;
+        }
+      } else if (error) {
+        console.warn('[SUPABASE STORAGE UPLOAD WARNING]:', error.message);
+      }
+    } catch (e) {
+      console.warn('[SUPABASE STORAGE UPLOAD EXCEPTION]:', e);
+    }
+  }
+
+  return compressedDataUrl || '';
+}
+window.uploadPhotoToSupabaseStorage = uploadPhotoToSupabaseStorage;
 
 async function deletePhotosFromSupabaseStorage(photoUrls) {
   if (!Array.isArray(photoUrls) || photoUrls.length === 0) return;
@@ -5924,24 +6070,74 @@ async function deletePhotosFromSupabaseStorage(photoUrls) {
 }
 window.deletePhotosFromSupabaseStorage = deletePhotosFromSupabaseStorage;
 
+function getJumlahItemInputForm() {
+  const rows = document.querySelectorAll('#detailContainer .detailRow');
+  if (!rows || rows.length === 0) return 0;
+  let filledCount = 0;
+  rows.forEach(r => {
+    const type = r.querySelector('.typeBarang') ? r.querySelector('.typeBarang').value.trim() : '';
+    const seri = r.querySelector('.seriBarang') ? r.querySelector('.seriBarang').value.trim() : '';
+    const barang = r.querySelector('.namaBarang') ? r.querySelector('.namaBarang').value.trim() : '';
+    if (type || seri || barang) {
+      filledCount++;
+    }
+  });
+  return filledCount > 0 ? filledCount : rows.length;
+}
+window.getJumlahItemInputForm = getJumlahItemInputForm;
+
+function updateFotoUploadLimitDisplay() {
+  const lbl = document.getElementById('labelUploadFoto');
+  const pText = document.getElementById('previewText');
+  const itemCount = typeof getJumlahItemInputForm === 'function' ? getJumlahItemInputForm() : (document.querySelectorAll('#detailContainer .detailRow').length || 1);
+  const photoCount = Array.isArray(currentPhotos) ? currentPhotos.length : 0;
+
+  if (lbl) {
+    if (itemCount === 0) {
+      lbl.textContent = 'FOTO BARANG PENDUKUNG (INPUT BARANG TERLEBIH DAHULU)';
+    } else {
+      lbl.textContent = `FOTO BARANG PENDUKUNG (${photoCount} DARI MAKSIMAL ${itemCount} FOTO)`;
+    }
+  }
+
+  if (pText && photoCount === 0) {
+    if (itemCount === 0) {
+      pText.innerHTML = '<span class="material-symbols-rounded uploadIcon">info</span> INPUT DATA BARANG TERLEBIH DAHULU UNTUK MEMBUKA UPLOAD FOTO';
+    } else {
+      pText.innerHTML = `<span class="material-symbols-rounded uploadIcon">add_a_photo</span> TAP / PILIH FOTO DI SINI (MAKSIMAL ${itemCount} FOTO SESUAI JUMLAH ITEM)`;
+    }
+  }
+}
+window.updateFotoUploadLimitDisplay = updateFotoUploadLimitDisplay;
+
 async function previewFoto(event) {
   const files = Array.from(event.target.files);
   if (!files.length) return;
 
-  if (currentPhotos.length + files.length > 5) {
-    showNotif('MAKSIMAL FOTO DIBATASI HINGGA 5 FOTO SAJA!', 'warning');
-    event.target.value = ''; 
+  const currentItemsCount = typeof getJumlahItemInputForm === 'function' ? getJumlahItemInputForm() : (document.querySelectorAll('#detailContainer .detailRow').length || 1);
+
+  if (currentItemsCount === 0) {
+    showNotif('SILAKAN INPUT BARANG PERMINTAAN TERLEBIH DAHULU DI TABEL SEBELUM MENGUNGGAH FOTO!', 'warning');
+    event.target.value = '';
+    return;
+  }
+
+  const maxAllowedPhotos = currentItemsCount;
+
+  if (currentPhotos.length + files.length > maxAllowedPhotos) {
+    showNotif(`MAKSIMAL FOTO DIBATASI SEBANYAK ${maxAllowedPhotos} FOTO (SESUAI JUMLAH ${maxAllowedPhotos} ITEM BARANG DI TABEL)!`, 'warning');
+    event.target.value = '';
     return;
   }
 
   const previewText = document.getElementById('previewText');
-  const originalText = previewText ? previewText.innerHTML : 'TAP / DRAG FOTO DI SINI';
+  const originalText = previewText ? previewText.innerHTML : 'TAP / PILIH FOTO DI SINI';
   if (previewText) {
-    previewText.innerHTML = `<span class="material-symbols-rounded" style="font-size:22px; vertical-align:middle; display:inline-block; animation:spin 0.8s linear infinite; color:var(--primary);">sync</span> MENGUNGGAH FOTO...`;
+    previewText.innerHTML = `<span class="material-symbols-rounded" style="font-size:22px; vertical-align:middle; display:inline-block; animation:spin 0.8s linear infinite; color:var(--primary);">sync</span> MENGOMPRESI & MENGUNGGAH FOTO...`;
   }
 
   for (let i = 0; i < files.length; i++) {
-    if (currentPhotos.length < 5) {
+    if (currentPhotos.length < maxAllowedPhotos) {
       try {
         const url = await uploadPhotoToSupabaseStorage(files[i]);
         if (url) {
@@ -5958,8 +6154,10 @@ async function previewFoto(event) {
   }
 
   renderPhotoGrid();
+  updateFotoUploadLimitDisplay();
   event.target.value = '';
 }
+window.previewFoto = previewFoto;
 
 function hapusFotoItem(idx) {
   const removedUrl = currentPhotos[idx];
@@ -5967,7 +6165,7 @@ function hapusFotoItem(idx) {
     deletePhotosFromSupabaseStorage([removedUrl]);
   }
   currentPhotos.splice(idx, 1);
-  renderPhotoGrid();
+  renderPhotoGrid(); if (typeof updateFotoUploadLimitDisplay === "function") updateFotoUploadLimitDisplay();
 }
 
 function renderPhotoGrid() {
@@ -6560,7 +6758,7 @@ function filterRiwayat() {
       const isPdfVisible = isPdfButtonAllowed(r);
       if (isPdfVisible) {
         aksi += `
-          <button class="btnIcon btnPdf" onclick="bukaPdfModal('${r.noSurat}')" title="CETAK PDF"><span class="material-symbols-rounded">picture_as_pdf</span></button>
+          <button class="btnIcon btnPdf" onclick="tampilkanPilihanCetakPdf(\'${r.noSurat}\')" title="CETAK PDF"><span class="material-symbols-rounded">picture_as_pdf</span></button>
         `;
       }
     }
@@ -7031,14 +7229,16 @@ async function handleArtemisGlobalPaste(e) {
   let addedCount = 0;
 
   for (let i = 0; i < items.length; i++) {
-    if (items[i].type && items[i].type.indexOf('image') !== -1) {
+    if (items[i].type.indexOf('image') !== -1) {
       const blob = items[i].getAsFile();
       if (blob) {
         try {
-          if (typeof showLoading === 'function') showLoading('MEMROSES PASTE SCREENSHOT...');
-          const jpegDataUrl = await convertImageToJpeg(blob);
-          tempArtemisPhotos.push(jpegDataUrl);
-          addedCount++;
+          if (typeof showLoading === 'function') showLoading('MENGUNGGAH PASTE SCREENSHOT...');
+          const url = await uploadPhotoToSupabaseStorage(blob);
+          if (url) {
+            tempArtemisPhotos.push(url);
+            addedCount++;
+          }
         } catch (err) {
           console.error('[PASTE ARTEMIS ERROR]:', err);
         } finally {
@@ -7065,17 +7265,19 @@ async function handleArtemisPhotoSelect(e) {
   const files = e.target.files;
   if (!files || files.length === 0) return;
 
-  if (typeof showLoading === 'function') showLoading('MEMROSES FOTO BUKTI...');
+  if (typeof showLoading === 'function') showLoading('MENGUNGGAH FOTO BUKTI ARTEMIS...');
 
   try {
     for (const file of Array.from(files)) {
-      const jpegDataUrl = await convertImageToJpeg(file);
-      tempArtemisPhotos.push(jpegDataUrl);
+      const url = await uploadPhotoToSupabaseStorage(file);
+      if (url) {
+        tempArtemisPhotos.push(url);
+      }
     }
     renderArtemisPhotoPreviews();
   } catch (err) {
     console.error('[UPLOAD ARTEMIS ERROR]:', err);
-    showNotif('GAGAL MEMROSES FOTO BUKTI!', 'warning');
+    showNotif('GAGAL MENGUNGGAH FOTO BUKTI!', 'warning');
   } finally {
     if (typeof hideLoading === 'function') hideLoading();
     e.target.value = '';
@@ -7503,7 +7705,7 @@ function editPermintaan(noSurat) {
   }
 
   currentPhotos = [...(req.photos || [])];
-  renderPhotoGrid();
+  renderPhotoGrid(); if (typeof updateFotoUploadLimitDisplay === "function") updateFotoUploadLimitDisplay();
 
   const btnSimpan = document.getElementById('btnSimpan');
   if (btnSimpan) btnSimpan.textContent = 'SIMPAN PERUBAHAN';
@@ -7665,7 +7867,7 @@ function undoBarisItemDetailAdmin(noSurat, itemIndex) {
 }
 window.undoBarisItemDetailAdmin = undoBarisItemDetailAdmin;
 
-function simpanPerubahanDetailAdmin(noSurat) {
+async function simpanPerubahanDetailAdmin(noSurat) {
   if (!noSurat) return;
 
   const isModified = isItemModifiedMap[noSurat];
@@ -7793,12 +7995,15 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
     try { itemsList = JSON.parse(rawItems || '[]'); } catch (e) { itemsList = []; }
   }
 
-  const thBase = "background: var(--primary) !important; color: #ffffff !important; padding: 8px 12px !important; border: none !important; border-bottom: 2px solid rgba(0,0,0,0.18) !important; border-radius: 0 !important; border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; position: sticky !important; top: 0 !important; z-index: 100 !important; font-size: 11.5px !important; font-weight: 700 !important; letter-spacing: 0.3px !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; box-shadow: none !important; text-shadow: none !important; -webkit-clip-path: none !important; clip-path: none !important;";
+  const thBase = "background: var(--primary) !important; color: #ffffff !important; padding: 8px 12px !important; border: none !important; border-right: 1px solid rgba(255,255,255,0.35) !important; border-bottom: 2px solid rgba(0,0,0,0.18) !important; border-radius: 0 !important; border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; position: sticky !important; top: 0 !important; z-index: 100 !important; font-size: 11.5px !important; font-weight: 700 !important; letter-spacing: 0.3px !important; text-align: center !important; vertical-align: middle !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; box-shadow: none !important; text-shadow: none !important; -webkit-clip-path: none !important; clip-path: none !important;";
   const thStyleAutofit = `${thBase} width: 1% !important; white-space: nowrap !important; text-align: center !important;`;
-  const thStyleLeft = `${thBase} text-align: left !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important;`;
+  const thStyleCenter = `${thBase} text-align: center !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important;`;
+  const thStyleAutofitLast = `${thBase} width: 1% !important; white-space: nowrap !important; text-align: center !important; border-right: none !important;`;
+  const thStyleCenterLast = `${thBase} text-align: center !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important; border-right: none !important;`;
+  const thStyleLeft = thStyleCenter;
+  const thStyleLeftLast = thStyleCenterLast;
 
-  const isLastRowIndex = (idx, total) => idx === total - 1;
-  const getTdBorder = (idx, total) => isLastRowIndex(idx, total) ? "border-bottom: none !important;" : "border-bottom: 1px solid var(--border-color) !important;";
+  const getTdBorder = (idx, total) => "border-bottom: 1px solid var(--border-color) !important;";
 
   const tdBase = "padding: 8px 12px !important; border-top: none !important; border-left: none !important; border-right: none !important; background: var(--bg-box) !important; color: var(--text-main) !important; font-size: 12px !important; vertical-align: middle !important; white-space: nowrap !important; word-break: keep-all !important; overflow-wrap: normal !important;";
   const getTdStyleAutofit = (idx, total) => `${tdBase} ${getTdBorder(idx, total)} width: 1% !important; white-space: nowrap !important; text-align: center !important;`;
@@ -7981,7 +8186,7 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
     const isPdfVisible = isPdfButtonAllowed(req);
     if (isPdfVisible) {
       actionButtons.push(`
-        <button type="button" class="btnIcon btnPdf btnIconOnly" title="CETAK PDF" onclick="tutupDetailBarangV2(); bukaPdfModal('${req.noSurat}');">
+        <button type="button" class="btnIcon btnPdf btnIconOnly" title="CETAK PDF" onclick="tutupDetailBarangV2(); tampilkanPilihanCetakPdf('${req.noSurat}');">
           <span class="material-symbols-rounded">picture_as_pdf</span>
         </button>
       `);
@@ -7995,13 +8200,7 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
       `);
     }
 
-    if (canServiceRowActions) {
-      actionButtons.push(`
-        <button type="button" class="btnIcon btnSave btnIconOnly" title="SIMPAN PERUBAHAN" onclick="simpanPerubahanDetailAdmin('${req.noSurat}');" style="background: #059669 !important; color: #ffffff !important;">
-          <span class="material-symbols-rounded">save</span>
-        </button>
-      `);
-    }
+    // Button SIMPAN PERUBAHAN removed as per user request
 
     // BATAL APPROVE SERVICE / DM BUTTONS EXCLUSIVELY VISIBLE FOR ADMIN LOGIN ACCOUNT ONLY (HILANGKAN DARI SERVICE, DM, TOKO, SALES)
     if (isAdminUser) {
@@ -8062,8 +8261,8 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
     `;
   }
 
-  const thKetPartHtml = showKetPartCol ? `<th style="${thStyleLeft}">KETERANGAN PART</th>` : '';
-  const thActionHtml = canServiceRowActions ? `<th style="${thStyleAutofit}">AKSI</th>` : '';
+  const thKetPartHtml = showKetPartCol ? `<th style="${canServiceRowActions ? thStyleLeft : thStyleLeftLast}">KETERANGAN PART</th>` : '';
+  const thActionHtml = canServiceRowActions ? `<th style="${thStyleAutofitLast}">AKSI</th>` : '';
 
   const tableHeaderHtml = isDus ? `
     <thead>
@@ -8074,7 +8273,7 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
         <th style="${thStyleLeft}">PERMINTAAN</th>
         <th style="${thStyleLeft}">SERI DUS</th>
         <th style="${thStyleLeft}">ALASAN</th>
-        <th style="${thStyleAutofit}">QTY</th>
+        <th style="${(showKetPartCol || canServiceRowActions) ? thStyleAutofit : thStyleAutofitLast}">QTY</th>
         ${thKetPartHtml}
         ${thActionHtml}
       </tr>
@@ -8087,7 +8286,7 @@ async function lihatDetail(noSuratOrObj, fromDashboard = false) {
         <th style="${thStyleLeft}">SERI BARANG</th>
         <th style="${thStyleLeft}">PERMINTAAN</th>
         <th style="${thStyleLeft}">ALASAN</th>
-        <th style="${thStyleAutofit}">QTY</th>
+        <th style="${(showKetPartCol || canServiceRowActions) ? thStyleAutofit : thStyleAutofitLast}">QTY</th>
         ${thKetPartHtml}
         ${thActionHtml}
       </tr>
@@ -8201,6 +8400,7 @@ function bukaModalEditStatusPart(noSurat) {
   if (modal) {
     modal.style.setProperty('display', 'flex', 'important');
     modal.classList.add('show');
+    try { history.pushState({ modal: 'partStatus' }, '', location.href); } catch(e) {}
   }
 }
 window.bukaModalEditStatusPart = bukaModalEditStatusPart;
@@ -8351,6 +8551,7 @@ function bukaModalEditKetPartSingle(noSurat, itemIndex) {
   if (modal) {
     modal.style.setProperty('display', 'flex', 'important');
     modal.classList.add('show');
+    try { history.pushState({ modal: 'partKet' }, '', location.href); } catch(e) {}
   }
 }
 window.bukaModalEditKetPartSingle = bukaModalEditKetPartSingle;
@@ -8604,6 +8805,9 @@ function tutupModalPdfModels() {
 
 function switchPdfPreviewModel(modelId) {
   currentlyPreviewedModel = modelId;
+  appStorage.setItem(PDF_MODEL_KEY, modelId);
+  try { localStorage.setItem(PDF_MODEL_KEY, modelId); } catch(e) {}
+  updateActivePdfModelBadge();
   renderFullPdfPreviewDocument(currentlyPreviewedModel);
   updatePdfModelSelectorButtons();
 }
@@ -8668,7 +8872,7 @@ function renderFullPdfPreviewDocument(modelId) {
 
   let tableHeaderBg = '#0284c7';
   let headerTitleHtml = `
-    <div style="text-align: center; font-size: 20px; font-weight: 800; border-bottom: 2.5px solid #0f172a; padding-bottom: 20px; margin-bottom: 20px; letter-spacing: 0.5px; color: #0f172a; text-transform: uppercase;">
+    <div style="text-align: center; font-size: 20px; font-weight: 800; border-bottom: 2.5px solid #0f172a; padding-bottom: 8px; margin-bottom: 36px; letter-spacing: 0.5px; color: #0f172a; text-transform: uppercase;">
       PERMINTAAN TOKO
     </div>
   `;
@@ -8799,25 +9003,167 @@ function renderFullPdfPreviewDocument(modelId) {
   `;
 }
 
-function bukaPdfModal(noSurat) {
+function tutupPilihanCetakPdf() {
+  const existingModal = document.getElementById('pdfPrintChoiceModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+}
+window.tutupPilihanCetakPdf = tutupPilihanCetakPdf;
+
+function tutupPilihanCetakPdf() {
+  const existingModal = document.getElementById('pdfPrintChoiceModal');
+  if (existingModal) {
+    existingModal.remove();
+  }
+}
+window.tutupPilihanCetakPdf = tutupPilihanCetakPdf;
+
+function tampilkanPilihanCetakPdf(noSurat) {
+  if (!noSurat) return;
   const requests = getRequestsFromDB();
-  const req = requests.find(r => r.noSurat === noSurat);
-  if (!req) return;
+  const targetNo = String(noSurat || '').trim().toUpperCase();
+  const req = requests.find(r => r && (
+    String(r.noSurat || '').trim().toUpperCase() === targetNo ||
+    String(r.id || '').trim().toUpperCase() === targetNo
+  ));
+  if (!req) {
+    showNotif('DOKUMEN TIDAK DITEMUKAN!', 'warning');
+    return;
+  }
 
   if (typeof isPdfButtonAllowed === 'function' && !isPdfButtonAllowed(req)) {
     showNotif('TOMBOL CETAK PDF HANYA TERSEDIA JIKA DOKUMEN SUDAH DI-APPROVE OLEH DM & TIDAK TERSEDIA UNTUK TOKO/SALES!', 'warning');
     return;
   }
 
+  const validPhotos = getReqPhotosList(req);
+  if (validPhotos.length === 0) {
+    // Dokumen tidak memiliki foto, langsung buka cetak tanpa foto
+    bukaPdfModal(noSurat, false);
+    return;
+  }
+
+  // Tampilkan modal pilihan cetak dengan foto atau tanpa foto
+  tutupPilihanCetakPdf();
+
+  const modalHtml = `
+    <div id="pdfPrintChoiceModal" onclick="if (event.target === this) tutupPilihanCetakPdf()" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 16px; animation: fadeIn 0.15s ease; box-sizing: border-box;">
+      <style>
+        #pdfPrintChoiceModal .pdfChoiceCard {
+          background: var(--bg-box);
+          color: var(--text-main);
+          width: 100%;
+          max-width: 430px;
+          border-radius: 4px;
+          border: 1px solid var(--border-color);
+          box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+          overflow: hidden;
+          box-sizing: border-box;
+        }
+        @media (max-width: 600px) {
+          #pdfPrintChoiceModal {
+            align-items: flex-start !important;
+            padding: 1mm 8px 8px 8px !important;
+          }
+          #pdfPrintChoiceModal .pdfChoiceCard {
+            margin-top: 1mm !important;
+            max-width: 100% !important;
+            border-radius: 4px !important;
+          }
+        }
+      </style>
+      <div class="pdfChoiceCard">
+        <div style="background: var(--primary); color: #ffffff; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; border-top-left-radius: 4px; border-top-right-radius: 4px;">
+          <div style="font-size: 14px; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;">
+            <span class="material-symbols-rounded" style="font-size: 20px;">print</span>
+            OPSI CETAK DOKUMEN PDF
+          </div>
+          <button type="button" onclick="tutupPilihanCetakPdf()" style="background: rgba(255,255,255,0.2); border: none; color: #ffffff; width: 28px; height: 28px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 14px;">✕</button>
+        </div>
+        <div style="padding: 18px 20px; background: var(--bg-box); color: var(--text-main);">
+          <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">
+            Nomor Surat: <span style="color: var(--primary);">#${req.noSurat}</span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.5;">
+            Dokumen ini memiliki <b>${validPhotos.length} lampiran foto</b>. Silakan tentukan format cetak yang Anda inginkan:
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button type="button" onclick="tutupPilihanCetakPdf(); bukaPdfModal('${req.noSurat}', true);" style="background: var(--primary); color: #ffffff; border: 1px solid var(--primary); padding: 12px 16px; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: 0.15s;">
+              <span style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-rounded" style="font-size: 20px;">photo_library</span>
+                CETAK DENGAN FOTO (${validPhotos.length} FOTO)
+              </span>
+              <span class="material-symbols-rounded">chevron_right</span>
+            </button>
+
+            <button type="button" onclick="tutupPilihanCetakPdf(); bukaPdfModal('${req.noSurat}', false);" style="background: var(--bg-header); color: var(--text-main); border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: 0.15s;">
+              <span style="display: flex; align-items: center; gap: 8px;">
+                <span class="material-symbols-rounded" style="font-size: 20px; color: var(--text-muted);">description</span>
+                CETAK TANPA FOTO (DOKUMEN SAJA)
+              </span>
+              <span class="material-symbols-rounded" style="color: var(--text-muted);">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+  if (typeof pushPopupHistoryState === 'function') pushPopupHistoryState();
+}
+window.tampilkanPilihanCetakPdf = tampilkanPilihanCetakPdf;
+
+function bukaPdfModal(noSurat, includePhotos = null) {
+  const requests = getRequestsFromDB();
+  const targetNo = String(noSurat || '').trim().toUpperCase();
+  const req = requests.find(r => r && (
+    String(r.noSurat || '').trim().toUpperCase() === targetNo ||
+    String(r.id || '').trim().toUpperCase() === targetNo
+  ));
+  if (!req) {
+    showNotif('DOKUMEN TIDAK DITEMUKAN!', 'warning');
+    return;
+  }
+
+  if (typeof isPdfButtonAllowed === 'function' && !isPdfButtonAllowed(req)) {
+    showNotif('TOMBOL CETAK PDF HANYA TERSEDIA JIKA DOKUMEN SUDAH DI-APPROVE OLEH DM & TIDAK TERSEDIA UNTUK TOKO/SALES!', 'warning');
+    return;
+  }
+
+  const validPhotos = getReqPhotosList(req);
+  // JIKA includePhotos BELUM DIPILIH & DOKUMEN MEMILIKI FOTO -> TAMPILKAN POPUP PILIHAN
+  if (includePhotos === null && validPhotos.length > 0) {
+    tampilkanPilihanCetakPdf(noSurat);
+    return;
+  }
+
   const pdfContainer = document.getElementById('pdfDocumentContent');
   if (!pdfContainer) return;
 
-  const activeModel = getActivePdfModel();
+  const activeModel = (typeof getActivePdfModel === 'function') ? getActivePdfModel() : 'MODEL_1';
 
-  const hasUnfulfilledItem = (Array.isArray(req.items) && req.items.some(i => i && (i.unfulfilled || i.batal || i.status === 'TIDAK BISA DIPENUHI'))) || (req.status === 'BATAL' || req.unfulfilled);
+  const hasUnfulfilledItem = (Array.isArray(req.items) && req.items.some(i => i && (
+    i.unfulfilled || 
+    i.batal || 
+    i.status === 'TIDAK BISA DIPENUHI' || 
+    i.status === 'TIDAK DIPENUHI' ||
+    i.statusPart === 'TIDAK DIPENUHI' ||
+    i.keteranganPart === 'TIDAK DIPENUHI'
+  ))) || (req.status === 'BATAL' || req.unfulfilled);
 
-  let itemRowsHtml = req.items.map((i, idx) => {
-    const isUnfulfilled = !!(i.unfulfilled || i.batal || i.status === 'TIDAK BISA DIPENUHI' || req.status === 'BATAL' || req.unfulfilled);
+  let itemRowsHtml = (req.items || []).map((i, idx) => {
+    const isUnfulfilled = !!(
+      i.unfulfilled || 
+      i.batal || 
+      i.status === 'TIDAK BISA DIPENUHI' || 
+      i.status === 'TIDAK DIPENUHI' ||
+      i.statusPart === 'TIDAK DIPENUHI' ||
+      i.keteranganPart === 'TIDAK DIPENUHI' ||
+      req.status === 'BATAL' || 
+      req.unfulfilled
+    );
     const rowTdStyle = isUnfulfilled 
       ? 'padding:6px 6px; border:1px solid #cbd5e1; font-size:11px; text-decoration: line-through; text-decoration-thickness: 3px; font-weight: bold; color: #b91c1c; background-color: #fef2f2;' 
       : 'padding:6px 6px; border:1px solid #cbd5e1; font-size:11px;';
@@ -8828,77 +9174,42 @@ function bukaPdfModal(noSurat) {
     return `
       <tr style="border-bottom:1px solid #cbd5e1; ${isUnfulfilled ? 'background-color:#fef2f2;' : ''}">
         <td style="${numTdStyle}">${idx + 1}</td>
-        <td style="${rowTdStyle} word-break:break-word;">${i.type}</td>
-        <td style="${rowTdStyle} word-break:break-all;">${i.seri}</td>
-        ${req.jenis === 'DUS' ? `<td style="${rowTdStyle} color:${isUnfulfilled ? '#b91c1c' : '#d97706'}; word-break:break-all;">${i.dus || '-'}</td>` : ''}
-        <td style="${rowTdStyle} word-break:break-word;">${i.barang}</td>
-        <td style="${rowTdStyle} word-break:break-word;">${i.alasan}</td>
-        <td style="${numTdStyle}">${i.qty}</td>
+        <td style="${rowTdStyle} word-break:break-word;">${i.type || i.tipe || '-'}</td>
+        <td style="${rowTdStyle} word-break:break-all;">${i.seri || i.sn || '-'}</td>
+        ${req.jenis === 'DUS' ? `<td style="${rowTdStyle} color:${isUnfulfilled ? '#b91c1c' : '#d97706'}; font-weight:600; word-break:break-all;">${i.dus || '-'}</td>` : ''}
+        <td style="${rowTdStyle} word-break:break-word;">${i.barang || i.permintaan || '-'}</td>
+        <td style="${rowTdStyle} word-break:break-word;">${i.alasan || '-'}</td>
+        <td style="${numTdStyle}">${i.qty || 1}</td>
       </tr>
     `;
   }).join('');
 
   const users = getUsersFromDB();
-  const serviceUser = users.find(u => u && u.category === 'SERVICE' && (
-    (req.serviceUserName && String(u.fullName || u.username).toUpperCase() === String(req.serviceUserName).toUpperCase()) ||
-    (u.area && isAreaMatch(u.area, req.area))
-  ));
-  const dmUser = users.find(u => u && u.category === 'DM') || users.find(u => u && u.username === 'ADMIN');
+  const serviceUser = users.find(u => u.category === 'SERVICE' && u.area === req.area) || users.find(u => u.category === 'SERVICE');
+  const dmUser = users.find(u => u.category === 'DM') || users.find(u => u.username === 'ADMIN');
   const serviceName = req.serviceUserName || (serviceUser ? serviceUser.fullName : 'SERVICE SUPERVISOR');
+  const dmName = req.dmUserName || (dmUser ? dmUser.fullName : 'DISTRICT MANAGER');
 
-  // 1. RESOLVE SERVICE TTD (MENGAMBIL TTD ASLI DARI PROFIL / MENU TTD SERVICE)
-  let serviceTTD = (req.serviceTTD && !req.serviceTTD.includes('DIGITALLY VERIFIED') && !req.serviceTTD.includes('OfficialDigitalSignatureStamp')) ? req.serviceTTD : '';
+  const ttdMap = JSON.parse(appStorage.getItem(TTD_DB_KEY) || '{}');
+  let serviceTTD = req.serviceTTD || '';
+  if (!serviceTTD && serviceUser) {
+    serviceTTD = ttdMap[serviceUser.id] || ttdMap[serviceUser.username] || ttdMap[serviceUser.fullName] || '';
+  }
   if (!serviceTTD) {
-    serviceTTD = getUserRealSignature('SERVICE', req.area, req.serviceUserName, serviceName);
-  }
-  if (serviceTTD && req.serviceApprove && !req.serviceTTD) {
-    req.serviceTTD = serviceTTD;
+    serviceTTD = ttdMap['SERVICE_' + req.area] || ttdMap['SERVICE'] || ttdMap['HODS'] || '';
   }
 
-  // 2. RESOLVE DM TTD (MENGAMBIL TTD ASLI DARI PROFIL / MENU TTD DM)
-  let dmTTD = (req.dmTTD && !req.dmTTD.includes('DIGITALLY VERIFIED') && !req.dmTTD.includes('OfficialDigitalSignatureStamp')) ? req.dmTTD : '';
+  let dmTTD = req.dmTTD || '';
+  if (!dmTTD && dmUser) {
+    dmTTD = ttdMap[dmUser.id] || ttdMap[dmUser.username] || ttdMap[dmUser.fullName] || '';
+  }
   if (!dmTTD) {
-    dmTTD = getUserRealSignature('DM', req.area, req.dmUserName, dmUser ? dmUser.fullName : '');
-  }
-  if (dmTTD && (req.status === 'APPROVE' || req.status === 'DONE') && !req.dmTTD) {
-    req.dmTTD = dmTTD;
+    dmTTD = ttdMap['DM'] || ttdMap['DM'] || '';
   }
 
-  const creatorUser = users.find(u => 
-    (u.fullName && String(u.fullName).toUpperCase() === String(req.createdBy || '').toUpperCase()) || 
-    (u.username && String(u.username).toUpperCase() === String(req.createdBy || '').toUpperCase()) || 
-    (u.id && u.id === req.userId)
-  );
-
-  const creatorCategory = creatorUser ? creatorUser.category : '';
-  const isCreatedByServiceOrAdmin = (
-    creatorCategory === 'SERVICE' || 
-    creatorCategory === 'HODS' || 
-    creatorCategory === 'ADMIN' || 
-    creatorCategory === 'DM' || 
-    String(req.createdBy || '').toUpperCase().includes('SERVICE') || 
-    String(req.createdBy || '').toUpperCase().includes('HODS') || 
-    String(req.createdBy || '').toUpperCase().includes('ADMIN')
-  );
-
-  // 3. RESOLVE TOKO / PEMOHON TTD (HANYA UNTUK LOGIN GBJ, KECUALI GBJ MAKA WAJIB KOSONG)
-  const isRequesterGBJ = (
-    creatorCategory === 'GBJ' || 
-    (currentUser && currentUser.category === 'GBJ') ||
-    String(req.toko || '').toUpperCase().includes('GBJ') || 
-    String(req.createdBy || '').toUpperCase().includes('GBJ') ||
-    req.isGBJ === true
-  );
-
-  let tokoTTD = '';
-  if (isRequesterGBJ) {
-    tokoTTD = (req.pemohonTTD || req.tokoTTD || '');
-    if (!tokoTTD || tokoTTD.includes('DIGITALLY VERIFIED') || tokoTTD.includes('OfficialDigitalSignatureStamp')) {
-      tokoTTD = getUserRealSignature('GBJ', req.area, req.createdBy, req.toko);
-    }
-  } else {
-    // KECUALI LOGIN GBJ, PEMOHON WAJIB KOSONG!
-    tokoTTD = '';
+  let pemohonTTD = req.pemohonTTD || req.tokoTTD || '';
+  if (!pemohonTTD && req.createdBy) {
+    pemohonTTD = ttdMap[req.createdBy] || ttdMap[req.toko] || '';
   }
 
   const nowPrint = new Date();
@@ -8911,24 +9222,17 @@ function bukaPdfModal(noSurat) {
   const timestampStr = `DICETAK PADA ${pDay}/${pMonth}/${pYear} Pukul ${pHour}:${pMin}:${pSec}`;
 
   let photoSection = '';
-  if (req.photos && req.photos.length > 0) {
-    const isAdminUser = currentUser && (currentUser.category === 'ADMIN' || (currentUser.username && currentUser.username.toUpperCase() === 'ADMIN'));
-    const deleteBtnHtml = isAdminUser ? `
-      <button type="button" onclick="hapusFotoDokumenBiasa('${req.noSurat}')" style="background:#dc2626; color:#ffffff; border:none; border-radius:4px; padding:3px 8px; font-size:11px; font-weight:bold; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
-        <span class="material-symbols-rounded" style="font-size:13px;">delete</span> HAPUS FOTO DOKUMEN INI
-      </button>
-    ` : '';
-
+  if (includePhotos === true && validPhotos.length > 0) {
     photoSection = `
-      <div style="margin-top: 12px; margin-bottom: 12px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-          
-          ${deleteBtnHtml}
+      <div style="margin-top: 10px; margin-bottom: 8px; page-break-inside: avoid;">
+        <div style="font-size: 8px; font-weight: 700; color: #475569; letter-spacing: 0.3px; margin-bottom: 4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; text-transform: uppercase;">
+          LAMPIRAN FOTO BARANG (${validPhotos.length} FOTO):
         </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          ${req.photos.map(p => `
-            <div style="width: 95px; height: 95px; border: 1px solid #cbd5e1; border-radius: 6px; overflow: hidden; background: #000;">
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; width: 100%;">
+          ${validPhotos.map((p, pIdx) => `
+            <div style="aspect-ratio: 1/1; border: 1px solid #94a3b8; border-radius: 4px; overflow: hidden; background: #0f172a; position: relative; display: flex; align-items: center; justify-content: center;">
               <img src="${p}" style="width: 100%; height: 100%; object-fit: cover;">
+              <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.65); color: #ffffff; font-size: 8px; font-weight: 800; padding: 1px 3px; border-radius: 2px;">#${pIdx+1}</span>
             </div>
           `).join('')}
         </div>
@@ -8944,11 +9248,11 @@ function bukaPdfModal(noSurat) {
     SKB: 'SUKABUMI',
     SBN: 'SUBANG'
   };
-  const hodsAreaTitle = `HODS ${areaNameMap[req.area] || req.area}`;
+  const hodsAreaTitle = `HODS ${areaNameMap[req.area] || req.area || ''}`;
 
   let tableHeaderBg = '#0284c7';
   let headerTitleHtml = `
-    <div style="text-align: center; font-size: 20px; font-weight: 800; border-bottom: 2.5px solid #0f172a; padding-bottom: 20px; margin-bottom: 20px; letter-spacing: 0.5px; color: #0f172a; text-transform: uppercase;">
+    <div style="text-align: center; font-size: 20px; font-weight: 800; border-bottom: 2.5px solid #0f172a; padding-bottom: 8px; margin-bottom: 36px; letter-spacing: 0.5px; color: #0f172a; text-transform: uppercase;">
       PERMINTAAN TOKO
     </div>
   `;
@@ -8956,28 +9260,28 @@ function bukaPdfModal(noSurat) {
   if (activeModel === 'MODEL_2') {
     tableHeaderBg = '#334155';
     headerTitleHtml = `
-      <div style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; padding: 12px 18px; border-radius: 10px; text-align: center; font-size: 20px; font-weight: 900; margin-bottom: 20px; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(2,132,199,0.25);">
+      <div style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; padding: 12px 18px; border-radius: 10px; text-align: center; font-size: 20px; font-weight: 900; margin-bottom: 14px; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(2,132,199,0.25);">
         PERMINTAAN TOKO
       </div>
     `;
   } else if (activeModel === 'MODEL_3') {
     tableHeaderBg = '#0f172a';
     headerTitleHtml = `
-      <div style="background: #0f172a; color: #fbbf24; padding: 14px 18px; border-radius: 8px; border-bottom: 4px solid #fbbf24; text-align: center; font-size: 21px; font-weight: 900; margin-bottom: 20px; letter-spacing: 1.5px; text-transform: uppercase;">
+      <div style="background: #0f172a; color: #fbbf24; padding: 14px 18px; border-radius: 8px; border-bottom: 4px solid #fbbf24; text-align: center; font-size: 21px; font-weight: 900; margin-bottom: 14px; letter-spacing: 1.5px; text-transform: uppercase;">
         PERMINTAAN TOKO
       </div>
     `;
   } else if (activeModel === 'MODEL_4') {
     tableHeaderBg = '#059669';
     headerTitleHtml = `
-      <div style="background: #059669; color: #ffffff; padding: 12px 18px; border-radius: 6px; text-align: center; font-size: 20px; font-weight: 900; margin-bottom: 20px; letter-spacing: 1px; border-left: 6px solid #047857;">
+      <div style="background: #059669; color: #ffffff; padding: 12px 18px; border-radius: 6px; text-align: center; font-size: 20px; font-weight: 900; margin-bottom: 14px; letter-spacing: 1px; border-left: 6px solid #047857;">
         PERMINTAAN TOKO
       </div>
     `;
   } else if (activeModel === 'MODEL_5') {
     tableHeaderBg = '#7c3aed';
     headerTitleHtml = `
-      <div style="background: linear-gradient(135deg, #7c3aed, #4c1d95); color: #ffffff; padding: 14px 18px; border-radius: 12px; text-align: center; font-size: 21px; font-weight: 900; margin-bottom: 20px; letter-spacing: 1.5px; box-shadow: 0 6px 18px rgba(124,58,237,0.3);">
+      <div style="background: linear-gradient(135deg, #7c3aed, #4c1d95); color: #ffffff; padding: 14px 18px; border-radius: 12px; text-align: center; font-size: 21px; font-weight: 900; margin-bottom: 14px; letter-spacing: 1.5px; box-shadow: 0 6px 18px rgba(124,58,237,0.3);">
         PERMINTAAN TOKO
       </div>
     `;
@@ -8988,42 +9292,42 @@ function bukaPdfModal(noSurat) {
       <div>
         ${headerTitleHtml}
 
-        <table class="pdf-info-grid" style="width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 11.5px; background: transparent; border: none; table-layout: fixed;">
+                                <table class="pdf-info-table" style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 20px; font-size: 12px; background: transparent; border: none;">
           <tr>
-            <td style="padding: 4px 2px 4px 0; width: 78px; font-weight: bold; border: none; white-space: nowrap;">NO SURAT</td>
-            <td style="padding: 4px 2px; width: 8px; border: none;">:</td>
-            <td style="padding: 4px 6px 4px 0; font-weight: 700; color: #0284c7; border: none; word-break: break-all;">${req.noSurat}</td>
-            <td style="padding: 4px 2px; width: 68px; font-weight: bold; border: none; white-space: nowrap;">TANGGAL</td>
-            <td style="padding: 4px 2px; width: 8px; border: none;">:</td>
-            <td style="padding: 4px 0; width: 95px; font-weight: 600; border: none; white-space: nowrap;">${formatDateDDMMYYYYString(req.tanggal)}</td>
+            <td style="padding: 4px 0; width: 85px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap;">NO SURAT</td>
+            <td style="padding: 4px 12px 4px 8px; width: 14px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 20px 4px 0; width: 100%; font-weight: 800; color: #0284c7; border: none; letter-spacing: 0.2px;">${req.noSurat}</td>
+            
+            <td style="padding: 4px 0; width: 75px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">TANGGAL</td>
+            <td style="padding: 4px 12px 4px 8px; width: 14px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 0; width: 105px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">${(typeof formatDateDDMMYYYYString === 'function') ? formatDateDDMMYYYYString(req.tanggal) : (req.tanggal || '-')}</td>
           </tr>
           <tr>
-            <td style="padding: 4px 2px 4px 0; font-weight: bold; border: none; white-space: nowrap;">TOKO</td>
-            <td style="padding: 4px 2px; border: none;">:</td>
-            <td style="padding: 4px 6px 4px 0; font-weight: 700; border: none; word-break: break-word;">${req.toko}</td>
-            <td style="padding: 4px 2px; font-weight: bold; border: none; white-space: nowrap;">JENIS</td>
-            <td style="padding: 4px 2px; border: none;">:</td>
-            <td style="padding: 4px 0; font-weight: 700; color: #16a34a; border: none; white-space: nowrap;">${req.jenis || 'DEFAULT'}</td>
+            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; white-space: nowrap;">TOKO</td>
+            <td style="padding: 4px 12px 4px 8px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 20px 4px 0; font-weight: 800; color: #0f172a; border: none; text-transform: uppercase;">${req.toko}</td>
+            
+            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">JENIS</td>
+            <td style="padding: 4px 12px 4px 8px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
+            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; text-transform: uppercase; white-space: nowrap; text-align: left;">${req.jenis || 'DEFAULT'}</td>
           </tr>
         </table>
 
         <div style="font-size: 11px; font-weight: bold; margin-bottom: 6px; color: #0f172a;">DETAIL PERMINTAAN:</div>
-        <div class="pdf-table-responsive" style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; border-radius: 6px;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #cbd5e1; min-width: 100%;">
-            <thead>
-              <tr style="background: ${tableHeaderBg}; color: #ffffff;">
-                <th style="width: 28px; text-align:center; padding:6px 4px; border:1px solid #cbd5e1;">NO</th>
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">TIPE BARANG</th>
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">NO. SERI</th>
-                ${req.jenis === 'DUS' ? `<th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">NO. SERI DUS</th>` : ''}
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">PERMINTAAN BARANG</th>
-                <th style="padding:6px 6px; border:1px solid #cbd5e1; text-align:center;">ALASAN PERMINTAAN</th>
-                <th style="width: 38px; text-align:center; padding:6px 4px; border:1px solid #cbd5e1;">QTY</th>
-              </tr>
-            </thead>
-            <tbody>${itemRowsHtml}</tbody>
-          </table>
-        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 11.5px; border: 1px solid #cbd5e1;">
+          <thead>
+            <tr style="background: ${tableHeaderBg}; color: #ffffff;">
+              <th style="width: 38px; text-align:center; padding:7px 6px; border:1px solid #cbd5e1; font-weight:700;">NO</th>
+              <th style="padding:7px 8px; border:1px solid #cbd5e1; font-weight:700; text-align:center;">TIPE BARANG</th>
+              <th style="padding:7px 8px; border:1px solid #cbd5e1; font-weight:700; text-align:center;">NO. SERI</th>
+              ${req.jenis === 'DUS' ? `<th style="padding:7px 8px; border:1px solid #cbd5e1; font-weight:700; text-align:center;">NO. SERI DUS</th>` : ''}
+              <th style="padding:7px 8px; border:1px solid #cbd5e1; font-weight:700; text-align:center;">PERMINTAAN BARANG</th>
+              <th style="padding:7px 8px; border:1px solid #cbd5e1; font-weight:700; text-align:center;">ALASAN PERMINTAAN</th>
+              <th style="width: 45px; text-align:center; padding:7px 6px; border:1px solid #cbd5e1; font-weight:700;">QTY</th>
+            </tr>
+          </thead>
+          <tbody>${itemRowsHtml}</tbody>
+        </table>
 
         ${photoSection}
 
@@ -9044,48 +9348,48 @@ function bukaPdfModal(noSurat) {
       </div>
 
       <div>
-        <div style="display: flex; justify-content: space-between; align-items: stretch; margin-top: 28px; text-align: center !important; font-size: 11px;">
-          <div style="width: 30%; display: flex; flex-direction: column; justify-content: space-between; align-items: center !important; min-height: 130px; text-align: center !important;">
-            <div style="font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; text-align: center !important;">PEMOHON</div>
-            <div style="flex: 1; display: flex; align-items: center !important; justify-content: center !important; width: 100%; min-height: 55px; margin: 4px 0; text-align: center !important;">
-              ${tokoTTD ? `<img src="${tokoTTD}" style="max-height: 52px; max-width: 90%; object-fit: contain; display: block !important; margin: 0 auto !important;">` : ''}
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 28px; text-align: center; font-size: 11px; page-break-inside: avoid;">
+          <div style="width: 30%; display: flex; flex-direction: column; justify-content: space-between; height: 125px;">
+            <div style="font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">PEMOHON</div>
+            <div style="height: 55px; display: flex; align-items: center; justify-content: center;">
+              ${pemohonTTD ? `<img src="${pemohonTTD}" style="max-height: 52px; max-width: 100%; object-fit: contain;">` : ''}
             </div>
-            <div style="width: 100%; text-align: center !important;">
-              <div style="font-weight: 800; color: #0f172a; font-size: 11.5px; text-align: center !important;">${req.toko}</div>
-              <div style="font-size: 10px; color: #475569; margin-top: 2px; text-transform: uppercase; text-align: center !important;">PEMOHON (${isRequesterGBJ ? 'GBJ' : 'TOKO'})</div>
-            </div>
-          </div>
-
-          <div style="width: 30%; display: flex; flex-direction: column; justify-content: space-between; align-items: center !important; min-height: 130px; text-align: center !important;">
-            <div style="font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; text-align: center !important;">DIPERIKSA</div>
-            <div style="flex: 1; display: flex; align-items: center !important; justify-content: center !important; width: 100%; min-height: 55px; margin: 4px 0; text-align: center !important;">
-              ${serviceTTD ? `<img src="${serviceTTD}" style="max-height: 52px; max-width: 90%; object-fit: contain; display: block !important; margin: 0 auto !important;">` : ''}
-            </div>
-            <div style="width: 100%; text-align: center !important;">
-              <div style="font-weight: 800; color: #0f172a; font-size: 11.5px; text-align: center !important;">${serviceName}</div>
-              <div style="font-size: 10px; color: #475569; margin-top: 2px; text-transform: uppercase; text-align: center !important;">${hodsAreaTitle}</div>
+            <div>
+              <div style="font-weight: 800; color: #0f172a; font-size: 11.5px;">${req.toko || req.createdBy || 'PEMOHON'}</div>
+              <div style="font-size: 10px; color: #475569; margin-top: 2px; text-transform: uppercase;">PEMOHON (TOKO)</div>
             </div>
           </div>
 
-          <div style="width: 30%; display: flex; flex-direction: column; justify-content: space-between; align-items: center !important; min-height: 130px; text-align: center !important;">
-            <div style="font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; text-align: center !important;">DISETUJUI</div>
-            <div style="flex: 1; display: flex; align-items: center !important; justify-content: center !important; width: 100%; min-height: 55px; margin: 4px 0; text-align: center !important;">
-              ${dmTTD ? `<img src="${dmTTD}" style="max-height: 52px; max-width: 90%; object-fit: contain; display: block !important; margin: 0 auto !important;">` : ''}
+          <div style="width: 30%; display: flex; flex-direction: column; justify-content: space-between; height: 125px;">
+            <div style="font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">DIPERIKSA</div>
+            <div style="height: 55px; display: flex; align-items: center; justify-content: center;">
+              ${serviceTTD ? `<img src="${serviceTTD}" style="max-height: 52px; max-width: 100%; object-fit: contain;">` : ''}
             </div>
-            <div style="width: 100%; text-align: center !important;">
-              <div style="font-weight: 800; color: #0f172a; font-size: 11.5px; text-align: center !important;">FERRY EDIYANTO</div>
-              <div style="font-size: 10px; color: #475569; margin-top: 2px; text-transform: uppercase; text-align: center !important;">DISTRICT MANAGER</div>
+            <div>
+              <div style="font-weight: 800; color: #0f172a; font-size: 11.5px;">${serviceName}</div>
+              <div style="font-size: 10px; color: #475569; margin-top: 2px; text-transform: uppercase;">${hodsAreaTitle}</div>
+            </div>
+          </div>
+
+          <div style="width: 30%; display: flex; flex-direction: column; justify-content: space-between; height: 125px;">
+            <div style="font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">DISETUJUI</div>
+            <div style="height: 55px; display: flex; align-items: center; justify-content: center;">
+              ${dmTTD ? `<img src="${dmTTD}" style="max-height: 52px; max-width: 100%; object-fit: contain;">` : ''}
+            </div>
+            <div>
+              <div style="font-weight: 800; color: #0f172a; font-size: 11.5px;">${dmName}</div>
+              <div style="font-size: 10px; color: #475569; margin-top: 2px; text-transform: uppercase;">DISTRICT MANAGER</div>
             </div>
           </div>
         </div>
 
-        <div style="margin-top: 36px; display: flex; justify-content: space-between; align-items: center; font-size: 8.5px; color: #475569; letter-spacing: 0.2px;">
+        <div style="margin-top: 28px; display: flex; justify-content: space-between; align-items: center; font-size: 8px; color: #64748b; letter-spacing: 0.2px;">
           ${hasUnfulfilledItem ? `
-            <div style="font-weight: 800; color: #b91c1c; font-style: normal; display: flex; align-items: center; gap: 4px;">
-              <span style="text-decoration: line-through; text-decoration-thickness: 3px; font-weight: 900; color: #b91c1c; font-size: 11px;">---</span> = Tidak dipenuhi
+            <div style="font-weight: 800; color: #b91c1c; font-style: normal; display: flex; align-items: center; gap: 4px; font-size: 8px;">
+              <span style="text-decoration: line-through; text-decoration-thickness: 2.5px; font-weight: 900; color: #b91c1c; font-size: 10px;">---</span> = Tidak di penuhi
             </div>
           ` : '<div></div>'}
-          <div style="font-style: italic; opacity: 0.85;">
+          <div style="font-style: italic; opacity: 0.85; font-size: 8px;">
             ${timestampStr}
           </div>
         </div>
@@ -9095,16 +9399,14 @@ function bukaPdfModal(noSurat) {
 
   const pdfModal = document.getElementById('pdfModal');
   if (pdfModal) {
-    pdfModal.classList.add('show');
     pdfModal.style.setProperty('display', 'flex', 'important');
-    pdfModal.style.setProperty('visibility', 'visible', 'important');
-    pdfModal.style.setProperty('opacity', '1', 'important');
-    pdfModal.style.setProperty('pointer-events', 'auto', 'important');
-
-    const pdfContent = document.getElementById('pdfDocumentContent');
-    if (pdfContent) pdfContent.scrollTop = 0;
+    pdfModal.classList.add('show');
+    if (typeof pushPopupHistoryState === 'function') pushPopupHistoryState();
   }
 }
+window.bukaPdfModal = bukaPdfModal;
+
+
 
 function tutupPdfModal() {
   const pdfModal = document.getElementById('pdfModal');
@@ -9146,6 +9448,13 @@ function cetakDokumenPdf() {
               }
               .pdf-paper {
                 width: 100% !important;
+              }
+              .pdf-info-table td {
+                border: none !important;
+              }
+              .pdf-info-table {
+                width: 100% !important;
+                border: none !important;
                 box-shadow: none !important;
                 border: none !important;
                 padding: 0 !important;
@@ -9480,126 +9789,96 @@ function cropAndCenterCanvasSignature(srcCanvas) {
 window.cropAndCenterCanvasSignature = cropAndCenterCanvasSignature;
 
 function simpanTTD() {
-  showConfirm('SIMPAN TANDA TANGAN DIGITAL INI?', () => {
-    if (!canvasTTD) return;
-    const png = cropAndCenterCanvasSignature(canvasTTD);
-    const ttdMap = JSON.parse(appStorage.getItem(TTD_DB_KEY) || '{}');
-    let key = currentUser.category === 'DM' ? 'DM' : `SERVICE_${currentUser.area}`;
-    if (currentUser.category === 'GBJ') key = 'GBJ';
-    ttdMap[key] = png;
-    if (currentUser.fullName) ttdMap[currentUser.fullName] = png;
-    if (currentUser.username) ttdMap[currentUser.username] = png;
-    if (currentUser.id) ttdMap[currentUser.id] = png;
-    if (currentUser.category === 'SERVICE') {
-      ttdMap[`SERVICE_${currentUser.area}`] = png;
-      ttdMap['HODS'] = png;
-      delete ttdMap['SERVICE'];
-    }
-    if (currentUser.category === 'GBJ') {
-      ttdMap['GBJ'] = png;
-    }
-    currentUser.ttd = png;
-    appStorage.setItem(TTD_DB_KEY, JSON.stringify(ttdMap));
-
-    // SIMPAN JUGA LANGSUNG KE PROFIL USER DI USERS_DB_KEY
-    try {
-      const allUsers = getUsersFromDB();
-      const uIdx = allUsers.findIndex(u => u && (u.id === currentUser.id || u.username === currentUser.username));
-      if (uIdx !== -1) {
-        allUsers[uIdx].ttd = png;
-        saveUsersToDB(allUsers);
-      }
-    } catch(uErr) {}
-    
-    // SIMPAN PERSISTEN PADA PENYIMPANAN LOKAL (LOCALSTORAGE) PERANGKAT
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('APP_USER_TTD_MAP', JSON.stringify(ttdMap));
-        localStorage.setItem(TTD_DB_KEY, JSON.stringify(ttdMap));
-        if (currentUser) {
-          if (currentUser.id) localStorage.setItem(`LOCAL_TTD_${currentUser.id}`, png);
-          if (currentUser.username) localStorage.setItem(`LOCAL_TTD_${currentUser.username}`, png);
+  showConfirm('SIMPAN TANDA TANGAN DIGITAL INI?', function() {
+    var _asyncTask = async function() {
+      if (!canvasTTD) return;
+      showLoading('MENGUNGGAH TTD DIGITAL...');
+      try {
+        const rawPng = cropAndCenterCanvasSignature(canvasTTD);
+        const ttdUrl = await uploadSignatureDataUrlToSupabaseStorage(rawPng, `TTD_${(currentUser && currentUser.username ? currentUser.username : 'USER')}_${Date.now()}.png`);
+        
+        const ttdMap = JSON.parse(appStorage.getItem(TTD_DB_KEY) || '{}');
+        let key = currentUser.category === 'DM' ? 'DM' : `SERVICE_${currentUser.area}`;
+        if (currentUser.category === 'GBJ') key = 'GBJ';
+        ttdMap[key] = ttdUrl;
+        if (currentUser.fullName) ttdMap[currentUser.fullName] = ttdUrl;
+        if (currentUser.username) ttdMap[currentUser.username] = ttdUrl;
+        if (currentUser.id) ttdMap[currentUser.id] = ttdUrl;
+        if (currentUser.category === 'SERVICE') {
+          ttdMap[`SERVICE_${currentUser.area}`] = ttdUrl;
+          ttdMap['HODS'] = ttdUrl;
+          delete ttdMap['SERVICE'];
         }
-      }
-    } catch(e) {}
+        if (currentUser.category === 'GBJ') {
+          ttdMap['GBJ'] = ttdUrl;
+        }
+        currentUser.ttd = ttdUrl;
+        appStorage.setItem(TTD_DB_KEY, JSON.stringify(ttdMap));
 
-    if (currentUser) {
-      if (currentUser.id) appStorage.setItem(`LOCAL_TTD_${currentUser.id}`, png);
-      if (currentUser.username) appStorage.setItem(`LOCAL_TTD_${currentUser.username}`, png);
-    }
+        try {
+          const allUsers = getUsersFromDB();
+          const uIdx = allUsers.findIndex(u => u && (u.id === currentUser.id || u.username === currentUser.username));
+          if (uIdx !== -1) {
+            allUsers[uIdx].ttd = ttdUrl;
+            saveUsersToDB(allUsers);
+          }
+        } catch(uErr) {}
 
-    // UPDATE DOKUMEN PERMINTAAN LOKAL YANG SUDAH DI-APPROVE AGAR LANGSUNG TERPASANG TTD BARU INI
-    try {
-      const allReqs = getRequestsFromDB();
-      let reqsChanged = false;
-      allReqs.forEach(r => {
-        if (!r) return;
-        if (currentUser.category === 'SERVICE' && r.serviceApprove) {
-          if (r.area === currentUser.area || currentUser.area === 'ALL' || !r.serviceTTD) {
-            r.serviceTTD = png;
-            reqsChanged = true;
-            if (typeof supabase !== 'undefined' && supabase) {
-              supabase.from('permintaan_toko').update({ service_ttd: png }).eq('no_surat', r.noSurat).then(() => {}, () => {});
+        try {
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem('APP_USER_TTD_MAP', JSON.stringify(ttdMap));
+            localStorage.setItem(TTD_DB_KEY, JSON.stringify(ttdMap));
+            if (currentUser) {
+              if (currentUser.id) localStorage.setItem(`LOCAL_TTD_${currentUser.id}`, ttdUrl);
+              if (currentUser.username) localStorage.setItem(`LOCAL_TTD_${currentUser.username}`, ttdUrl);
             }
           }
-        } else if (currentUser.category === 'DM' && (r.status === 'APPROVE' || r.status === 'DONE')) {
-          r.dmTTD = png;
-          reqsChanged = true;
-          if (typeof supabase !== 'undefined' && supabase) {
-            supabase.from('permintaan_toko').update({ dm_ttd: png }).eq('no_surat', r.noSurat).then(() => {}, () => {});
-          }
-        } else if (currentUser.category === 'GBJ' && (r.createdBy === currentUser.username || r.createdBy === currentUser.fullName || r.isGBJ)) {
-          r.pemohonTTD = png;
-          reqsChanged = true;
-          if (typeof supabase !== 'undefined' && supabase) {
-            // pemohon_ttd signature is managed in users table
-          }
+        } catch(e) {}
+
+        if (currentUser) {
+          if (currentUser.id) appStorage.setItem(`LOCAL_TTD_${currentUser.id}`, ttdUrl);
+          if (currentUser.username) appStorage.setItem(`LOCAL_TTD_${currentUser.username}`, ttdUrl);
         }
-      });
-      if (reqsChanged) saveRequestsToDB(allReqs);
-    } catch(rErr) {}
 
-    // UPLOAD TTD KE SUPABASE DATABASE AGAR SEMUA PERANGKAT OTOMATIS LENGKAP
-    if (typeof supabase !== 'undefined' && supabase) {
-      try {
-        const systemTtdRow = {
-          id: '__SYSTEM_TTD_MAP__',
-          no_surat: '__SYSTEM_TTD_MAP__',
-          tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-          toko: 'SYSTEM',
-          area: 'ALL',
-          jenis: 'SYSTEM',
-          catatan: JSON.stringify(ttdMap),
-          items: [],
-          photos: [],
-          status: 'DONE',
-          service_approve: true,
-          created_by: 'SYSTEM',
-          created_at: new Date().toISOString()
-        };
-        supabase.from('permintaan_toko').upsert(systemTtdRow).then(({ error }) => {
-          if (error) console.warn('[SUPABASE TTD SAVE NOTICE]:', error.message);
-          else console.log('⚡ [SUPABASE TTD SUCCESS]: TTD berhasil di-upload ke Supabase!');
-        });
+        try {
+          const allReqs = getRequestsFromDB();
+          let reqsChanged = false;
+          allReqs.forEach(r => {
+            if (!r) return;
+            if (currentUser.category === 'SERVICE' && r.serviceApprove) {
+              if (r.area === currentUser.area || currentUser.area === 'ALL' || !r.serviceTTD) {
+                r.serviceTTD = ttdUrl;
+                reqsChanged = true;
+                if (typeof supabase !== 'undefined' && supabase) {
+                  supabase.from('permintaan_toko').update({ service_ttd: ttdUrl }).eq('no_surat', r.noSurat).then(() => {}, () => {});
+                }
+              }
+            } else if (currentUser.category === 'DM' && (r.status === 'APPROVE' || r.status === 'DONE')) {
+              r.dmTTD = ttdUrl;
+              reqsChanged = true;
+              if (typeof supabase !== 'undefined' && supabase) {
+                supabase.from('permintaan_toko').update({ dm_ttd: ttdUrl }).eq('no_surat', r.noSurat).then(() => {}, () => {});
+              }
+            } else if (currentUser.category === 'GBJ' && (r.createdBy === currentUser.username || r.createdBy === currentUser.fullName || r.isGBJ)) {
+              r.pemohonTTD = ttdUrl;
+              reqsChanged = true;
+            }
+          });
+          if (reqsChanged) saveRequestsToDB(allReqs);
+        } catch(rErr) {}
 
-        // Backup juga ke tabel lookup di Supabase
-        supabase.from('lookup').upsert({
-          key: 'SYSTEM_TTD_MAP',
-          value: JSON.stringify(ttdMap),
-          updated_at: new Date().toISOString()
-        }).then(() => {}, () => {});
+        if (typeof pushCentralCloudDB === 'function') pushCentralCloudDB();
 
-        if (currentUser && currentUser.id) {
-          supabase.from('users').update({ ttd: png }).eq('id', currentUser.id).then(() => {}, () => {});
-        }
-      } catch(sbErr) {
-        console.warn('[SUPABASE TTD SAVE NOTICE]:', sbErr);
+        hideLoading();
+        tutupTTD();
+        showNotif('TANDA TANGAN DIGITAL BERHASIL DISIMPAN & DIUNGGAH SEBAGAI URL!', 'success');
+      } catch(err) {
+        hideLoading();
+        console.error('[SIMPAN TTD ERROR]:', err);
+        showNotif('GAGAL MENYIMPAN TTD: ' + (err.message || err), 'warning');
       }
-    }
-    
-    pushCentralCloudDB();
-    showNotif('TANDA TANGAN DIGITAL BERHASIL DISIMPAN & DI-UPLOAD KE SUPABASE!', 'success');
-    tutupTTD();
+    };
+    _asyncTask();
   });
 }
 
@@ -10180,89 +10459,89 @@ async function kirimBroadcastChatKeSemuaUser() {
     return;
   }
 
-  showConfirm(`SIARKAN PESAN INI KE SEMUA TOKO & USER?`, async () => {
-    showLoading('MENYIARKAN PESAN...');
-    try {
-      const allUsers = getUsersFromDB();
-      const myUname = String(currentUser ? currentUser.username : '').toUpperCase();
-      const targetUsers = allUsers.filter(u => u && u.username && String(u.username).toUpperCase() !== myUname);
+  showConfirm(`SIARKAN PESAN INI KE SEMUA TOKO & USER?`, function() {
+    var _asyncTask = async function() {
+      showLoading('MENYIARKAN PESAN...');
+      try {
+        const allUsers = getUsersFromDB();
+        const myUname = String(currentUser ? currentUser.username : '').toUpperCase();
+        const targetUsers = allUsers.filter(u => u && u.username && String(u.username).toUpperCase() !== myUname);
 
-      if (targetUsers.length === 0) {
-        hideLoading();
-        showNotif('TIDAK ADA USER / TOKO TERDAFTAR!', 'warning');
-        return;
-      }
+        if (targetUsers.length === 0) {
+          hideLoading();
+          showNotif('TIDAK ADA USER / TOKO TERDAFTAR!', 'warning');
+          return;
+        }
 
-      const allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
-      const rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
-      const now = new Date();
-      const timeStr = getFormattedDateDDMMYYYY(now) + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+        const allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
+        const rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
+        const now = new Date();
+        const timeStr = getFormattedDateDDMMYYYY(now) + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 
-      targetUsers.forEach(u => {
-        const uTarget = String(u.username).toUpperCase();
-        const rTarget = 'ROOM_' + uTarget;
-        const newChatId = `CHAT-${Date.now()}-${Math.floor(Math.random()*10000)}`;
+        targetUsers.forEach(u => {
+          const uTarget = String(u.username).toUpperCase();
+          const rTarget = 'ROOM_' + uTarget;
+          const newChatId = `CHAT-${Date.now()}-${Math.floor(Math.random()*10000)}`;
 
-        allChats.push({
-          id: newChatId,
-          room: rTarget,
-          user: uTarget,
-          userArea: u.area || 'TSM',
-          pengirim: 'SERVICE',
-          senderId: currentUser?.id || 'SERVICE',
-          senderUsername: currentUser?.username || 'SERVICE_TSM',
-          senderName: `SERVICE TSM (${currentUser?.fullName || 'SUPPORT'})`,
-          pesan: pesan,
-          tanggal: timeStr
-        });
-
-        const rIdx = rooms.findIndex(x => String(x.room).toUpperCase() === rTarget || String(x.user).toUpperCase() === uTarget);
-        if (rIdx !== -1) {
-          rooms[rIdx].last = `SERVICE TSM: ${pesan}`;
-          rooms[rIdx].unreadUser = (rooms[rIdx].unreadUser || 0) + 1;
-          rooms[rIdx].lastTime = timeStr;
-          if (u.fullName) rooms[rIdx].userName = u.fullName;
-          if (u.area) rooms[rIdx].userArea = u.area;
-        } else {
-          rooms.push({
+          allChats.push({
+            id: newChatId,
             room: rTarget,
             user: uTarget,
-            userName: u.fullName || uTarget,
             userArea: u.area || 'TSM',
-            last: `SERVICE TSM: ${pesan}`,
-            unreadAdmin: 0,
-            unreadUser: 1,
-            lastTime: timeStr
+            pengirim: 'SERVICE',
+            senderId: (currentUser && currentUser.id ? currentUser.id : 'SERVICE'),
+            senderUsername: (currentUser && currentUser.username ? currentUser.username : 'USER') || 'SERVICE_TSM',
+            senderName: `SERVICE TSM (${(currentUser && currentUser.fullName ? currentUser.fullName : 'ADMIN') || 'SUPPORT'})`,
+            pesan: pesan,
+            tanggal: timeStr
           });
+
+          const rIdx = rooms.findIndex(x => String(x.room).toUpperCase() === rTarget || String(x.user).toUpperCase() === uTarget);
+          if (rIdx !== -1) {
+            rooms[rIdx].last = `SERVICE TSM: ${pesan}`;
+            rooms[rIdx].unreadUser = (rooms[rIdx].unreadUser || 0) + 1;
+            rooms[rIdx].lastTime = timeStr;
+            if (u.fullName) rooms[rIdx].userName = u.fullName;
+            if (u.area) rooms[rIdx].userArea = u.area;
+          } else {
+            rooms.push({
+              room: rTarget,
+              user: uTarget,
+              userName: u.fullName || uTarget,
+              userArea: u.area || 'TSM',
+              last: `SERVICE TSM: ${pesan}`,
+              unreadAdmin: 0,
+              unreadUser: 1,
+              lastTime: timeStr
+            });
+          }
+        });
+
+        appStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats));
+        appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms));
+
+        if (typeof syncChatMessagesToSupabase === 'function') {
+          await syncChatMessagesToSupabase();
         }
-      });
 
-      appStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats));
-      appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms));
-      try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats)); } catch(e) {}
-      try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms)); } catch(e) {}
-
-      if (typeof pushChatToSupabase === 'function') {
-        pushChatToSupabase(allChats, null);
+        hideLoading();
+        input.value = '';
+        tutupBroadcastChatModal();
+        if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
+        if (typeof renderUserList === 'function') renderUserList();
+        showNotif(`PESAN BROADCAST BERHASIL DISIARKAN!`, 'success');
+      } catch(err) {
+        hideLoading();
+        console.error('[BROADCAST ERROR]:', err);
+        showNotif('GAGAL MENYIARKAN PESAN: ' + (err.message || err), 'warning');
       }
-      if (typeof pushCentralCloudDB === 'function') {
-        pushCentralCloudDB();
-      }
-
-      hideLoading();
-      tutupBroadcastChatModal();
-      showNotif(`PESAN BERHASIL DISIARKAN KE ${targetUsers.length} TOKO & USER!`, 'success');
-      loadDaftarChatAdmin();
-    } catch(err) {
-      hideLoading();
-      console.error('[BROADCAST CHAT ERROR]:', err);
-      showNotif('GAGAL MENYIARKAN PESAN: ' + (err.message || err), 'warning');
-    }
+    };
+    _asyncTask();
   });
 }
 window.kirimBroadcastChatKeSemuaUser = kirimBroadcastChatKeSemuaUser;
 
-function hapusChatRoom(roomTarget, userTarget) {
+async function hapusChatRoom(roomTarget, userTarget) {
   const isSysAdmin = currentUser && (
     String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
     String(currentUser.username || '').toUpperCase() === 'ADMIN'
@@ -10274,10 +10553,11 @@ function hapusChatRoom(roomTarget, userTarget) {
   const roomUpper = String(roomTarget || '').toUpperCase();
   const userUpper = String(userTarget || '').toUpperCase();
 
-  showConfirm(`HAPUS RIWAYAT CHAT ROOM DENGAN USER '${userTarget || roomTarget}'?`, () => {
-    showLoading('MENGHAPUS CHAT ROOM...');
+  showConfirm(`HAPUS RIWAYAT CHAT ROOM '${userTarget || roomTarget}' DARI LOKAL & FIREBASE?`, () => {
+    showLoading('MENGHAPUS CHAT ROOM LOKAL & FIREBASE...');
     setTimeout(async () => {
       try {
+        // 1. KOSONGKAN DI LOKAL
         let allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
         let rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
 
@@ -10293,28 +10573,41 @@ function hapusChatRoom(roomTarget, userTarget) {
 
         appStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats));
         appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms));
+        try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats)); } catch(e) {}
+        try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms)); } catch(e) {}
 
-        // 2. SYNC UPDATED CHATS TO SUPABASE VIA ALL CHAT TARGETS
-        if (typeof pushChatToSupabase === 'function') {
-          pushChatToSupabase(allChats, null);
+        // 2. KOSONGKAN DI FIREBASE FIRESTORE
+        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+          try {
+            if (roomTarget) {
+              await dbFirestore.collection('chat_rooms').doc(roomTarget).delete().catch(() => {});
+              const snapRoom = await dbFirestore.collection('chat_messages').where('room', '==', roomTarget).get();
+              const batch = dbFirestore.batch();
+              snapRoom.forEach(doc => batch.delete(doc.ref));
+              await batch.commit();
+            }
+            if (userTarget) {
+              const snapUser = await dbFirestore.collection('chat_messages').where('user', '==', userTarget).get();
+              const batch2 = dbFirestore.batch();
+              snapUser.forEach(doc => batch2.delete(doc.ref));
+              await batch2.commit();
+            }
+          } catch (err) {
+            console.warn('[FIRESTORE DELETE ROOM NOTICE]:', err);
+          }
         }
-        if (typeof supabase !== 'undefined' && supabase) {
-          try { await supabase.from('chat_messages').delete().eq('room', roomTarget); } catch(e) {}
-          try { await supabase.from('chat').delete().eq('room', roomTarget); } catch(e) {}
-        }
+
+        // 3. REFRESH TAMPILAN
+        if (typeof renderUserList === 'function') renderUserList();
+        if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
+        if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
+        if (typeof updateChatBadge === 'function') updateChatBadge();
 
         hideLoading();
-        showNotif(`CHAT ROOM DENGAN '${userTarget || roomTarget}' BERHASIL DIHAPUS!`, 'success');
-
-        if (isAdminChat) {
-          kembaliKeDaftarAdmin();
-        } else {
-          loadChatUser();
-        }
-      } catch(err) {
+        showNotif(`ROOM CHAT '${userTarget || roomTarget}' BERHASIL DIHAPUS DARI LOKAL & FIREBASE!`, 'success');
+      } catch (err) {
         hideLoading();
-        console.error('[HAPUS CHAT ROOM ERROR]:', err);
-        showNotif('GAGAL MENGHAPUS CHAT ROOM: ' + (err.message || err), 'error');
+        showNotif('GAGAL MENGHAPUS ROOM CHAT: ' + (err.message || err), 'danger');
       }
     }, 300);
   });
@@ -10457,8 +10750,8 @@ function kirimPesanChat() {
   const pesan = txt.value.trim().toUpperCase();
   if (!pesan) return;
 
-  const senderId = currentUser.id;
-  const senderUsername = currentUser.username;
+  const senderId = currentUser.id || 'USER';
+  const senderUsername = currentUser.username || 'USER';
   const now = new Date();
   const timeStr = getFormattedDateDDMMYYYY(now) + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 
@@ -10476,25 +10769,7 @@ function kirimPesanChat() {
     pengirimType = 'USER';
   }
 
-  const newChatId = `CHAT-${Date.now()}-${Math.floor(Math.random()*1000)}`;
-  const newChatRow = {
-    id: newChatId,
-    room: roomTarget,
-    user: targetUser,
-    user_area: currentUser.area || 'BDG',
-    pengirim: pengirimType,
-    sender_id: senderId,
-    sender_username: senderUsername,
-    sender_name: `${currentUser.fullName || currentUser.username} (${currentUser.toko || currentUser.area})`,
-    pesan: pesan,
-    tanggal: timeStr,
-    created_at: new Date().toISOString()
-  };
-
-  // 1. LOCAL STORAGE UPDATE & REFRESH UI
-  const allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
-  const rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
-
+  const newChatId = `CHAT-${Date.now()}-${Math.floor(Math.random()*10000)}`;
   const newChatEntry = {
     id: newChatId,
     room: roomTarget,
@@ -10503,48 +10778,39 @@ function kirimPesanChat() {
     pengirim: pengirimType,
     senderId,
     senderUsername,
-    senderName: `${currentUser.fullName || currentUser.username} (${currentUser.toko || currentUser.area})`,
-    pesan,
-    tanggal: timeStr
+    senderName: `${currentUser.fullName || currentUser.username} (${currentUser.toko || currentUser.area || 'TSM'})`,
+    pesan: pesan,
+    tanggal: timeStr,
+    timestamp: Date.now()
   };
+
+  // 1. LOCAL STORAGE UPDATE & REFRESH UI INSTAN (0 ms)
+  const allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
+  const rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
+
   allChats.push(newChatEntry);
 
-  appStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats));
-  try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats)); } catch(e) {}
-
-  // 2. SUPABASE DIRECT PUSH VIA MULTI-TARGET CHAT SYSTEM (chat_messages, chat, lookup, permintaan_toko)
-  if (typeof pushChatToSupabase === 'function') {
-    pushChatToSupabase(allChats, newChatEntry);
-  }
-
-  // 3. FIRESTORE & REALTIME DB SYNC (IF CONFIGURED)
-  if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-    try {
-      dbFirestore.collection('chat_messages').doc(newChatId).set(newChatRow).catch(e => console.warn(e));
-    } catch(e) {}
-  }
-  if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-    try {
-      dbRealtime.ref(`chat_messages/${newChatId}`).set(newChatRow).catch(e => console.warn(e));
-    } catch(e) {}
-  }
-
-  const roomUpper = String(roomTarget).toUpperCase();
-  const rIdx = rooms.findIndex(x => String(x.room).toUpperCase() === roomUpper || String(x.user).toUpperCase() === String(targetUser).toUpperCase());
+  const rIdx = rooms.findIndex(x => String(x.room).toUpperCase() === roomTarget || String(x.user).toUpperCase() === targetUser);
   if (rIdx !== -1) {
-    rooms[rIdx].last = (pengirimType === 'SERVICE' ? `SERVICE TSM: ${pesan}` : pesan);
-    if (pengirimType === 'SERVICE') rooms[rIdx].unreadUser = (rooms[rIdx].unreadUser || 0) + 1;
-    else rooms[rIdx].unreadAdmin = (rooms[rIdx].unreadAdmin || 0) + 1;
+    rooms[rIdx].last = `${pengirimType === 'SERVICE' ? 'SERVICE' : (currentUser.fullName || currentUser.username)}: ${pesan}`;
+    if (isAdminChat) {
+      rooms[rIdx].unreadUser = (rooms[rIdx].unreadUser || 0) + 1;
+    } else {
+      rooms[rIdx].unreadAdmin = (rooms[rIdx].unreadAdmin || 0) + 1;
+    }
     rooms[rIdx].lastTime = timeStr;
+    rooms[rIdx].timestamp = Date.now();
   } else {
     rooms.push({
       room: roomTarget,
       user: targetUser,
+      userName: currentUser.fullName || targetUser,
       userArea: currentUser.area || 'BDG',
-      last: (pengirimType === 'SERVICE' ? `SERVICE TSM: ${pesan}` : pesan),
-      unreadAdmin: pengirimType === 'USER' ? 1 : 0,
-      unreadUser: pengirimType === 'SERVICE' ? 1 : 0,
-      lastTime: timeStr
+      last: `${pengirimType === 'SERVICE' ? 'SERVICE' : (currentUser.fullName || currentUser.username)}: ${pesan}`,
+      unreadAdmin: isAdminChat ? 0 : 1,
+      unreadUser: isAdminChat ? 1 : 0,
+      lastTime: timeStr,
+      timestamp: Date.now()
     });
   }
 
@@ -10552,15 +10818,29 @@ function kirimPesanChat() {
   appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms));
 
   txt.value = '';
-
   if (isAdminChat) {
-    loadChatAdmin(roomTarget);
+    if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
   } else {
-    loadChatUser();
+    if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
   }
 
-  if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
-  if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+  // 2. KIRIM KE FIREBASE FIRESTORE SECARA REAL-TIME (<100 ms)
+  if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+    try {
+      dbFirestore.collection('chat_messages').doc(newChatId).set(newChatEntry).catch(e => console.warn('[FIRESTORE CHAT SAVE ERROR]:', e));
+      dbFirestore.collection('chat_rooms').doc(roomTarget).set({
+        room: roomTarget,
+        user: targetUser,
+        userName: currentUser.fullName || targetUser,
+        userArea: currentUser.area || 'BDG',
+        last: `${pengirimType === 'SERVICE' ? 'SERVICE' : (currentUser.fullName || currentUser.username)}: ${pesan}`,
+        lastTime: timeStr,
+        timestamp: Date.now()
+      }, { merge: true }).catch(e => console.warn('[FIRESTORE ROOM SAVE ERROR]:', e));
+    } catch(e) {
+      console.warn('[FIRESTORE CHAT SEND EXCEPTION]:', e);
+    }
+  }
 }
 
 function kembaliKeDaftarAdmin() {
@@ -10609,7 +10889,7 @@ function cekUnreadNotif() {
   }
 }
 
-function hapusSemuaChatAdmin() {
+async function hapusSemuaChatAdmin() {
   const isSysAdmin = currentUser && (
     String(currentUser.category || '').toUpperCase() === 'ADMIN' ||
     String(currentUser.username || '').toUpperCase() === 'ADMIN'
@@ -10619,8 +10899,8 @@ function hapusSemuaChatAdmin() {
     return;
   }
 
-  showConfirm('YAKIN INGIN MENGHAPUS SELURUH RIWAYAT CHAT & ROOM DARI SISTEM?', () => {
-    showLoading('MENGHAPUS SEMUA CHAT...');
+  showConfirm('YAKIN INGIN MENGHAPUS SELURUH RIWAYAT CHAT DARI PENYIMPANAN LOKAL & FIREBASE?', () => {
+    showLoading('MENGHAPUS SEMUA CHAT LOKAL & FIREBASE...');
     setTimeout(async () => {
       try {
         // 1. KOSONGKAN PENYIMPANAN LOKAL
@@ -10629,77 +10909,33 @@ function hapusSemuaChatAdmin() {
         try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify([])); } catch(e) {}
         try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([])); } catch(e) {}
 
-        // 2. KOSONGKAN DI SUPABASE CLOUD (chat_messages, chat, lookup, permintaan_toko)
-        if (typeof pushChatToSupabase === 'function') {
-          pushChatToSupabase([], null);
-        }
-        if (typeof supabase !== 'undefined' && supabase) {
-          try { await supabase.from('chat_messages').delete().neq('id', 'NONE'); } catch(e) {}
-          try { await supabase.from('chat').delete().neq('id', 'NONE'); } catch(e) {}
+        // 2. KOSONGKAN DI FIREBASE FIRESTORE
+        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
           try {
-            await supabase.from('lookup').upsert({
-              key: 'chat_messages',
-              value: JSON.stringify([]),
-              updated_at: new Date().toISOString()
-            }, { onConflict: 'key' });
-          } catch(e) {}
-          try {
-            const systemChatRow = {
-              no_surat: '__SYSTEM_CHAT_MESSAGES__',
-              tanggal: typeof getFormattedDateDDMMYYYY === 'function' ? getFormattedDateDDMMYYYY() : '',
-              toko: 'SYSTEM',
-              area: 'ALL',
-              jenis: 'SYSTEM',
-              catatan: JSON.stringify([]),
-              items: [],
-              photos: [],
-              status: 'DONE',
-              service_approve: true,
-              created_by: 'SYSTEM',
-              created_at: new Date().toISOString()
-            };
-            await safeSupabaseUpsertPermintaan(systemChatRow);
-          } catch(sbErr) {
-            console.warn('[SUPABASE CHAT DELETE NOTICE]:', sbErr);
+            const chatSnap = await dbFirestore.collection('chat_messages').get();
+            const batch = dbFirestore.batch();
+            chatSnap.forEach(doc => batch.delete(doc.ref));
+            const roomSnap = await dbFirestore.collection('chat_rooms').get();
+            roomSnap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+          } catch(err) {
+            console.warn('[FIRESTORE DELETE ALL CHATS NOTICE]:', err);
           }
         }
 
-        // 3. KOSONGKAN DI FIRESTORE & REALTIME DB
-        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-          try {
-            await dbFirestore.collection('app_settings').doc('config').set({
-              chatMessages: [],
-              chatRooms: []
-            }, { merge: true });
-          } catch(e) {}
-        }
-        if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-          try {
-            await dbRealtime.ref('chat_messages').remove();
-            await dbRealtime.ref('chat_rooms').remove();
-          } catch(e) {}
-        }
-
-        // 4. SYNC CENTRAL CLOUD
-        if (typeof pushCentralCloudDB === 'function') {
-          await pushCentralCloudDB();
-        }
+        // 3. REFRESH TAMPILAN CHAT
+        if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
+        if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
+        if (typeof updateChatBadge === 'function') updateChatBadge();
+        if (typeof renderUserList === 'function') renderUserList();
 
         hideLoading();
-        showNotif('SELURUH PESAN CHAT & ROOM BERHASIL DIHAPUS!', 'success');
-
-        if (typeof refreshActiveChatUI === 'function') {
-          refreshActiveChatUI();
-        }
-        if (typeof cekUnreadNotif === 'function') {
-          cekUnreadNotif();
-        }
+        showNotif('SELURUH CHAT BERHASIL DIHAPUS DARI LOKAL & FIREBASE!', 'success');
       } catch (err) {
         hideLoading();
-        console.error('[HAPUS CHAT ERROR]:', err);
-        showNotif('TERJADI KESALAHAN SAAT MENGHAPUS CHAT!', 'error');
+        showNotif('GAGAL MENGHAPUS CHAT: ' + (err.message || err), 'danger');
       }
-    }, 400);
+    }, 300);
   });
 }
 window.hapusSemuaChatAdmin = hapusSemuaChatAdmin;
@@ -10713,6 +10949,9 @@ window.loadDaftarChatAdmin = loadDaftarChatAdmin;
 window.bukaRoomAdmin = bukaRoomAdmin;
 window.loadChatAdmin = loadChatAdmin;
 window.loadChatUser = loadChatUser;
+function startGlobalRealtimeLoop() {
+  // Real-time synchronization handled via Firestore & Supabase listeners
+}
 window.startGlobalRealtimeLoop = startGlobalRealtimeLoop;
 
 // GLOBAL EVENT LISTENER: CLICK OUTSIDE BACKDROP TO CLOSE POPUPS (PC / LAPTOP / MOBILE)
@@ -10844,7 +11083,8 @@ function loadUsersManagement() {
 
     users.forEach(u => {
       const isSuperAdmin = (String(u.username).trim().toUpperCase() === 'ADMIN');
-      const chkHtml = !isSuperAdmin ? `<input type="checkbox" class="userCheckbox" value="${u.id}" onchange="updateMultiUserBtnState()" style="cursor:pointer; width:16px; height:16px;">` : '';
+      const uKey = (u.id && u.id !== 'undefined') ? u.id : (u.username || '');
+      const chkHtml = !isSuperAdmin ? `<input type="checkbox" class="userCheckbox" value="${uKey}" onchange="updateMultiUserBtnState()" style="cursor:pointer; width:16px; height:16px;">` : '';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="text-align:center;">${chkHtml}</td>
@@ -10856,8 +11096,8 @@ function loadUsersManagement() {
         <td><span class="badgeStatus badge-pending" style="font-weight:600;">${u.category}</span></td>
         <td><span style="color:var(--primary); font-weight:600;">${u.area}</span></td>
         <td style="text-align: right; white-space:nowrap;">
-          <button class="btnIcon btnEdit" onclick="bukaUserModal('${u.id}', this)" title="EDIT USER"><span class="material-symbols-rounded">edit</span></button>
-          ${!isSuperAdmin ? `<button class="btnIcon btnDelete" onclick="hapusUser('${u.id}', this)" title="HAPUS USER"><span class="material-symbols-rounded">delete</span></button>` : ''}
+          <button class="btnIcon btnEdit" onclick="bukaUserModal('${uKey}', this)" title="EDIT USER"><span class="material-symbols-rounded">edit</span></button>
+          ${!isSuperAdmin ? `<button class="btnIcon btnDelete" onclick="hapusUser('${uKey}', this)" title="HAPUS USER"><span class="material-symbols-rounded">delete</span></button>` : ''}
         </td>
       `;
       tbody.appendChild(tr);
@@ -10918,7 +11158,7 @@ function updateMultiUserBtnState() {
   });
 }
 
-function hapusMultiUser(btnElement = null) {
+async function hapusMultiUser(btnElement = null) {
   const selectedCheckboxes = document.querySelectorAll('.userCheckbox:checked');
   const userIds = Array.from(selectedCheckboxes).map(cb => cb.value).filter(Boolean);
 
@@ -11111,7 +11351,7 @@ function hidePopupInnerLoading(targetContainerId) {
 window.hidePopupInnerLoading = hidePopupInnerLoading;
 
 function bukaUserModal(userId = null, btnElement = null) {
-  if (typeof userId !== 'string' || userId.startsWith('[object')) {
+  if (typeof userId !== 'string' || userId.startsWith('[object') || userId === 'undefined') {
     userId = null;
   }
 
@@ -11131,9 +11371,12 @@ function bukaUserModal(userId = null, btnElement = null) {
 
       if (userId) {
         const allUsers = (typeof getUsersFromDB === 'function') ? getUsersFromDB() : [];
-        const u = allUsers.find(x => x && (String(x.id) === String(userId) || String(x.username).toUpperCase() === String(userId).toUpperCase()));
+        const u = allUsers.find(x => x && (
+          (x.id && String(x.id) === String(userId)) ||
+          (x.username && String(x.username).toUpperCase() === String(userId).toUpperCase())
+        ));
         if (u) {
-          if (editIdInput) editIdInput.value = u.id || userId;
+          if (editIdInput) editIdInput.value = u.id || u.username || userId;
           if (document.getElementById('uFormUsername')) document.getElementById('uFormUsername').value = u.username || '';
           if (document.getElementById('uFormPassword')) document.getElementById('uFormPassword').value = u.password || '';
           if (document.getElementById('uFormFullName')) document.getElementById('uFormFullName').value = u.fullName || '';
@@ -11201,7 +11444,8 @@ async function simpanUserData(btnElement = null) {
   const storeCode = document.getElementById('uFormStoreCode').value.trim().toUpperCase();
   const phone = document.getElementById('uFormPhone').value.trim();
   const category = document.getElementById('uFormCategory').value;
-  
+  const docId = String(username).toUpperCase();
+
   const checkedAreas = Array.from(document.querySelectorAll('input[name="uFormAreaCheck"]:checked')).map(cb => cb.value);
   const area = checkedAreas.length > 0 ? checkedAreas.join(', ') : 'BDG';
   const hiddenAreaInput = document.getElementById('uFormArea');
@@ -11222,10 +11466,17 @@ async function simpanUserData(btnElement = null) {
       const users = getUsersFromDB();
 
       if (editId) {
-        const idx = users.findIndex(u => u && u.id === editId);
+        let idx = users.findIndex(u => u && (
+          (u.id && String(u.id) === String(editId)) ||
+          (u.username && String(u.username).toUpperCase() === String(editId).toUpperCase())
+        ));
+        if (idx === -1 && username) {
+          idx = users.findIndex(u => u && u.username && String(u.username).trim().toUpperCase() === username);
+        }
+
         if (idx !== -1) {
-          const duplicateWithOtherUser = users.some(u => {
-            if (!u || !u.username || u.id === editId) return false;
+          const duplicateWithOtherUser = users.some((u, i) => {
+            if (!u || !u.username || i === idx) return false;
             return String(u.username).trim().toUpperCase() === username;
           });
 
@@ -11237,6 +11488,7 @@ async function simpanUserData(btnElement = null) {
             return;
           }
 
+          if (!users[idx].id) users[idx].id = users[idx].username || docId;
           users[idx].username = username;
           users[idx].password = password;
           users[idx].fullName = fullName;
@@ -11244,23 +11496,37 @@ async function simpanUserData(btnElement = null) {
           users[idx].phone = phone;
           users[idx].category = category;
           users[idx].area = area;
-          saveUsersToDB(users);
+          saveUsersToDB(users, users[idx]);
 
-          const docId = String(username).toUpperCase();
-          if (typeof supabase !== 'undefined' && supabase) {
-            await supabase.from('users').upsert({
-              id: users[idx].id || docId,
-              username: users[idx].username,
-              password: users[idx].password,
-              full_name: users[idx].fullName,
-              phone: users[idx].phone,
-              category: users[idx].category,
-              area: users[idx].area,
-              created_at: users[idx].createdAt
-            });
+          // SINKRONISASI KE CURRENTUSER (SESI LOGIN AKTIF) JIKA USER YANG DIEDIT ADALAH USER YANG SEDANG LOGIN
+          if (currentUser && (
+            (currentUser.id && String(currentUser.id) === String(users[idx].id)) ||
+            (currentUser.username && String(currentUser.username).trim().toUpperCase() === String(users[idx].username).trim().toUpperCase())
+          )) {
+            currentUser = { ...currentUser, ...users[idx] };
+            appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+            try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch(e) {}
+
+            // Update UI Header & Popup Akun
+            const elNama = document.getElementById('akunNama');
+            if (elNama) elNama.value = currentUser.fullName || '';
+            const elHP = document.getElementById('akunHP');
+            if (elHP) elHP.value = currentUser.phone || '-';
+            const elArea = document.getElementById('akunArea');
+            if (elArea) elArea.value = `${currentUser.area} - ${AREA_MAP[currentUser.area] || currentUser.area}`;
+            const elKat = document.getElementById('akunKategori');
+            if (elKat) elKat.value = currentUser.category || '';
+            const headerUser = document.getElementById('headerUser');
+            if (headerUser) headerUser.textContent = currentUser.fullName || currentUser.username;
+            const welcomeUser = document.getElementById('welcomeUser');
+            if (welcomeUser) welcomeUser.textContent = currentUser.fullName || currentUser.username;
+            const displayNama = document.getElementById('displayUserFullName');
+            if (displayNama) displayNama.textContent = currentUser.fullName || currentUser.username;
           }
-          if (typeof syncSupabaseUsersToLocalCache === 'function') {
-            await syncSupabaseUsersToLocalCache();
+
+          const targetId = users[idx].id || docId;
+          if (typeof simpanUserKeSupabase === 'function') {
+            await simpanUserKeSupabase(users[idx]);
           }
 
           if (category === 'TOKO') {
@@ -11282,8 +11548,9 @@ async function simpanUserData(btnElement = null) {
               }
               appStorage.setItem(STORES_DB_KEY, JSON.stringify(localStores));
 
-              if (typeof supabase !== 'undefined' && supabase) {
-                await supabase.from('toko_list').upsert({
+              const client = (typeof supabaseAdmin !== 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+              if (client) {
+                await client.from('toko_list').upsert({
                   id: users[idx].id,
                   full_name: fullName,
                   area: area,
@@ -11375,31 +11642,23 @@ async function simpanUserData(btnElement = null) {
       };
 
       users.push(newUser);
-      saveUsersToDB(users);
+      saveUsersToDB(users, newUser);
 
-      const docId = String(username).toUpperCase();
-      if (typeof supabase !== 'undefined' && supabase) {
-        await supabase.from('users').upsert({
-          id: newUser.id,
-          username: newUser.username,
-          password: newUser.password,
-          full_name: newUser.fullName,
-          phone: newUser.phone,
-          category: newUser.category,
-          area: newUser.area,
-          created_at: newUser.createdAt
-        });
+      if (typeof simpanUserKeSupabase === 'function') {
+        await simpanUserKeSupabase(newUser);
+      }
 
-        if (category === 'TOKO') {
-          try {
+      if (category === 'TOKO') {
+        try {
+          if (typeof supabase !== 'undefined' && supabase) {
             await supabase.from('toko_list').upsert({
               id: newUser.id,
               full_name: newUser.fullName,
               area: newUser.area,
               created_by: currentUser ? currentUser.fullName : 'ADMIN'
-            });
-          } catch (e) {}
-        }
+            }).catch(e => console.warn(e));
+          }
+        } catch(e) {}
       }
 
       if (category === 'TOKO') {
@@ -11436,7 +11695,6 @@ async function simpanUserData(btnElement = null) {
 
       hideLoading();
 
-      // UNTUK TAMBAH USER BARU, POPUP FORM (#popupUserForm) TETAP TERBUKA & FORM DI-RESET UNTUK USER BERIKUTNYA
       const modalForm = document.getElementById('popupUserForm');
       if (modalForm) {
         modalForm.style.setProperty('display', 'flex', 'important');
@@ -11487,10 +11745,13 @@ async function simpanUserData(btnElement = null) {
   }, 400);
 }
 
-function hapusUser(userId, btnElement = null) {
-  if (!userId) return;
+async function hapusUser(userId, btnElement = null) {
+  if (!userId || userId === 'undefined') return;
   const users = getUsersFromDB();
-  const u = users.find(x => x.id === userId || x.username === userId || (x.username && String(x.username).toUpperCase() === String(userId).toUpperCase()));
+  const u = users.find(x => x && (
+    (x.id && String(x.id) === String(userId)) ||
+    (x.username && String(x.username).toUpperCase() === String(userId).toUpperCase())
+  ));
   if (!u) {
     showNotif('USER TIDAK DITEMUKAN ATAU SUDAH DIHAPUS!', 'warning');
     return;
@@ -11517,7 +11778,9 @@ function hapusUser(userId, btnElement = null) {
         // 1. UPDATE DELETED KEYS & LOKAL STORAGE FOR USERS & STORES
         try {
           const delUsers = JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]');
-          if (!delUsers.includes(u.id)) delUsers.push(u.id);
+          if (u.id && !delUsers.includes(u.id)) delUsers.push(u.id);
+          if (u.username && !delUsers.includes(u.username)) delUsers.push(u.username);
+          if (u.username && !delUsers.includes(u.username.toUpperCase())) delUsers.push(u.username.toUpperCase());
           appStorage.setItem(DELETED_USERS_KEY, JSON.stringify(delUsers));
 
           const localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
@@ -11542,17 +11805,25 @@ function hapusUser(userId, btnElement = null) {
         }
 
         // 2. HAPUS DARI SUPABASE (TABEL users & toko_list JIKA KATEGORI TOKO)
-        if (typeof supabase !== 'undefined' && supabase) {
+        const client = (typeof supabaseAdmin !== 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+        if (client) {
           try {
-            await supabase.from('users').delete().eq('id', u.id);
-            await supabase.from('users').delete().eq('username', u.username);
-            await supabase.from('toko_list').delete().eq('id', u.id);
+            if (u.id) await client.from('users').delete().eq('id', u.id);
+            if (u.username) {
+              await client.from('users').delete().eq('username', u.username);
+              await client.from('users').delete().ilike('username', u.username);
+            }
+            if (u.id) await client.from('toko_list').delete().eq('id', u.id);
             if (u.fullName) {
-              await supabase.from('toko_list').delete().eq('full_name', u.fullName);
+              await client.from('toko_list').delete().eq('full_name', u.fullName);
+              await client.from('toko_list').delete().ilike('full_name', u.fullName);
             }
           } catch (sbErr) {
             console.warn('[SUPABASE DELETE USER NOTICE]:', sbErr);
           }
+        }
+        if (typeof broadcastSystemUsersMasterToSupabase === 'function') {
+          await broadcastSystemUsersMasterToSupabase();
         }
         if (typeof syncSupabaseUsersToLocalCache === 'function') {
           await syncSupabaseUsersToLocalCache();
@@ -11577,6 +11848,17 @@ function hapusUser(userId, btnElement = null) {
         }
         if (typeof pullCentralCloudDB === 'function') {
           try { await pullCentralCloudDB(); } catch(e) {}
+        }
+
+        // BROADCAST REALTIME EVENT KE SELURUH PERANGKAT AGAR TAMPILAN USER LANGSUNG TER-UPDATE
+        if (supabaseRealtimeChannel) {
+          try {
+            supabaseRealtimeChannel.send({
+              type: 'broadcast',
+              event: 'user_data_changed',
+              payload: { username: u.username, timestamp: Date.now() }
+            });
+          } catch(e) {}
         }
 
         // PASTI KAN POPUP USER MANAGEMENT MODAL TETAP TERBUKA
@@ -11716,7 +11998,7 @@ function updateMultiMasterDbBtnState() {
   }
 }
 
-function hapusMultiMasterDb() {
+async function hapusMultiMasterDb() {
   const selectedCheckboxes = document.querySelectorAll('.masterDbCheckbox:checked');
   const noSuratList = Array.from(selectedCheckboxes).map(cb => cb.value).filter(Boolean);
 
@@ -11925,28 +12207,28 @@ function prosesUploadExcelLookup(event) {
       });
 
       if (count > 0) {
+        // 1. SIMPAN LANGSUNG KE PENYIMPANAN LOKAL PERANGKAT
         const existingMap = JSON.parse(appStorage.getItem(KODE_UNIT_MAP_KEY) || '{}');
         const updatedMap = { ...existingMap, ...newLookup };
-        appStorage.setItem(KODE_UNIT_MAP_KEY, JSON.stringify(updatedMap));
+        const mapJsonStr = JSON.stringify(updatedMap);
+        appStorage.setItem(KODE_UNIT_MAP_KEY, mapJsonStr);
+        try { localStorage.setItem(KODE_UNIT_MAP_KEY, mapJsonStr); } catch(e) {}
 
-        // SYNC LANGSUNG KE FIRESTORE CLOUD & REALTIME DB (EFFICIENT SINGLE DOC SAVE)
+        // 2. UPLOAD/SYNC HANYA KE FIREBASE CLOUD (FIRESTORE & REALTIME DB)
         if (typeof dbFirestore !== 'undefined' && dbFirestore) {
           dbFirestore.collection('app_settings').doc('config').set({
-            kodeUnitMap: updatedMap
+            kodeUnitMap: updatedMap,
+            updatedAt: new Date().toISOString()
           }, { merge: true }).catch(e => console.warn('[FIRESTORE LOOKUP SYNC]:', e));
         }
         if (typeof dbRealtime !== 'undefined' && dbRealtime) {
           dbRealtime.ref('app_settings/kodeUnitMap').set(updatedMap).catch(e => console.warn('[RTDB LOOKUP SYNC]:', e));
         }
 
-        if (typeof pushCentralCloudDB === 'function') {
-          pushCentralCloudDB();
-        }
-
         hideLoading();
-        showNotif(`BERHASIL MEMPERBARUI ${count} KODE SERI BARANG!`, 'info');
+        showNotif(`BERHASIL MEMPERBARUI ${count} KODE SERI BARANG KE FIREBASE & LOKAL!`, 'info');
         const statusEl = document.getElementById('lookupUploadStatus');
-        if (statusEl) statusEl.textContent = `✅ ${count} KODE SERI BERHASIL DITAMBAHKAN!`;
+        if (statusEl) statusEl.textContent = `✅ ${count} KODE SERI TERSIMPAN DI FIREBASE & LOKAL!`;
       } else {
         hideLoading();
         showNotif('TIDAK ADA DATA VALID DENGAN 2 KOLOM (KOLOM A & KOLOM B)!', 'warning');
@@ -11993,6 +12275,20 @@ function prosesBukaAkun() {
   if (typeof tutupPdfModal === 'function') tutupPdfModal();
   if (typeof tutupDetailBarangV2 === 'function') tutupDetailBarangV2();
 
+  // REFRESH DATA CURRENTUSER DARI DATABASE LOKAL TERBARU SEBELUM DITAMPILKAN
+  if (currentUser && currentUser.username) {
+    const allUsers = typeof getUsersFromDB === 'function' ? getUsersFromDB() : [];
+    const latestU = allUsers.find(u => u && (
+      (u.id && currentUser.id && String(u.id) === String(currentUser.id)) ||
+      (u.username && String(u.username).trim().toUpperCase() === String(currentUser.username).trim().toUpperCase())
+    ));
+    if (latestU) {
+      currentUser = { ...currentUser, ...latestU };
+      appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+      try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch(e) {}
+    }
+  }
+
   const elNama = document.getElementById('akunNama');
   const elHP = document.getElementById('akunHP');
   const elArea = document.getElementById('akunArea');
@@ -12009,22 +12305,33 @@ function prosesBukaAkun() {
   if (elKat) elKat.value = currentUser.category || '';
   if (elPass) elPass.value = '';
 
+  const isToko = (currentUser.category === 'TOKO' || currentUser.category === 'GBJ');
+  const showTTD = (currentUser.category === 'SERVICE' || currentUser.category === 'DM' || currentUser.category === 'GBJ');
+  const showKelolaToko = !isToko;
+
   const menuTTD = document.getElementById('menuTTD');
   if (menuTTD) {
-    menuTTD.style.display = (currentUser.category === 'SERVICE' || currentUser.category === 'DM' || currentUser.category === 'GBJ') ? 'block' : 'none';
+    menuTTD.style.display = showTTD ? 'block' : 'none';
   }
-
-  const isToko = (currentUser.category === 'TOKO' || currentUser.category === 'GBJ');
-  const isAdmin = currentUser && (currentUser.category === 'ADMIN' || (currentUser.username && currentUser.username.toUpperCase() === 'ADMIN'));
   
   const menuKelolaTokoAkun = document.getElementById('menuKelolaTokoAkun');
   if (menuKelolaTokoAkun) {
-    menuKelolaTokoAkun.style.display = isToko ? 'none' : 'block';
+    menuKelolaTokoAkun.style.display = showKelolaToko ? 'block' : 'none';
+  }
+
+  const containerKelolaTokoTTD = document.getElementById('containerKelolaTokoTTD');
+  if (containerKelolaTokoTTD) {
+    containerKelolaTokoTTD.style.display = (showTTD || showKelolaToko) ? 'flex' : 'none';
   }
 
   const adminWrap = document.getElementById('adminHapusNotifWrap');
   if (adminWrap) {
     adminWrap.style.display = 'none';
+  }
+
+  const containerHapusStorage = document.getElementById('containerHapusPenyimpananLokalAkun');
+  if (containerHapusStorage) {
+    containerHapusStorage.style.display = 'block';
   }
 
   if (typeof tutupModalTambahToko === 'function') {
@@ -12046,7 +12353,45 @@ function prosesBukaAkun() {
 window.bukaAkun = bukaAkun;
 window.prosesBukaAkun = prosesBukaAkun;
 
-function tutupAkun() {
+function isAkunDirty() {
+  if (!currentUser) return false;
+  const elNama = document.getElementById('akunNama');
+  const elHP = document.getElementById('akunHP');
+  const elPass = document.getElementById('akunPassword');
+
+  const currentNama = (elNama ? elNama.value : '').trim().toUpperCase();
+  const origNama = (currentUser.fullName || '').trim().toUpperCase();
+
+  const currentHP = (elHP ? elHP.value : '').trim();
+  const origHP = (currentUser.phone || '-').trim();
+  const origHPAlt = (currentUser.phone || '').trim();
+
+  const currentPass = (elPass ? elPass.value : '').trim();
+
+  const namaChanged = currentNama !== origNama;
+  const hpChanged = (currentHP !== origHP && currentHP !== origHPAlt);
+  const passChanged = currentPass.length > 0;
+
+  return (namaChanged || hpChanged || passChanged);
+}
+window.isAkunDirty = isAkunDirty;
+
+function tutupAkun(force = false) {
+  if (force !== true && isAkunDirty()) {
+    showConfirm(
+      'SIMPAN PERUBAHAN AKUN?',
+      () => {
+        simpanAkun(true);
+      },
+      () => {
+        tutupAkun(true);
+      },
+      'YA, SIMPAN',
+      'TIDAK'
+    );
+    return;
+  }
+
   const modal = document.getElementById('popupAkun');
   if (modal) {
     modal.classList.remove('show');
@@ -12055,98 +12400,117 @@ function tutupAkun() {
 }
 window.tutupAkun = tutupAkun;
 
-function simpanAkun() {
-  showConfirm('SIMPAN PERUBAHAN DATA AKUN?', () => {
-    const nama = document.getElementById('akunNama').value.trim().toUpperCase();
-    const hp = document.getElementById('akunHP').value.trim();
-    const pass = document.getElementById('akunPassword').value.trim();
-
-    if (!nama) {
-      showNotif('NAMA LENGKAP TIDAK BOLEH KOSONG!', 'warning');
-      return;
-    }
-
-    showLoading('MENYIMPAN PERUBAHAN AKUN...');
-
-    setTimeout(async () => {
-      try {
-        const users = getUsersFromDB();
-        const idx = users.findIndex(u => u.id === currentUser.id);
-
-        if (idx !== -1) {
-          users[idx].fullName = nama;
-          users[idx].phone = hp;
-          if (pass) users[idx].password = pass;
-
-          saveUsersToDB(users);
-          currentUser = users[idx];
-          appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
-
-          if (typeof supabase !== 'undefined' && supabase) {
-            try {
-              const userPayload = {
-                id: currentUser.id,
-                username: currentUser.username,
-                password: currentUser.password,
-                full_name: currentUser.fullName,
-                phone: currentUser.phone || '-',
-                category: currentUser.category,
-                area: currentUser.area,
-                created_at: currentUser.createdAt || getFormattedDateDDMMYYYY()
-              };
-
-              const { error: upErr } = await supabase.from('users').upsert(userPayload);
-              if (upErr) {
-                console.warn('[SUPABASE AKUN UPSERT NOTICE]:', upErr);
-              }
-            } catch (e) {
-              console.error("Supabase user update error:", e);
-            }
-          }
-
-          if (typeof syncSupabaseUsersToLocalCache === 'function') {
-            await syncSupabaseUsersToLocalCache();
-          }
-
-          if (typeof notifySupabaseDataChanged === 'function') {
-            notifySupabaseDataChanged('users');
-          }
-
-          hideLoading();
-          showNotif('PROFIL AKUN BERHASIL DIPERBARUI!', 'success');
-
-          const akunArea = document.getElementById('akunArea');
-          if (akunArea) akunArea.value = `${currentUser.area} - ${formatUserAreaDisplay(currentUser.area)}`;
-
-          const akunKategori = document.getElementById('akunKategori');
-          if (akunKategori) akunKategori.value = currentUser.category;
-
-          const akunNama = document.getElementById('akunNama');
-          if (akunNama) akunNama.value = currentUser.fullName;
-
-          const akunHP = document.getElementById('akunHP');
-          if (akunHP) akunHP.value = currentUser.phone || '-';
-
-          const akunPassword = document.getElementById('akunPassword');
-          if (akunPassword) akunPassword.value = '';
-
-          if (typeof loadDashboard === 'function') loadDashboard();
-          if (document.getElementById('userTableBody') && typeof loadUsersManagement === 'function') {
-            loadUsersManagement();
-          }
-        } else {
-          hideLoading();
-          showNotif('DATA AKUN TIDAK DITEMUKAN!', 'warning');
-        }
-      } catch (err) {
-        hideLoading();
-        console.error(err);
-        showNotif('GAGAL MENYIMPAN PERUBAHAN AKUN', 'danger');
-      }
-    }, 200);
-  });
+function simpanAkun(autoClose = false) {
+  if (autoClose) {
+    eksekusiSimpanAkun(true);
+  } else {
+    showConfirm('SIMPAN PERUBAHAN DATA AKUN?', () => {
+      eksekusiSimpanAkun(false);
+    }, null, 'YA, SIMPAN', 'BATAL');
+  }
 }
 window.simpanAkun = simpanAkun;
+
+async function eksekusiSimpanAkun(autoClose = false) {
+  const nama = document.getElementById('akunNama').value.trim().toUpperCase();
+  const hp = document.getElementById('akunHP').value.trim();
+  const pass = document.getElementById('akunPassword').value.trim();
+
+  if (!nama) {
+    showNotif('NAMA LENGKAP TIDAK BOLEH KOSONG!', 'warning');
+    return;
+  }
+
+  showLoading('MENYIMPAN PERUBAHAN AKUN...');
+
+  setTimeout(async () => {
+    try {
+      const users = getUsersFromDB();
+      let idx = users.findIndex(u => u && (
+        (currentUser && currentUser.id && u.id && String(u.id) === String(currentUser.id)) ||
+        (currentUser && currentUser.username && u.username && String(u.username).toUpperCase() === String(currentUser.username).toUpperCase())
+      ));
+
+      if (idx === -1 && currentUser) {
+        idx = users.length;
+        users.push({ ...currentUser });
+      }
+
+      if (idx !== -1) {
+        users[idx].fullName = nama;
+        users[idx].phone = hp;
+        if (pass) users[idx].password = pass;
+        if (!users[idx].id) {
+          users[idx].id = users[idx].username || `USR-${Date.now()}`;
+        }
+
+        currentUser = { ...users[idx] };
+        appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+        try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch(e) {}
+
+        saveUsersToDB(users, currentUser);
+
+        if (typeof simpanUserKeSupabase === 'function') {
+          await simpanUserKeSupabase(currentUser);
+        }
+
+        // BROADCAST REALTIME EVENT TO ALL LOGGED-IN ADMINS/DEVICES
+        if (supabaseRealtimeChannel) {
+          try {
+            supabaseRealtimeChannel.send({
+              type: 'broadcast',
+              event: 'user_data_changed',
+              payload: { username: currentUser.username, time: Date.now() }
+            });
+          } catch(e) {}
+        }
+
+        if (typeof pushCentralCloudDB === 'function') {
+          try { pushCentralCloudDB(); } catch(e) {}
+        }
+
+        if (typeof syncSupabaseUsersToLocalCache === 'function') {
+          await syncSupabaseUsersToLocalCache();
+        }
+
+        hideLoading();
+        showNotif('PROFIL AKUN BERHASIL DIPERBARUI!', 'success');
+
+        const akunArea = document.getElementById('akunArea');
+        if (akunArea) akunArea.value = `${currentUser.area} - ${formatUserAreaDisplay(currentUser.area)}`;
+
+        const akunKategori = document.getElementById('akunKategori');
+        if (akunKategori) akunKategori.value = currentUser.category;
+
+        const akunNama = document.getElementById('akunNama');
+        if (akunNama) akunNama.value = currentUser.fullName;
+
+        const akunHP = document.getElementById('akunHP');
+        if (akunHP) akunHP.value = currentUser.phone || '-';
+
+        const akunPassword = document.getElementById('akunPassword');
+        if (akunPassword) akunPassword.value = '';
+
+        if (typeof loadDashboard === 'function') loadDashboard();
+        if (document.getElementById('userTableBody') && typeof loadUsersManagement === 'function') {
+          loadUsersManagement();
+        }
+
+        if (autoClose) {
+          tutupAkun(true);
+        }
+      } else {
+        hideLoading();
+        showNotif('DATA AKUN TIDAK DITEMUKAN!', 'warning');
+      }
+    } catch (err) {
+      hideLoading();
+      console.error(err);
+      showNotif('GAGAL MENYIMPAN PERUBAHAN AKUN', 'danger');
+    }
+  }, 200);
+}
+window.eksekusiSimpanAkun = eksekusiSimpanAkun;
 
 function bukaModalTambahToko(btnElement = null) {
   if (!currentUser) return;
@@ -12154,10 +12518,9 @@ function bukaModalTambahToko(btnElement = null) {
   const btn = (btnElement && btnElement instanceof HTMLElement) ? btnElement : (typeof event !== 'undefined' && event ? event.currentTarget : null);
   setBtnLoading(btn, true, 'MEMUAT...');
   showPopupInnerLoading('popupTambahToko', 'MEMBUKA DAFTAR TOKO...');
-  showLoading('MEMBUKA DAFTAR TOKO...');
 
   if (typeof tutupAkun === 'function') {
-    tutupAkun();
+    tutupAkun(true);
   }
 
   setTimeout(() => {
@@ -12306,10 +12669,10 @@ function loadDaftarTokoModal(filterKeyword = '') {
     const code = s.storeCode || generateStoreCode(s.fullName);
     const areaBadge = s.area || 'BDG';
     tr.innerHTML = `
-      <td style="padding: 8px; font-weight: 600; color: var(--text-main);"><div class="namaTokoWrap" style="color: var(--text-main);">${s.fullName}</div></td>
-      <td style="padding: 8px; text-align: center; font-weight: 700; color: var(--primary);">${areaBadge}</td>
-      <td style="padding: 8px; text-align: center; color: var(--text-main); font-weight: 700;">${code}</td>
-      <td style="padding: 8px; text-align: center; white-space: nowrap;">
+      <td style="padding: 8px 10px; font-weight: 600; color: var(--text-main); border-bottom: 1px solid var(--border-color) !important;"><div class="namaTokoWrap" style="color: var(--text-main);">${s.fullName}</div></td>
+      <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: var(--primary); border-bottom: 1px solid var(--border-color) !important;">${areaBadge}</td>
+      <td style="padding: 8px 10px; text-align: center; color: var(--text-main); font-weight: 700; border-bottom: 1px solid var(--border-color) !important;">${code}</td>
+      <td style="padding: 8px 10px; text-align: center; white-space: nowrap; border-bottom: 1px solid var(--border-color) !important;">
         <button type="button" class="btnIcon btnEdit" onclick="editTokoCustom('${s.id}')" title="EDIT TOKO" style="margin-right: 4px;"><span class="material-symbols-rounded">edit</span></button>
         <button type="button" class="btnIcon btnDelete" onclick="hapusTokoCustom('${s.id}', this)" title="HAPUS TOKO"><span class="material-symbols-rounded">delete</span></button>
       </td>
@@ -12319,9 +12682,13 @@ function loadDaftarTokoModal(filterKeyword = '') {
 
   for (let k = 0; k < 2; k++) {
     const emptyTr = document.createElement('tr');
-    emptyTr.className = 'empty-grid-row';
+    emptyTr.className = 'empty-toko-row';
+    emptyTr.style.backgroundColor = 'var(--bg-box)';
     emptyTr.innerHTML = `
-      <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+      <td style="padding: 8px; border: none; background: var(--bg-box);">&nbsp;</td>
+      <td style="padding: 8px; border: none; background: var(--bg-box);">&nbsp;</td>
+      <td style="padding: 8px; border: none; background: var(--bg-box);">&nbsp;</td>
+      <td style="padding: 8px; border: none; background: var(--bg-box);">&nbsp;</td>
     `;
     tbody.appendChild(emptyTr);
   }
@@ -12340,7 +12707,7 @@ function resetCariTokoModal() {
 }
 window.resetCariTokoModal = resetCariTokoModal;
 
-function simpanTokoBaru(btnElement = null) {
+async function simpanTokoBaru(btnElement = null) {
   const inputEl = document.getElementById('inputNamaTokoBaru');
   const btnSimpan = (btnElement && btnElement instanceof HTMLElement) ? btnElement : (document.getElementById('btnSimpanTokoBaru') || (typeof event !== 'undefined' && event ? event.currentTarget : null));
   const selectAreaEl = document.getElementById('selectAreaTokoBaru');
@@ -12360,7 +12727,6 @@ function simpanTokoBaru(btnElement = null) {
   }
 
   setBtnLoading(btnSimpan, true, editStoreId ? 'MEMPERBARUI...' : 'MENYIMPAN...');
-  showPopupInnerLoading('popupTambahToko', editStoreId ? 'MEMPERBARUI DATA TOKO...' : 'MENYIMPAN TOKO BARU...');
   showLoading(editStoreId ? 'MEMPERBARUI DATA TOKO...' : 'MENYIMPAN TOKO BARU...');
 
   const themeBeforeSave = getSavedLocalTheme();
@@ -12413,6 +12779,7 @@ function simpanTokoBaru(btnElement = null) {
                 phone: userObj.phone || '-',
                 category: userObj.category || 'TOKO',
                 area: targetArea,
+                ttd: userObj.ttd || '',
                 created_at: userObj.createdAt || getFormattedDateDDMMYYYY()
               });
             } catch (e) {}
@@ -12513,6 +12880,7 @@ function simpanTokoBaru(btnElement = null) {
                 phone: newUserAcc.phone,
                 category: newUserAcc.category,
                 area: newUserAcc.area,
+                ttd: newUserAcc.ttd || '',
                 created_at: newUserAcc.createdAt
               });
             }
@@ -12562,7 +12930,7 @@ function simpanTokoBaru(btnElement = null) {
 }
 window.simpanTokoBaru = simpanTokoBaru;
 
-function hapusTokoCustom(id, btnElement = null) {
+async function hapusTokoCustom(id, btnElement = null) {
   const allStores = getStoresFromDB();
   const store = allStores.find(s => s.id === id);
   const name = store ? store.fullName : 'TOKO';
@@ -12571,7 +12939,6 @@ function hapusTokoCustom(id, btnElement = null) {
   showConfirm(`HAPUS TOKO '${name}' DARI DAFTAR?`, () => {
     const btn = (btnElement && btnElement instanceof HTMLElement) ? btnElement : (typeof event !== 'undefined' && event ? event.currentTarget : null);
     setBtnLoading(btn, true, 'HAPUS...');
-    showPopupInnerLoading('popupTambahToko', 'MENGHAPUS TOKO...');
     showLoading('MENGHAPUS TOKO...');
 
     const themeBeforeDelete = getSavedLocalTheme();
@@ -12815,6 +13182,7 @@ async function prosesUploadExcelToko(event) {
               phone: u.phone,
               category: u.category,
               area: u.area,
+              ttd: u.ttd || '',
               created_at: u.createdAt
             }));
             await supabase.from('users').upsert(supaUsersPayload);
@@ -12929,10 +13297,19 @@ function closeAllPopups() {
 }
 window.closeAllPopups = closeAllPopups;
 
-function showConfirm(msg, callback) {
+// confirmCancelCallback declared at top
+
+function showConfirm(msg, callback, cancelCallback = null, customYesText = 'YA, LANJUT', customNoText = 'BATAL') {
   const msgEl = document.getElementById('confirmMessage');
   if (msgEl) msgEl.innerHTML = msg;
   confirmCallback = callback;
+  confirmCancelCallback = cancelCallback;
+
+  const btnBatal = document.querySelector('#confirmOverlay .btnBatal');
+  const btnOk = document.querySelector('#confirmOverlay .btnOkNotif');
+  if (btnBatal) btnBatal.innerText = customNoText;
+  if (btnOk) btnOk.innerText = customYesText;
+
   const modal = document.getElementById('confirmOverlay');
   if (modal) {
     modal.style.setProperty('z-index', '2000000000', 'important');
@@ -12944,13 +13321,20 @@ function showConfirm(msg, callback) {
 function closeConfirm() {
   const modal = document.getElementById('confirmOverlay');
   if (modal) modal.style.display = 'none';
+  const ccb = confirmCancelCallback;
   confirmCallback = null;
+  confirmCancelCallback = null;
+  if (typeof ccb === 'function') {
+    ccb();
+  }
 }
 
 function confirmYes() {
   const cb = confirmCallback;
   confirmCallback = null;
-  closeConfirm();
+  confirmCancelCallback = null;
+  const modal = document.getElementById('confirmOverlay');
+  if (modal) modal.style.display = 'none';
   if (typeof cb === 'function') {
     cb();
   }
@@ -13050,8 +13434,12 @@ function showLoading(msg = '', allowCancel = false, onCancelCallback = null) {
     document.body.appendChild(modal);
   }
 
-  modal.style.cssText = 'display: flex !important; position: fixed !important; top: 0px !important; left: 0px !important; right: 0px !important; bottom: 0px !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.45) !important; z-index: 2147483647 !important; justify-content: center !important; align-items: center !important; backdrop-filter: blur(3px) !important; -webkit-backdrop-filter: blur(3px) !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important;';
+  modal.style.cssText = 'display: flex !important; position: fixed !important; top: 0px !important; left: 0px !important; right: 0px !important; bottom: 0px !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.6) !important; z-index: 2147483647 !important; justify-content: center !important; align-items: center !important; backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important;';
   modal.classList.add('show');
+
+  if (onCancelCallback) {
+    window._onCancelLoadingCallback = onCancelCallback;
+  }
 
   let spinnerBox = modal.querySelector('.spinnerBox');
   if (!spinnerBox) {
@@ -13059,16 +13447,27 @@ function showLoading(msg = '', allowCancel = false, onCancelCallback = null) {
     spinnerBox.className = 'spinnerBox';
     modal.appendChild(spinnerBox);
   }
-  spinnerBox.style.cssText = 'display: flex !important; align-items: center !important; justify-content: center !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; outline: none !important;';
-  spinnerBox.innerHTML = `
-    <div class="spinner" style="width: 52px !important; height: 52px !important; border: 4px solid rgba(255,255,255,0.15) !important; border-top-color: #38bdf8 !important; border-right-color: #818cf8 !important; border-radius: 50% !important; animation: spin 0.8s linear infinite !important; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.9)) !important;"></div>
-    <div id="loadingText" class="loadingText" style="display: none !important;"></div>
-    <button type="button" id="btnBatalLoading" style="display: none !important;"></button>
-  `;
 
-  const textEl = document.getElementById('loadingText');
-  if (textEl) {
-    textEl.style.setProperty('display', 'none', 'important');
+  const isCancelable = allowCancel || !!onCancelCallback || (typeof window._cancelGeminiProcess === 'function') || (msg && msg.toUpperCase().includes('GEMINI'));
+
+  if (msg || isCancelable) {
+    spinnerBox.style.cssText = 'display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; background: rgba(15, 23, 42, 0.92) !important; border: 1px solid rgba(255, 255, 255, 0.18) !important; border-radius: 12px !important; padding: 22px 28px !important; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important; min-width: 260px !important; max-width: 90vw !important; box-sizing: border-box !important; text-align: center !important;';
+    spinnerBox.innerHTML = `
+      <div class="spinner" style="width: 48px !important; height: 48px !important; border: 4px solid rgba(255,255,255,0.15) !important; border-top-color: #38bdf8 !important; border-right-color: #818cf8 !important; border-radius: 50% !important; animation: spin 0.8s linear infinite !important; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.9)) !important; margin-bottom: 12px !important;"></div>
+      ${msg ? `<div id="loadingText" class="loadingText" style="display: block !important; color: #f8fafc !important; font-weight: 700 !important; font-size: 13px !important; text-transform: uppercase !important; letter-spacing: 0.5px !important; margin-bottom: ${isCancelable ? '14px' : '0px'} !important; line-height: 1.4 !important;">${msg}</div>` : '<div id="loadingText" class="loadingText" style="display: none !important;"></div>'}
+      ${isCancelable ? `
+        <button type="button" id="btnBatalLoading" onclick="batalProsesLoading()" style="background: linear-gradient(135deg, #ef4444, #dc2626) !important; color: #ffffff !important; border: none !important; border-radius: 6px !important; padding: 8px 22px !important; font-weight: 800 !important; font-size: 12px !important; cursor: pointer !important; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.45) !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; gap: 6px !important; letter-spacing: 0.5px !important; width: 100% !important; transition: transform 0.15s ease !important;">
+          BATAL
+        </button>
+      ` : '<button type="button" id="btnBatalLoading" style="display: none !important;"></button>'}
+    `;
+  } else {
+    spinnerBox.style.cssText = 'display: flex !important; align-items: center !important; justify-content: center !important; background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; outline: none !important;';
+    spinnerBox.innerHTML = `
+      <div class="spinner" style="width: 52px !important; height: 52px !important; border: 4px solid rgba(255,255,255,0.15) !important; border-top-color: #38bdf8 !important; border-right-color: #818cf8 !important; border-radius: 50% !important; animation: spin 0.8s linear infinite !important; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.9)) !important;"></div>
+      <div id="loadingText" class="loadingText" style="display: none !important;"></div>
+      <button type="button" id="btnBatalLoading" style="display: none !important;"></button>
+    `;
   }
 
   const miniModal = document.getElementById('miniCenterLoading');
@@ -13104,8 +13503,15 @@ function batalProsesLoading() {
     try { window._onCancelLoadingCallback(); } catch(e) {}
     window._onCancelLoadingCallback = null;
   }
+  const inputPdf = document.getElementById('inputPdfAutoFill');
+  if (inputPdf) inputPdf.value = '';
+  const inputImg = document.getElementById('inputGambarAutoFill');
+  if (inputImg) inputImg.value = '';
+  const inputExcel = document.getElementById('inputExcelAutoFill');
+  if (inputExcel) inputExcel.value = '';
+
   if (typeof showNotif === 'function') {
-    showNotif('PROSES DIBATALKAN OLEH PENGGUNA.', 'info');
+    showNotif('PROSES DI BATALKAN', 'info');
   }
 }
 window.batalProsesLoading = batalProsesLoading;
@@ -13444,7 +13850,18 @@ function initAllDraggableButtons() {
   document.head.appendChild(styleTag);
 })();
 
-function hapusSemuaDataLokal() {
+async function hapusSemuaDataLokal() {
+  const isAdminUser = (typeof checkIsAdminUser === 'function' && checkIsAdminUser()) || 
+                      (currentUser && (currentUser.role === 'ADMIN' || currentUser.category === 'ADMIN' || (currentUser.username && currentUser.username.toUpperCase() === 'ADMIN')));
+  if (!isAdminUser) {
+    if (typeof showNotif === 'function') {
+      showNotif('AKSES DITOLAK!\n\nFitur Hapus Penyimpanan Lokal / Cache hanya dapat diakses oleh Admin.', 'warning');
+    } else {
+      alert('AKSES DITOLAK!\n\nFitur Hapus Penyimpanan Lokal / Cache hanya dapat diakses oleh Admin.');
+    }
+    return;
+  }
+
   showConfirm('YAKIN INGIN MENGHAPUS SEMUA DATA PERANGKAT? (Aplikasi akan keluar dan dimuat ulang)', () => {
     showLoading('');
     
@@ -13734,7 +14151,9 @@ window.triggerUploadExcelAutoFill = triggerUploadExcelAutoFill;
 function downloadTemplateExcelPermintaan() {
   const modal = document.getElementById('excelTemplateOverlay');
   if (modal) {
-    modal.style.display = 'flex';
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add('show');
+    if (typeof pushPopupHistoryState === 'function') pushPopupHistoryState();
   } else {
     unduhTemplateExcelProses('DEFAULT');
   }
@@ -13744,7 +14163,8 @@ window.downloadTemplateExcelPermintaan = downloadTemplateExcelPermintaan;
 function closeExcelTemplateModal() {
   const modal = document.getElementById('excelTemplateOverlay');
   if (modal) {
-    modal.style.display = 'none';
+    modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('show');
   }
 }
 window.closeExcelTemplateModal = closeExcelTemplateModal;
@@ -13826,7 +14246,7 @@ async function prosesExcelAutoFill(event) {
     return;
   }
 
-  if (typeof showLoading === 'function') showLoading('MEMBACA DOKUMEN...', true);
+  if (typeof showLoading === 'function') showLoading('Membaca Dokumen...', true);
 
   try {
     const data = await file.arrayBuffer();
@@ -13902,12 +14322,7 @@ window.prosesExcelAutoFill = prosesExcelAutoFill;
 const GEMINI_API_KEY_STORAGE_KEY = 'gemini_api_key';
 const DEFAULT_GEMINI_API_KEY = 'AQ.Ab8RN6I_PX3A-3xuSh3HRHyruF9by7kveKGcoKNbVSBgSCGsZg';
 
-// Clean up any stale old key stored in browser local storage
-try {
-  localStorage.removeItem(GEMINI_API_KEY_STORAGE_KEY);
-  localStorage.removeItem('GEMINI_API_KEY');
-  appStorage.removeItem(GEMINI_API_KEY_STORAGE_KEY);
-} catch(e) {}
+// Gemini API Key initialized and persisted in LocalStorage & AppStorage
 
 // =============================================================================
 // =============================================================================
@@ -14279,7 +14694,7 @@ window.parseExtractedTextToPermintaanForm = parseExtractedTextToPermintaanForm;
 // =============================================================================
 
 function getGeminiApiKey() {
-  let key = localStorage.getItem('gemini_api_key') || localStorage.getItem('GEMINI_API_KEY') || '';
+  let key = localStorage.getItem('gemini_api_key') || localStorage.getItem('GEMINI_API_KEY') || appStorage.getItem('gemini_api_key') || appStorage.getItem('GEMINI_API_KEY') || '';
   key = String(key).trim();
   if (key === 'null' || key === 'undefined') key = '';
   return key;
@@ -14314,15 +14729,20 @@ function aturGeminiApiKey() {
 
   const currentKey = getGeminiApiKey();
 
-  modal.className = 'modalBackdrop';
+  modal.className = 'modalBackdrop show';
   modal.onclick = function(e) {
     if (e.target === modal) tutupModalGeminiApiKey();
   };
+  if (typeof pushPopupHistoryState === 'function') pushPopupHistoryState();
 
-  modal.style.cssText = 'display: flex !important; position: fixed !important; top: 0px !important; left: 0px !important; right: 0px !important; bottom: 0px !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.85) !important; z-index: 1000000000 !important; justify-content: center !important; align-items: center !important; padding: 12px !important; box-sizing: border-box !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important;';
+  const isDesktop = window.innerWidth > 768;
+  const alignStyle = isDesktop ? 'align-items: center !important; padding: 12px !important;' : 'align-items: flex-start !important; padding-top: 1mm !important; padding-bottom: 2mm !important; padding-left: 2mm !important; padding-right: 2mm !important;';
+  const marginStyle = isDesktop ? 'margin: auto !important;' : 'margin: 0 auto !important;';
+
+  modal.style.cssText = `display: flex !important; position: fixed !important; top: 0px !important; left: 0px !important; right: 0px !important; bottom: 0px !important; width: 100vw !important; height: 100vh !important; background: rgba(0, 0, 0, 0.85) !important; z-index: 1000000000 !important; justify-content: center !important; ${alignStyle} box-sizing: border-box !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; backdrop-filter: blur(4px) !important; -webkit-backdrop-filter: blur(4px) !important;`;
 
   modal.innerHTML = `
-    <div onclick="event.stopPropagation()" style="background: #ffffff !important; color: #0f172a !important; border-radius: 4px !important; width: 100% !important; max-width: 480px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important; border: 2.5px solid #f59e0b !important; overflow: hidden !important; box-sizing: border-box !important; margin: auto !important; font-family: system-ui, -apple-system, sans-serif !important;">
+    <div onclick="event.stopPropagation()" style="background: #ffffff !important; color: #0f172a !important; border-radius: 4px !important; width: 100% !important; max-width: 480px !important; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important; border: 2.5px solid #f59e0b !important; overflow: hidden !important; box-sizing: border-box !important; ${marginStyle} font-family: system-ui, -apple-system, sans-serif !important;">
       <div style="background: linear-gradient(135deg, #f59e0b, #d97706) !important; padding: 14px 18px !important; color: #ffffff !important; display: flex !important; justify-content: space-between !important; align-items: center !important;">
         <div style="display: flex !important; align-items: center !important; gap: 8px !important; font-weight: 800 !important; font-size: 14px !important; letter-spacing: 0.5px !important;">
           <span class="material-symbols-rounded" style="font-size: 22px !important; color: #ffffff !important;">key</span>
@@ -14382,6 +14802,7 @@ function tutupModalGeminiApiKey() {
   const modal = document.getElementById('modalGeminiApiKey');
   if (modal) {
     modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('show');
   }
 }
 window.tutupModalGeminiApiKey = tutupModalGeminiApiKey;
@@ -14410,9 +14831,11 @@ function simpanGeminiApiKeyDariModal() {
   }
   localStorage.setItem('gemini_api_key', val);
   localStorage.setItem('GEMINI_API_KEY', val);
+  appStorage.setItem('gemini_api_key', val);
+  appStorage.setItem('GEMINI_API_KEY', val);
   updateAiKeyBadgeStatus();
   tutupModalGeminiApiKey();
-  if (typeof showNotif === 'function') showNotif('GEMINI API KEY BERHASIL DISIMPAN / DIUBAH!', 'success');
+  if (typeof showNotif === 'function') showNotif('GEMINI API KEY BERHASIL DISIMPAN DI PENYIMPANAN LOKAL!', 'success');
   else alert('GEMINI API KEY BERHASIL DISIMPAN!');
 }
 window.simpanGeminiApiKeyDariModal = simpanGeminiApiKeyDariModal;
@@ -14420,6 +14843,8 @@ window.simpanGeminiApiKeyDariModal = simpanGeminiApiKeyDariModal;
 function hapusGeminiApiKeyPermanen() {
   localStorage.removeItem('gemini_api_key');
   localStorage.removeItem('GEMINI_API_KEY');
+  appStorage.removeItem('gemini_api_key');
+  appStorage.removeItem('GEMINI_API_KEY');
   const input = document.getElementById('inputGeminiApiKeyVal');
   if (input) input.value = '';
   updateAiKeyBadgeStatus();
@@ -14530,7 +14955,7 @@ async function prosesPdfAutoFillGemini(event) {
   if (!file) return;
 
   // LANGSUNG TAMPILKAN LOADING OVERLAY
-  if (typeof showLoading === 'function') showLoading('MEMBACA DOKUMEN DENGAN GOOGLE GEMINI AI...', true);
+  if (typeof showLoading === 'function') showLoading('Membaca Dokumen...', true);
 
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
@@ -14774,7 +15199,7 @@ async function prosesGambarAutoFillGemini(event) {
   if (!file) return;
 
   // LANGSUNG TAMPILKAN LOADING OVERLAY
-  if (typeof showLoading === 'function') showLoading('MEMBACA GAMBAR DENGAN GOOGLE GEMINI AI...', true);
+  if (typeof showLoading === 'function') showLoading('Membaca Dokumen...', true);
 
   const apiKey = getGeminiApiKey();
   if (!apiKey) {
