@@ -11020,21 +11020,7 @@ function kirimPesanChat() {
     } catch(e) {}
   }
 
-  // 3. KIRIM KE SUPABASE TABLE
-  if (typeof supabase !== 'undefined' && supabase) {
-    supabase.from('chat_messages').upsert({
-      id: newChatId,
-      room: roomTarget,
-      user: targetUser,
-      user_area: currentUser.area || 'BDG',
-      pengirim: pengirimType,
-      sender_id: senderId,
-      sender_username: senderUsername,
-      sender_name: newChatEntry.senderName,
-      pesan: pesan,
-      tanggal: timeStr
-    }).catch(e => console.warn(e));
-  }
+
 
   // 4. KIRIM KE FIREBASE FIRESTORE SECARA REAL-TIME (<100 ms)
   if (typeof dbFirestore !== 'undefined' && dbFirestore) {
