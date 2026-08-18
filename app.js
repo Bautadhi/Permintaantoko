@@ -1822,6 +1822,42 @@ function startFirebaseRealtimeAppSettingsListener() {
 }
 window.startFirebaseRealtimeAppSettingsListener = startFirebaseRealtimeAppSettingsListener;
 
+
+let unsubscribeFirestoreRequests = null;
+
+function startFirebaseRealtimeRequestsListener() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+  if (!dbFirestore && typeof firebase.firestore === 'function') {
+    try { dbFirestore = firebase.firestore(); } catch(e) {}
+  }
+  if (!dbFirestore) return;
+
+  if (unsubscribeFirestoreRequests) {
+    try { unsubscribeFirestoreRequests(); } catch(e) {}
+  }
+
+  try {
+    unsubscribeFirestoreRequests = dbFirestore.collection('requests')
+      .onSnapshot(snapshot => {
+        if (!snapshot || !snapshot.docChanges || snapshot.docChanges().length === 0) return;
+        snapshot.docChanges().forEach(change => {
+          const r = change.doc.data();
+          if (!r) return;
+          if (change.type === 'added' || change.type === 'modified') {
+            handleRealtimePermintaanToko({ eventType: 'UPDATE', new: r });
+          } else if (change.type === 'removed') {
+            handleRealtimePermintaanToko({ eventType: 'DELETE', old: { no_surat: r.noSurat || change.doc.id } });
+          }
+        });
+      }, err => {
+        console.warn('[FIRESTORE REQUESTS REALTIME LISTENER]:', err);
+      });
+  } catch (e) {
+    console.warn('[FIRESTORE REQUESTS INIT EXCEPTION]:', e);
+  }
+}
+window.startFirebaseRealtimeRequestsListener = startFirebaseRealtimeRequestsListener;
+
 function initFirebaseDB() {
   try {
     if (typeof firebase !== 'undefined') {
@@ -1848,6 +1884,7 @@ function initFirebaseDB() {
           startFirebaseRealtimeChatListener();
           startFirebaseRealtimeNotifListener();
           startFirebaseRealtimeAppSettingsListener();
+          startFirebaseRealtimeRequestsListener();
         } catch (e) {
           console.warn('[FIRESTORE INIT NOTICE]:', e);
         }
@@ -1919,15 +1956,31 @@ async function initSupabaseRealtimeEngine() {
         'broadcast',
         { event: 'data_changed' },
         async (event) => {
-          if (event && event.payload && event.payload.noSurat) {
-            try {
-              const { data } = await supabase.from('permintaan_toko').select('*').eq('no_surat', event.payload.noSurat);
-              if (Array.isArray(data) && data.length > 0) {
-                handleRealtimePermintaanToko({ eventType: 'UPDATE', new: data[0] });
-              } else {
-                handleRealtimePermintaanToko({ eventType: 'DELETE', old: { no_surat: event.payload.noSurat } });
-              }
-            } catch(e) {}
+          if (event && event.payload) {
+            const ns = event.payload.noSurat;
+            const action = event.payload.action;
+            const itemData = event.payload.data;
+
+            if (action === 'DELETE' && ns) {
+              handleRealtimePermintaanToko({ eventType: 'DELETE', old: { no_surat: ns } });
+              return;
+            }
+
+            if (itemData && typeof itemData === 'object' && (itemData.noSurat || itemData.no_surat)) {
+              handleRealtimePermintaanToko({ eventType: 'UPDATE', new: itemData });
+              return;
+            }
+
+            if (ns) {
+              try {
+                const { data } = await supabase.from('permintaan_toko').select('*').eq('no_surat', ns);
+                if (Array.isArray(data) && data.length > 0) {
+                  handleRealtimePermintaanToko({ eventType: 'UPDATE', new: data[0] });
+                } else {
+                  handleRealtimePermintaanToko({ eventType: 'DELETE', old: { no_surat: ns } });
+                }
+              } catch(e) {}
+            }
           }
         }
       )
@@ -2128,18 +2181,25 @@ function isRequestVisibleToCurrentUser(r) {
   return true;
 }
 
-function broadcastRealtimeDataChange(noSurat) {
+function broadcastRealtimeDataChange(noSurat, rawItem = null, action = 'UPDATE') {
   if (!noSurat) return;
   const list = Array.isArray(noSurat) ? noSurat : [noSurat];
   list.forEach(ns => {
-    if (ns && !String(ns).startsWith('__SYSTEM_') && supabaseRealtimeChannel) {
-      try {
-        supabaseRealtimeChannel.send({
-          type: 'broadcast',
-          event: 'data_changed',
-          payload: { noSurat: String(ns) }
-        });
-      } catch(e) {}
+    if (ns && !String(ns).startsWith('__SYSTEM_')) {
+      if (supabaseRealtimeChannel) {
+        try {
+          supabaseRealtimeChannel.send({
+            type: 'broadcast',
+            event: 'data_changed',
+            payload: {
+              noSurat: String(ns),
+              action: action,
+              data: rawItem || null,
+              timestamp: Date.now()
+            }
+          });
+        } catch(e) {}
+      }
     }
   });
 }
@@ -3929,6 +3989,16 @@ function saveUsersToDB(users, targetUser = null) {
     });
   }
 
+  if (supabaseRealtimeChannel) {
+    try {
+      supabaseRealtimeChannel.send({
+        type: 'broadcast',
+        event: 'user_data_changed',
+        payload: { username: targetUser ? targetUser.username : '', timestamp: Date.now() }
+      });
+    } catch(e) {}
+  }
+
   if (currentUser) {
     if (typeof loadDashboard === 'function') loadDashboard();
     if (typeof loadRiwayat === 'function') loadRiwayat();
@@ -3941,12 +4011,44 @@ function getRequestsFromDB() {
   return reqs.filter(r => r && r.noSurat && !String(r.noSurat).startsWith('__SYSTEM_'));
 }
 
-function saveRequestsToDB(requests) {
-  appStorage.setItem(REQUESTS_DB_KEY, JSON.stringify(requests));
-  pushCentralCloudDB();
+function saveRequestsToDB(requests, targetReq = null, action = 'UPDATE') {
+  const cleanReqs = Array.isArray(requests) ? requests : [];
+  appStorage.setItem(REQUESTS_DB_KEY, JSON.stringify(cleanReqs));
+  try { localStorage.setItem(REQUESTS_DB_KEY, JSON.stringify(cleanReqs)); } catch(e) {}
+
+  if (typeof pushCentralCloudDB === 'function') {
+    pushCentralCloudDB();
+  }
+
+  // KIRIM SINYAL REAL-TIME INSTAN KE SEMUA PERANGKAT LAIN
+  if (targetReq) {
+    if (typeof targetReq === 'string') {
+      broadcastRealtimeDataChange(targetReq, null, action);
+    } else if (typeof targetReq === 'object' && (targetReq.noSurat || targetReq.id)) {
+      broadcastRealtimeDataChange(targetReq.noSurat || targetReq.id, targetReq, action);
+    }
+  } else if (cleanReqs.length > 0) {
+    cleanReqs.slice(0, 3).forEach(r => {
+      if (r && r.noSurat) broadcastRealtimeDataChange(r.noSurat, r, 'UPDATE');
+    });
+  }
+
+  if (supabaseRealtimeChannel) {
+    try {
+      supabaseRealtimeChannel.send({
+        type: 'broadcast',
+        event: 'user_data_changed',
+        payload: { username: targetUser ? targetUser.username : '', timestamp: Date.now() }
+      });
+    } catch(e) {}
+  }
+
   if (currentUser) {
-    loadDashboard();
-    loadRiwayat();
+    if (typeof loadDashboard === 'function') loadDashboard();
+    if (typeof loadRiwayat === 'function') loadRiwayat();
+    if (typeof loadMasterDbTable === 'function' && document.getElementById('masterDbTableBody')) {
+      loadMasterDbTable();
+    }
   }
 }
 
@@ -7024,7 +7126,7 @@ function approveService(noSurat) {
       });
 
       // 1. SIMPAN LOKAL & UPDATE UI INSTAN (0 ms)
-      saveRequestsToDB(requests);
+      saveRequestsToDB(requests, requests[idx], 'UPDATE');
       showNotif(`APPROVE BERHASIL`, 'info');
       loadRiwayat();
       loadDashboard();
@@ -7103,7 +7205,7 @@ function approveDM(noSurat) {
       });
 
       // 1. SIMPAN LOKAL & UPDATE UI INSTAN (0 ms)
-      saveRequestsToDB(requests);
+      saveRequestsToDB(requests, requests[idx], 'UPDATE');
       showNotif(`APPROVE BERHASIL`, 'info');
       loadRiwayat();
       loadDashboard();
