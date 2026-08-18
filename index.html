@@ -20,9 +20,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <!-- Master Stylesheet -->
-  <link rel="stylesheet" href="styles.css?v=20260819_v10009">
-  <script src="app.js?v=20260819_v10009"></script>
+  <link rel="stylesheet" href="styles.css?v=20260819_v10039">
+  <script src="app.js?v=20260819_v10039"></script>
 
   <!-- Global Failsafe Gemini AI Key Handler -->
   <script>
@@ -177,10 +182,7 @@
   </script>
 
   <!-- Firebase App, Firestore & Realtime Database Web SDK (Compat Mode) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-</head>
+  </head>
 <body class="dark-mode">
 
   <!-- AESTHETIC SUBTLE AMBIENT SCENERY BACKGROUND (SAMAR-SAMAR) -->
@@ -1291,10 +1293,6 @@
 
   <!-- 8. LIGHTBOX IMAGE VIEWER DENGAN KONTROL ZOOM & DOWNLOAD DI BOTTOM BAR -->
   <div id="imageViewer" class="image-viewer-modal" style="display: none; position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; background: #000000 !important; z-index: 999999999 !important; overflow: hidden !important;">
-    <!-- Tombol Unduh / Download Foto di Kanan Atas -->
-    <button id="btnDownloadImageViewer" type="button" onclick="unduhFotoViewerAktif()" style="position: fixed !important; top: 18px !important; right: 70px !important; background: rgba(15,23,42,0.85) !important; color: #ffffff !important; border: 1.5px solid rgba(255,255,255,0.4) !important; border-radius: 50% !important; width: 44px !important; height: 44px !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; z-index: 100000005 !important; box-shadow: 0 4px 14px rgba(0,0,0,0.6) !important; transition: transform 0.2s, background 0.2s;" title="UNDUH / DOWNLOAD FOTO">
-      <span class="material-symbols-rounded" style="font-size: 22px;">download</span>
-    </button>
     <span class="closeViewer" onclick="tutupImageViewer()" style="position: fixed !important; top: 18px !important; right: 20px !important; color: #ffffff !important; font-size: 32px !important; font-weight: 900 !important; cursor: pointer !important; z-index: 100000005 !important; background: transparent !important; border: none !important; box-shadow: none !important; line-height: 1 !important;" title="TUTUP VIEWER">&times;</span>
     
     <!-- Tombol Kiri (<) -->

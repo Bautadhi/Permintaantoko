@@ -3043,8 +3043,6 @@ div[id*="Modal"] {
 }
 
 #readerScanner video,
-#readerScanner canvas,
-#readerScanner img,
 #readerScanner__scan_region video {
   width: 100% !important;
   height: 220px !important;
@@ -3060,6 +3058,9 @@ div[id*="Modal"] {
   background: #000 !important;
 }
 
+#readerScanner canvas,
+#readerScanner img,
+#readerScanner__scan_region canvas,
 #readerScanner #readerScanner__dashboard,
 #readerScanner #readerScanner__dashboard_section,
 #readerScanner #readerScanner__status_span,
@@ -3067,6 +3068,8 @@ div[id*="Modal"] {
 #readerScanner .qr-shaded-region,
 #readerScanner div[style*="position: absolute"] {
   display: none !important;
+  width: 0 !important;
+  height: 0 !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
@@ -3741,7 +3744,6 @@ html body #popupUserForm .popupBox {
   filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8)) !important;
   box-sizing: border-box !important;
 }
-}
 
 /* INLINE BUTTON ROTATING SPINNER ANIMATION */
 .btn-spin-icon {
@@ -4080,21 +4082,6 @@ html body #popupUserForm .popupBox {
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
   z-index: 100000002 !important;
-}
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 8px 20px;
-  border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  z-index: 1002;
 }
 
 #viewerCounter {
