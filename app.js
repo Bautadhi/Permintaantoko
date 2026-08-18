@@ -1310,40 +1310,105 @@ function generateStoreCode(namaToko) {
 }
 
 function getStoresFromDB() {
-  const localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
-  const deletedStoreKeys = JSON.parse(appStorage.getItem(DELETED_STORES_KEY) || '[]');
-  const safeDeletedKeys = Array.isArray(deletedStoreKeys) ? deletedStoreKeys : [];
-  const users = getUsersFromDB();
-  const userStores = users.filter(u => u && u.category === 'TOKO').map(u => ({
-    id: u.id,
-    fullName: u.fullName || 'TOKO',
-    area: u.area || '',
-    storeCode: u.storeCode || generateStoreCode(u.fullName || '')
-  }));
+  let stores = [];
+  try {
+    const raw = appStorage.getItem(STORES_DB_KEY);
+    if (raw) stores = JSON.parse(raw);
+  } catch (e) {
+    stores = [];
+  }
 
-  const map = new Map();
-  userStores.forEach(s => {
-    if (s && s.fullName) {
-      const key = `${String(s.fullName).toUpperCase()}_${String(s.area || '').toUpperCase()}`;
-      map.set(key, s);
+  if (!Array.isArray(stores)) stores = [];
+
+  const delStores = new Set(
+    (JSON.parse(appStorage.getItem(DELETED_STORES_KEY) || '[]') || [])
+      .filter(Boolean)
+      .map(v => String(v).trim().toUpperCase())
+  );
+  const delUsers = new Set(
+    (JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]') || [])
+      .filter(Boolean)
+      .map(v => String(v).trim().toUpperCase())
+  );
+
+  // Filter out deleted stores
+  stores = stores.filter(s => {
+    if (!s || !s.fullName) return false;
+    const sId = String(s.id || '').toUpperCase();
+    const sName = String(s.fullName).trim().toUpperCase();
+    const sArea = String(s.area || '').trim().toUpperCase();
+    const sKey = `${sName}_${sArea}`;
+    if (delStores.has(sId) || delStores.has(sName) || delStores.has(sKey)) return false;
+    if (delUsers.has(sId) || delUsers.has(sName)) return false;
+    return true;
+  });
+
+  const users = (typeof getUsersFromDB === 'function' ? getUsersFromDB() : []);
+  users.forEach(u => {
+    if (u && u.category === 'TOKO' && u.fullName) {
+      const uName = String(u.fullName).trim().toUpperCase();
+      const uArea = String(u.area || 'BDG').trim().toUpperCase();
+      const uId = String(u.id || '').trim();
+      const uUname = String(u.username || '').trim().toUpperCase();
+      const uKey = `${uName}_${uArea}`;
+
+      if (delStores.has(uName) || delStores.has(uKey) || delUsers.has(String(u.id || '').toUpperCase()) || delUsers.has(uUname)) {
+        return;
+      }
+
+      // Check if store already exists by ID or by Name
+      const existingIdx = stores.findIndex(s => {
+        if (!s) return false;
+        const sId = String(s.id || '').trim();
+        const sName = String(s.fullName || '').trim().toUpperCase();
+        return (
+          (uId && sId && uId === sId) ||
+          (sId && sId === `STK-${uUname}`) ||
+          (sName === uName && (!s.area || s.area === uArea))
+        );
+      });
+
+      if (existingIdx !== -1) {
+        stores[existingIdx].id = u.id || stores[existingIdx].id;
+        stores[existingIdx].fullName = u.fullName;
+        stores[existingIdx].area = u.area || 'BDG';
+        if (u.storeCode) stores[existingIdx].storeCode = u.storeCode;
+      } else {
+        stores.push({
+          id: u.id || `STK-${u.username}`,
+          fullName: u.fullName,
+          area: u.area || 'BDG',
+          storeCode: u.storeCode || generateStoreCode(u.fullName, u.area),
+          createdBy: 'SYSTEM'
+        });
+      }
     }
   });
 
-  if (Array.isArray(localStores)) {
-    localStores.forEach(s => {
-      if (s && s.fullName) {
-        const key = `${String(s.fullName).toUpperCase()}_${String(s.area || '').toUpperCase()}`;
-        map.set(key, s);
-      }
-    });
-  }
-
-  const allStores = Array.from(map.values());
-  return allStores.filter(s => {
-    if (!s || !s.fullName) return false;
-    const key = `${String(s.fullName).toUpperCase()}_${String(s.area || '').toUpperCase()}`;
-    return !safeDeletedKeys.includes(key);
+  // Deduplicate stores by (fullName + area)
+  const map = new Map();
+  stores.forEach(s => {
+    if (!s || !s.fullName) return;
+    const name = String(s.fullName).trim().toUpperCase();
+    const area = String(s.area || 'BDG').trim().toUpperCase();
+    const key = `${name}_${area}`;
+    if (!map.has(key)) {
+      map.set(key, s);
+    }
   });
+  stores = Array.from(map.values());
+
+  const assignedCodes = new Set();
+  stores.forEach(s => {
+    if (!s) return;
+    const name = String(s.fullName || '').trim().toUpperCase();
+    if (!s.storeCode || assignedCodes.has(s.storeCode.toUpperCase())) {
+      s.storeCode = generateStoreCode(name, s.area);
+    }
+    assignedCodes.add(s.storeCode.toUpperCase());
+  });
+
+  return stores;
 }
 
 // 10 THEME MODES
@@ -6982,8 +7047,16 @@ function filterRiwayat() {
 }
 
 function lihatFotoByNoSurat(noSurat) {
+  if (!noSurat) {
+    showNotif('NOMOR SURAT TIDAK VALID!', 'warning');
+    return;
+  }
+
   const requests = getRequestsFromDB();
-  const req = requests.find(r => r && (r.noSurat === noSurat || String(r.noSurat) === String(noSurat) || r.id === noSurat));
+  const req = requests.find(r => r && (
+    String(r.noSurat || '').trim().toUpperCase() === String(noSurat).trim().toUpperCase() || 
+    String(r.id || '').trim().toUpperCase() === String(noSurat).trim().toUpperCase()
+  ));
   
   let photos = [];
   if (req) {
@@ -6991,13 +7064,6 @@ function lihatFotoByNoSurat(noSurat) {
     const artP = parsePhotosArray(req.artemisPhotos);
     photos = [...regP, ...artP];
     photos = Array.from(new Set(photos.filter(Boolean)));
-  }
-
-  // FOTO BUKTI PROSES ARTEMIS (STATUS DONE) SELALU DIIZINKAN DILIHAT DI SEMUA PERANGKAT!
-  const isDoneOrHasArtemis = req && (req.status === 'DONE' || (req.artemisPhotos && req.artemisPhotos.length > 0));
-  if (!isDoneOrHasArtemis && !getFeaturePhotosEnabled()) {
-    showNotif('FITUR UPLOAD FOTO FORM PERMINTAAN SEDANG DINONAKTIFKAN OLEH ADMIN!', 'warning');
-    return;
   }
 
   if (photos && photos.length > 0) {
@@ -9201,9 +9267,13 @@ function tampilkanPilihanCetakPdf(noSurat) {
     return;
   }
 
-  if (typeof isPdfButtonAllowed === 'function' && !isPdfButtonAllowed(req)) {
-    showNotif('TOMBOL CETAK PDF HANYA TERSEDIA JIKA DOKUMEN SUDAH DI-APPROVE OLEH DM & TIDAK TERSEDIA UNTUK TOKO/SALES!', 'warning');
-    return;
+  const userCat = (currentUser && currentUser.category) ? String(currentUser.category).toUpperCase() : '';
+  const isAdmUser = (typeof checkIsAdminUser === 'function') ? checkIsAdminUser() : (userCat === 'ADMIN' || (currentUser && currentUser.username && currentUser.username.toUpperCase() === 'ADMIN'));
+  if (!isAdmUser && typeof isPdfButtonAllowed === 'function' && !isPdfButtonAllowed(req)) {
+    if (userCat === 'TOKO' || userCat === 'SALES') {
+      showNotif('DOKUMEN BELUM SELESAI DISETUJUI / DIVERIFIKASI OLEH DM!', 'warning');
+      return;
+    }
   }
 
   const validPhotos = getReqPhotosList(req);
@@ -9296,9 +9366,13 @@ function bukaPdfModal(noSurat, includePhotos = null) {
     return;
   }
 
-  if (typeof isPdfButtonAllowed === 'function' && !isPdfButtonAllowed(req)) {
-    showNotif('TOMBOL CETAK PDF HANYA TERSEDIA JIKA DOKUMEN SUDAH DI-APPROVE OLEH DM & TIDAK TERSEDIA UNTUK TOKO/SALES!', 'warning');
-    return;
+  const userCat = (currentUser && currentUser.category) ? String(currentUser.category).toUpperCase() : '';
+  const isAdmUser = (typeof checkIsAdminUser === 'function') ? checkIsAdminUser() : (userCat === 'ADMIN' || (currentUser && currentUser.username && currentUser.username.toUpperCase() === 'ADMIN'));
+  if (!isAdmUser && typeof isPdfButtonAllowed === 'function' && !isPdfButtonAllowed(req)) {
+    if (userCat === 'TOKO' || userCat === 'SALES') {
+      showNotif('DOKUMEN BELUM SELESAI DISETUJUI / DIVERIFIKASI OLEH DM!', 'warning');
+      return;
+    }
   }
 
   const validPhotos = getReqPhotosList(req);
@@ -11688,6 +11762,14 @@ async function simpanUserData(btnElement = null) {
             return;
           }
 
+          // SIMPAN DATA LAMA SEBELUM TIMPA UNTUK SINKRONISASI MASTER TOKO
+          const oldUser = { ...users[idx] };
+          const oldFullName = String(oldUser.fullName || '').trim();
+          const oldUsername = String(oldUser.username || '').trim();
+          const oldId = String(oldUser.id || '').trim();
+          const oldCategory = String(oldUser.category || '').trim().toUpperCase();
+          const oldArea = String(oldUser.area || '').trim().toUpperCase();
+
           if (!users[idx].id) users[idx].id = users[idx].username || docId;
           users[idx].username = username;
           users[idx].password = password;
@@ -11738,38 +11820,108 @@ async function simpanUserData(btnElement = null) {
             await simpanUserKeSupabase(users[idx]);
           }
 
-          if (category === 'TOKO') {
+          // SINKRONISASI MASTER TOKO (JIKA KATEGORI TOKO ATAU SEBELUMNYA TOKO)
+          if (category === 'TOKO' || oldCategory === 'TOKO') {
             try {
-              const localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
-              const sIdx = localStores.findIndex(s => s.id === users[idx].id || (s.fullName && s.fullName.toUpperCase() === fullName.toUpperCase()));
-              if (sIdx !== -1) {
-                localStores[sIdx].fullName = fullName;
-                localStores[sIdx].area = area;
-                localStores[sIdx].storeCode = storeCode || generateStoreCode(fullName);
+              let localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
+              if (!Array.isArray(localStores)) localStores = [];
+
+              const oldNameUpper = oldFullName.toUpperCase();
+              const oldUnameUpper = oldUsername.toUpperCase();
+              const newNameUpper = fullName.trim().toUpperCase();
+              const targetStoreId = users[idx].id || oldId || `STK-${username}`;
+
+              // Cari toko lama berdasarkan ID atau nama toko lama atau username lama
+              let sIdx = localStores.findIndex(s => {
+                if (!s) return false;
+                const sId = String(s.id || '').trim();
+                const sName = String(s.fullName || '').trim().toUpperCase();
+                return (
+                  (sId && oldId && sId === oldId) ||
+                  (sId && targetStoreId && sId === targetStoreId) ||
+                  (sName && oldNameUpper && sName === oldNameUpper) ||
+                  (sName && oldUnameUpper && sName === oldUnameUpper)
+                );
+              });
+
+              if (category === 'TOKO') {
+                if (sIdx !== -1) {
+                  // UPDATE TOKO LAMA, JANGAN NAMBAH TOKO BARU!
+                  localStores[sIdx].id = targetStoreId;
+                  localStores[sIdx].fullName = fullName;
+                  localStores[sIdx].area = area;
+                  localStores[sIdx].storeCode = storeCode || generateStoreCode(fullName, area);
+                } else {
+                  localStores.push({
+                    id: targetStoreId,
+                    fullName: fullName,
+                    area: area,
+                    storeCode: storeCode || generateStoreCode(fullName, area),
+                    createdBy: currentUser ? currentUser.fullName : 'ADMIN'
+                  });
+                }
+
+                // Hapus entri ganda toko lama yang tersisa
+                if (oldNameUpper && oldNameUpper !== newNameUpper) {
+                  localStores = localStores.filter((s, i) => {
+                    if (!s) return false;
+                    const sName = String(s.fullName || '').trim().toUpperCase();
+                    if (sName === oldNameUpper && (s.id !== targetStoreId && i !== sIdx)) {
+                      return false;
+                    }
+                    return true;
+                  });
+                }
               } else {
-                localStores.push({
-                  id: users[idx].id,
-                  fullName: fullName,
-                  area: area,
-                  storeCode: storeCode || generateStoreCode(fullName),
-                  createdBy: currentUser ? currentUser.fullName : 'ADMIN'
+                // Jika role diubah dari TOKO ke role lain, hapus dari list toko
+                localStores = localStores.filter(s => {
+                  if (!s) return false;
+                  const sId = String(s.id || '').trim();
+                  const sName = String(s.fullName || '').trim().toUpperCase();
+                  return !(sId === targetStoreId || sId === oldId || sName === oldNameUpper);
                 });
               }
-              appStorage.setItem(STORES_DB_KEY, JSON.stringify(localStores));
 
+              appStorage.setItem(STORES_DB_KEY, JSON.stringify(localStores));
+              try { localStorage.setItem(STORES_DB_KEY, JSON.stringify(localStores)); } catch(e) {}
+
+              // SINKRONISASI KE SUPABASE TOKO_LIST
               const client = (typeof supabaseAdmin !== 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
               if (client) {
-                await client.from('toko_list').upsert({
-                  id: users[idx].id,
-                  full_name: fullName,
-                  area: area,
-                  created_by: currentUser ? currentUser.fullName : 'ADMIN'
-                }).catch(e => console.warn(e));
+                if (category === 'TOKO') {
+                  try {
+                    await client.from('toko_list').upsert({
+                      id: targetStoreId,
+                      full_name: fullName,
+                      area: area,
+                      store_code: storeCode || generateStoreCode(fullName, area),
+                      created_by: currentUser ? currentUser.fullName : 'ADMIN'
+                    });
+                  } catch (e) { console.warn(e); }
+
+                  if (oldNameUpper && oldNameUpper !== newNameUpper) {
+                    try {
+                      await client.from('toko_list').delete().eq('full_name', oldFullName).neq('id', targetStoreId);
+                    } catch (e) { console.warn(e); }
+                  }
+                } else {
+                  try {
+                    await client.from('toko_list').delete().eq('id', targetStoreId);
+                  } catch (e) { console.warn(e); }
+                  if (oldFullName) {
+                    try {
+                      await client.from('toko_list').delete().eq('full_name', oldFullName);
+                    } catch (e) { console.warn(e); }
+                  }
+                }
               }
+
               if (typeof syncSupabaseStoresToLocalCache === 'function') {
                 await syncSupabaseStoresToLocalCache().catch(() => {});
               }
-            } catch(e) {}
+            } catch(e) {
+              console.warn('[STORE SYNC NOTICE]:', e);
+            }
           }
 
           if (typeof dbFirestore !== 'undefined' && dbFirestore) {
@@ -11980,35 +12132,46 @@ async function hapusUser(userId, btnElement = null) {
     const btn = (btnElement && btnElement instanceof HTMLElement) ? btnElement : (typeof event !== 'undefined' && event ? event.currentTarget : null);
     setBtnLoading(btn, true, 'HAPUS...');
     showPopupInnerLoading('popupUserManagementModal', 'MENGHAPUS USER...');
-    showLoading('MENGHAPUS USER...');
+    showLoading('MENGHAPUS USER & SINKRONISASI TOKO...');
 
     setTimeout(async () => {
       try {
+        const uNameUpper = String(u.fullName || '').trim().toUpperCase();
+        const uUnameUpper = String(u.username || '').trim().toUpperCase();
+        const uArea = String(u.area || 'BDG').trim().toUpperCase();
+
         // 1. UPDATE DELETED KEYS & LOKAL STORAGE FOR USERS & STORES
         try {
           const delUsers = JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]');
           if (u.id && !delUsers.includes(u.id)) delUsers.push(u.id);
           if (u.username && !delUsers.includes(u.username)) delUsers.push(u.username);
-          if (u.username && !delUsers.includes(u.username.toUpperCase())) delUsers.push(u.username.toUpperCase());
+          if (uUnameUpper && !delUsers.includes(uUnameUpper)) delUsers.push(uUnameUpper);
           appStorage.setItem(DELETED_USERS_KEY, JSON.stringify(delUsers));
+          try { localStorage.setItem(DELETED_USERS_KEY, JSON.stringify(delUsers)); } catch(e) {}
 
+          // JIKA USER ADALAH TOKO, HAPUS JUGA DARI MASTER TOKO LOKAL & DELETED_STORES_KEY
           const localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
-          const updatedStores = localStores.filter(s => s.id !== u.id && !(s.fullName && u.fullName && s.fullName.toUpperCase() === u.fullName.toUpperCase()));
+          const updatedStores = localStores.filter(s => {
+            if (!s) return false;
+            if (s.id === u.id) return false;
+            if (uNameUpper && String(s.fullName || '').trim().toUpperCase() === uNameUpper) return false;
+            return true;
+          });
           appStorage.setItem(STORES_DB_KEY, JSON.stringify(updatedStores));
+          try { localStorage.setItem(STORES_DB_KEY, JSON.stringify(updatedStores)); } catch(e) {}
 
-          if (u.fullName && u.area) {
-            const storeKey = `${u.fullName.toUpperCase()}_${u.area}`;
-            const deletedStoreKeys = JSON.parse(appStorage.getItem(DELETED_STORES_KEY) || '[]');
-            if (!deletedStoreKeys.includes(storeKey)) {
-              deletedStoreKeys.push(storeKey);
-              appStorage.setItem(DELETED_STORES_KEY, JSON.stringify(deletedStoreKeys));
-            }
-          }
+          const storeKey = `${uNameUpper}_${uArea}`;
+          const deletedStoreKeys = JSON.parse(appStorage.getItem(DELETED_STORES_KEY) || '[]');
+          if (uNameUpper && !deletedStoreKeys.includes(uNameUpper)) deletedStoreKeys.push(uNameUpper);
+          if (storeKey && !deletedStoreKeys.includes(storeKey)) deletedStoreKeys.push(storeKey);
+          if (u.id && !deletedStoreKeys.includes(u.id)) deletedStoreKeys.push(u.id);
+          appStorage.setItem(DELETED_STORES_KEY, JSON.stringify(deletedStoreKeys));
+          try { localStorage.setItem(DELETED_STORES_KEY, JSON.stringify(deletedStoreKeys)); } catch(e) {}
         } catch(e) {}
 
         const updatedUsers = users.filter(x => x.id !== u.id && x.username !== u.username);
         try {
-          saveUsersToDB(updatedUsers);
+          saveUsersToDB(updatedUsers, null, 'DELETE');
         } catch(e) {
           cacheUsers = updatedUsers;
         }
@@ -12021,6 +12184,9 @@ async function hapusUser(userId, btnElement = null) {
             if (u.username) {
               await client.from('users').delete().eq('username', u.username);
               await client.from('users').delete().ilike('username', u.username);
+            }
+            if (u.fullName) {
+              await client.from('users').delete().eq('full_name', u.fullName);
             }
             if (u.id) await client.from('toko_list').delete().eq('id', u.id);
             if (u.fullName) {
@@ -12059,40 +12225,24 @@ async function hapusUser(userId, btnElement = null) {
           try { await pullCentralCloudDB(); } catch(e) {}
         }
 
-        // BROADCAST REALTIME EVENT KE SELURUH PERANGKAT AGAR TAMPILAN USER LANGSUNG TER-UPDATE
+        // BROADCAST REALTIME EVENT KE SELURUH PERANGKAT AGAR TAMPILAN USER & TOKO LANGSUNG TER-UPDATE
         if (supabaseRealtimeChannel) {
           try {
             supabaseRealtimeChannel.send({
               type: 'broadcast',
               event: 'user_data_changed',
-              payload: { username: u.username, timestamp: Date.now() }
+              payload: { action: 'DELETE', username: u.username, id: u.id, timestamp: Date.now() }
             });
           } catch(e) {}
         }
 
-        // PASTI KAN POPUP USER MANAGEMENT MODAL TETAP TERBUKA
-        if (typeof bukaPopupUserManagement === 'function') {
-          bukaPopupUserManagement();
-        } else {
-          const popupUserMgmt = document.getElementById('popupUserManagementModal');
-          if (popupUserMgmt) {
-            popupUserMgmt.style.setProperty('display', 'flex', 'important');
-            popupUserMgmt.classList.add('show');
-          }
-        }
-
-        if (typeof loadUsersManagement === 'function') loadUsersManagement();
+        showNotif(`USER '${u.fullName || u.username}' & DATA MASTER TOKO BERHASIL DIHAPUS!`, 'info');
+        loadUsersManagement();
         if (typeof loadDaftarTokoModal === 'function') loadDaftarTokoModal();
         if (typeof updateStoreDropdownOptions === 'function') updateStoreDropdownOptions();
-
-        setTimeout(() => {
-          showNotif(`USER ${u.username} BERHASIL DIHAPUS!`, 'info');
-        }, 100);
       } catch (err) {
         console.error('[HAPUS USER ERROR]:', err);
-        setTimeout(() => {
-          showNotif('TERJADI KESALAHAN SAAT MENGHAPUS USER: ' + (err.message || err), 'error');
-        }, 100);
+        showNotif('GAGAL MENGHAPUS USER: ' + (err.message || err), 'error');
       } finally {
         hideLoading();
         hidePopupInnerLoading('popupUserManagementModal');
@@ -13141,73 +13291,127 @@ window.simpanTokoBaru = simpanTokoBaru;
 
 async function hapusTokoCustom(id, btnElement = null) {
   const allStores = getStoresFromDB();
-  const store = allStores.find(s => s.id === id);
+  const store = allStores.find(s => s.id === id || (s.fullName && String(s.fullName).toUpperCase() === String(id).toUpperCase()));
   const name = store ? store.fullName : 'TOKO';
-  const storeArea = store ? store.area : (currentUser ? currentUser.area : '');
+  const storeArea = store ? (store.area || 'BDG') : (currentUser ? currentUser.area : 'BDG');
 
-  showConfirm(`HAPUS TOKO '${name}' DARI DAFTAR?`, () => {
+  showConfirm(`HAPUS TOKO '${name}' DARI DAFTAR MASTER TOKO & PENGATURAN USER?`, () => {
     const btn = (btnElement && btnElement instanceof HTMLElement) ? btnElement : (typeof event !== 'undefined' && event ? event.currentTarget : null);
     setBtnLoading(btn, true, 'HAPUS...');
-    showLoading('MENGHAPUS TOKO...');
+    showLoading('MENGHAPUS DATA TOKO & USER...');
 
     const themeBeforeDelete = getSavedLocalTheme();
 
     setTimeout(async () => {
       try {
-        // 1. UPDATE CACHE LOKAL & DELETED KEYS
+        const nameUpper = String(name).trim().toUpperCase();
+        const storeKey = `${nameUpper}_${String(storeArea).trim().toUpperCase()}`;
+
+        // 1. UPDATE DELETED STORES & STORES CACHE LOKAL
         try {
           const localStores = JSON.parse(appStorage.getItem(STORES_DB_KEY) || '[]');
-          const updatedLocal = localStores.filter(s => s.id !== id && s.fullName.toUpperCase() !== name.toUpperCase());
+          const updatedLocal = localStores.filter(s => s && s.id !== id && String(s.fullName || '').trim().toUpperCase() !== nameUpper);
           appStorage.setItem(STORES_DB_KEY, JSON.stringify(updatedLocal));
+          try { localStorage.setItem(STORES_DB_KEY, JSON.stringify(updatedLocal)); } catch(e) {}
         } catch(e) {}
 
-        const storeKey = `${name.toUpperCase()}_${storeArea}`;
         try {
-          const deletedStoreKeys = JSON.parse(appStorage.getItem(DELETED_STORES_KEY) || '[]');
-          if (!deletedStoreKeys.includes(storeKey)) {
-            deletedStoreKeys.push(storeKey);
-            appStorage.setItem(DELETED_STORES_KEY, JSON.stringify(deletedStoreKeys));
-          }
+          let deletedStoreKeys = JSON.parse(appStorage.getItem(DELETED_STORES_KEY) || '[]');
+          if (!deletedStoreKeys.includes(storeKey)) deletedStoreKeys.push(storeKey);
+          if (!deletedStoreKeys.includes(nameUpper)) deletedStoreKeys.push(nameUpper);
+          if (id && !deletedStoreKeys.includes(id)) deletedStoreKeys.push(id);
+          appStorage.setItem(DELETED_STORES_KEY, JSON.stringify(deletedStoreKeys));
+          try { localStorage.setItem(DELETED_STORES_KEY, JSON.stringify(deletedStoreKeys)); } catch(e) {}
         } catch(e) {}
 
+        // 2. CARI DAN HAPUS AKUN USER TOKO YANG TERKAIT
         const users = getUsersFromDB();
-        const updatedUsers = users.filter(u => u.id !== id && !(u.category === 'TOKO' && u.fullName && u.fullName.toUpperCase() === name.toUpperCase()));
-        try { saveUsersToDB(updatedUsers); } catch(e) {}
+        const safeUname = name.replace(/[^A-Z0-9]/gi, '_').toUpperCase();
+        const targetUser = users.find(u => u && (
+          (u.id && u.id === id) ||
+          (u.fullName && String(u.fullName).trim().toUpperCase() === nameUpper) ||
+          (u.username && String(u.username).trim().toUpperCase() === safeUname)
+        ));
 
-        // 2. HAPUS LANGSUNG DARI SUPABASE DATABASE (TABEL: toko_list & users)
-        if (typeof supabase !== 'undefined' && supabase) {
+        try {
+          let delUsers = JSON.parse(appStorage.getItem(DELETED_USERS_KEY) || '[]');
+          if (id && !delUsers.includes(id)) delUsers.push(id);
+          if (safeUname && !delUsers.includes(safeUname)) delUsers.push(safeUname);
+          if (targetUser) {
+            if (targetUser.id && !delUsers.includes(targetUser.id)) delUsers.push(targetUser.id);
+            if (targetUser.username && !delUsers.includes(targetUser.username)) delUsers.push(targetUser.username);
+            if (targetUser.username && !delUsers.includes(targetUser.username.toUpperCase())) delUsers.push(targetUser.username.toUpperCase());
+          }
+          appStorage.setItem(DELETED_USERS_KEY, JSON.stringify(delUsers));
+          try { localStorage.setItem(DELETED_USERS_KEY, JSON.stringify(delUsers)); } catch(e) {}
+        } catch(e) {}
+
+        const updatedUsers = users.filter(u => {
+          if (!u) return false;
+          if (u.id === id) return false;
+          if (targetUser && (u.id === targetUser.id || u.username === targetUser.username)) return false;
+          if (u.category === 'TOKO' && u.fullName && String(u.fullName).trim().toUpperCase() === nameUpper) return false;
+          return true;
+        });
+
+        try { saveUsersToDB(updatedUsers, null, 'DELETE'); } catch(e) {}
+
+        // 3. HAPUS DARI SUPABASE CLOUD (TABEL toko_list & users)
+        const client = (typeof supabaseAdmin !== 'undefined' && supabaseAdmin) ? supabaseAdmin : supabase;
+        if (client) {
           try {
-            await supabase.from('toko_list').delete().eq('id', id);
-            await supabase.from('toko_list').delete().eq('full_name', name);
-            await supabase.from('users').delete().eq('id', id);
-            await supabase.from('users').delete().eq('full_name', name);
+            if (id) await client.from('toko_list').delete().eq('id', id);
+            await client.from('toko_list').delete().eq('full_name', name);
+            await client.from('toko_list').delete().ilike('full_name', name);
+
+            if (id) await client.from('users').delete().eq('id', id);
+            await client.from('users').delete().eq('full_name', name);
+            await client.from('users').delete().ilike('full_name', name);
+            if (targetUser && targetUser.username) {
+              await client.from('users').delete().eq('username', targetUser.username);
+            }
           } catch (sbErr) {
             console.warn('[SUPABASE DELETE STORE NOTICE]:', sbErr);
           }
         }
 
-        // 3. HAPUS LANGSUNG DARI FIREBASE ONLINE
-        const safeUsername = name.replace(/[^A-Z0-9]/gi, '_').toUpperCase();
+        // 4. HAPUS DARI FIREBASE ONLINE
         if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-          await dbFirestore.collection('stores').doc(id).delete().catch(e => console.warn(e));
-          await dbFirestore.collection('users').doc(safeUsername).delete().catch(e => console.warn(e));
+          try {
+            if (id) await dbFirestore.collection('stores').doc(id).delete().catch(() => {});
+            await dbFirestore.collection('users').doc(safeUname).delete().catch(() => {});
+            if (targetUser && targetUser.username) {
+              await dbFirestore.collection('users').doc(targetUser.username.toUpperCase()).delete().catch(() => {});
+            }
+          } catch(e) {}
         }
         if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-          await dbRealtime.ref(`stores/${id}`).remove().catch(e => console.warn(e));
-          await dbRealtime.ref(`users/${safeUsername}`).remove().catch(e => console.warn(e));
+          try {
+            if (id) await dbRealtime.ref(`stores/${id}`).remove().catch(() => {});
+            await dbRealtime.ref(`users/${safeUname}`).remove().catch(() => {});
+            if (targetUser && targetUser.username) {
+              await dbRealtime.ref(`users/${targetUser.username.toUpperCase()}`).remove().catch(() => {});
+            }
+          } catch(e) {}
         }
 
         if (typeof pushCentralCloudDB === 'function') {
           await pushCentralCloudDB();
         }
 
-        if (typeof syncAllDataToCache === 'function') {
-          await syncAllDataToCache().catch(() => {});
+        if (supabaseRealtimeChannel) {
+          try {
+            supabaseRealtimeChannel.send({
+              type: 'broadcast',
+              event: 'user_data_changed',
+              payload: { action: 'DELETE', username: safeUname, id: id, timestamp: Date.now() }
+            });
+          } catch(e) {}
         }
 
-        showNotif(`TOKO '${name}' BERHASIL DIHAPUS!`, 'info');
+        showNotif(`TOKO '${name}' & AKUN USER BERHASIL DIHAPUS!`, 'info');
 
-        // Buka kembali modal tambah toko jika tertutup oleh konfirmasi
+        // Buka kembali modal tambah toko jika sebelumnya terbuka
         const popupToko = document.getElementById('popupTambahToko');
         if (popupToko) {
           popupToko.style.setProperty('display', 'flex', 'important');
@@ -13857,6 +14061,62 @@ function gantiFotoViewer(direction) {
   updateViewerCounter();
 }
 
+function unduhFotoViewerAktif() {
+  const photos = parsePhotosArray(currentViewerPhotos.length > 0 ? currentViewerPhotos : viewerPhotos);
+  const currentSrc = (photos && photos.length > 0) ? photos[currentViewerIndex || 0] : (document.getElementById('viewerImage') ? document.getElementById('viewerImage').src : '');
+  
+  if (!currentSrc) {
+    if (typeof showNotif === 'function') showNotif('TIDAK ADA GAMBAR YANG DAPAT DIUNDUH!', 'warning');
+    return;
+  }
+
+  try {
+    const filename = `FOTO_BUKTI_${Date.now()}_${(currentViewerIndex || 0) + 1}.jpg`;
+    
+    // Jika format base64 Data URI
+    if (currentSrc.startsWith('data:')) {
+      const link = document.createElement('a');
+      link.href = currentSrc;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      if (typeof showNotif === 'function') showNotif('FOTO BERHASIL DIUNDUH!', 'success');
+    } else {
+      // Jika URL online / Blob URL
+      fetch(currentSrc)
+        .then(response => response.blob())
+        .then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = filename;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+          if (typeof showNotif === 'function') showNotif('FOTO BERHASIL DIUNDUH!', 'success');
+        })
+        .catch(err => {
+          const link = document.createElement('a');
+          link.href = currentSrc;
+          link.download = filename;
+          link.target = '_blank';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          if (typeof showNotif === 'function') showNotif('FOTO DIBUKA / DIUNDUH!', 'info');
+        });
+    }
+  } catch (err) {
+    console.warn('[DOWNLOAD IMAGE ERROR]:', err);
+    window.open(currentSrc, '_blank');
+  }
+}
+window.unduhFotoViewerAktif = unduhFotoViewerAktif;
+window.downloadFotoViewerAktif = unduhFotoViewerAktif;
+
+
 function bukaViewGambar(src, startIdx = 0) {
   const photoList = parsePhotosArray(src);
   if (!photoList || photoList.length === 0) {
@@ -13882,15 +14142,17 @@ function bukaViewGambar(src, startIdx = 0) {
   }
 
   if (modal) {
-    modal.style.display = 'flex';
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.setProperty('z-index', '2147483646', 'important');
+    modal.classList.add('show');
   }
 
-  applyImageTransform(false);
-  updateViewerCounter();
-  initImagePanListeners();
+  if (typeof applyImageTransform === 'function') applyImageTransform(false);
+  if (typeof updateViewerCounter === 'function') updateViewerCounter();
+  if (typeof initImagePanListeners === 'function') initImagePanListeners();
 
   setTimeout(() => {
-    applyImageTransform(false);
+    if (typeof applyImageTransform === 'function') applyImageTransform(false);
   }, 50);
 
   if (typeof pushPopupHistoryState === 'function') {
@@ -15783,3 +16045,16 @@ if (!window._sentinelPulseInterval) {
   }, 5000);
 }
 */
+
+
+// GLOBAL ALIASES FOR VIEW PDF
+window.lihatPdf = function(noSurat, includePhotos = null) {
+  if (typeof tampilkanPilihanCetakPdf === 'function') {
+    tampilkanPilihanCetakPdf(noSurat);
+  } else if (typeof bukaPdfModal === 'function') {
+    bukaPdfModal(noSurat, includePhotos);
+  }
+};
+window.viewPdf = window.lihatPdf;
+window.bukaViewPdf = window.lihatPdf;
+window.bukaPdf = window.lihatPdf;
