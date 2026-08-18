@@ -7991,8 +7991,6 @@ html body .detailTableV2 th:last-child,
 /* MASTER ENFORCED 1CM TOP & BOTTOM GAP FOR ALL DETAIL, TAMBAH TOKO, PDF, CHAT, NOTIFIKASI & AKUN POPUPS */
 html body #popupDetailBarangV2.popupOverlay,
 html body #popupDetail.popupOverlay,
-html body #pdfModal.popupOverlay,
-html body #popupPdfModelsModal.popupOverlay,
 html body #popupBantuan.popupOverlay,
 html body #popupBantuan.popupBantuan,
 html body .popupBantuan,
@@ -8012,8 +8010,6 @@ html body #popupDetailBarangV2 .popupBoxDetailV2,
 html body #popupDetail .popupBoxDetail,
 html body .popupBoxDetailV2,
 html body .popupBoxDetail,
-html body #pdfModal .popupBox,
-html body #popupPdfModelsModal .popupBox,
 html body #popupBantuan .chatBox,
 html body .popupBantuan .chatBox,
 html body .chatBox,
@@ -8198,8 +8194,6 @@ html body .detailTableV2 th:last-child,
 /* MASTER ENFORCED 1CM TOP & BOTTOM GAP FOR ALL DETAIL, TAMBAH TOKO, PDF, CHAT, NOTIFIKASI & AKUN POPUPS */
 html body #popupDetailBarangV2.popupOverlay,
 html body #popupDetail.popupOverlay,
-html body #pdfModal.popupOverlay,
-html body #popupPdfModelsModal.popupOverlay,
 html body #popupBantuan.popupOverlay,
 html body #popupBantuan.popupBantuan,
 html body .popupBantuan,
@@ -8219,8 +8213,6 @@ html body #popupDetailBarangV2 .popupBoxDetailV2,
 html body #popupDetail .popupBoxDetail,
 html body .popupBoxDetailV2,
 html body .popupBoxDetail,
-html body #pdfModal .popupBox,
-html body #popupPdfModelsModal .popupBox,
 html body #popupBantuan .chatBox,
 html body .popupBantuan .chatBox,
 html body .chatBox,
@@ -8406,8 +8398,6 @@ html body .detailTableV2 th:last-child,
 /* MASTER ENFORCED 1CM TOP & BOTTOM GAP FOR ALL DETAIL, TAMBAH TOKO, PDF, CHAT, NOTIFIKASI & AKUN POPUPS */
 html body #popupDetailBarangV2.popupOverlay,
 html body #popupDetail.popupOverlay,
-html body #pdfModal.popupOverlay,
-html body #popupPdfModelsModal.popupOverlay,
 html body #popupBantuan.popupOverlay,
 html body #popupBantuan.popupBantuan,
 html body .popupBantuan,
@@ -8427,8 +8417,6 @@ html body #popupDetailBarangV2 .popupBoxDetailV2,
 html body #popupDetail .popupBoxDetail,
 html body .popupBoxDetailV2,
 html body .popupBoxDetail,
-html body #pdfModal .popupBox,
-html body #popupPdfModelsModal .popupBox,
 html body #popupBantuan .chatBox,
 html body .popupBantuan .chatBox,
 html body .chatBox,
@@ -9179,24 +9167,40 @@ html body #popupTambahToko .popupBox,
   }
 }
 
-/* POPUP PDF DOKUMEN (#pdfModal & #popupPdfModelsModal) */
+/* POPUP PDF DOKUMEN (#pdfModal & #popupPdfModelsModal) - BATAS ATAS BAWAH 1MM */
 #pdfModal,
-html body #pdfModal.popupOverlay,
-#popupPdfModelsModal,
-html body #popupPdfModelsModal.popupOverlay {
+#popupPdfModelsModal {
   padding-top: 1mm !important;
   padding-bottom: 1mm !important;
+  padding-left: 1mm !important;
+  padding-right: 1mm !important;
   box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 #pdfModal .popupBox,
-html body #pdfModal .popupBox,
-#popupPdfModelsModal .popupBox,
-html body #popupPdfModelsModal .popupBox {
+#popupPdfModelsModal .popupBox {
+  margin: 1mm auto !important;
+  margin-top: 1mm !important;
+  margin-bottom: 1mm !important;
   height: calc(100vh - 2mm) !important;
   height: calc(100dvh - 2mm) !important;
   max-height: calc(100vh - 2mm) !important;
   max-height: calc(100dvh - 2mm) !important;
+  box-sizing: border-box !important;
+}
+
+#pdfDocumentContent,
+html body #pdfDocumentContent {
+  padding-top: 1mm !important;
+  padding-bottom: 1mm !important;
+}
+
+#pdfModal .pdf-paper,
+html body #pdfModal .pdf-paper {
+  padding-top: 1mm !important;
+  padding-bottom: 1mm !important;
 }
 
 /* POPUP USER MANAGEMENT MODAL (#popupUserManagementModal) */
@@ -9303,4 +9307,77 @@ html body #popupTTD.popupOverlay,
     margin-top: 0 !important;
     margin-bottom: auto !important;
   }
+}
+
+/* =============================================================================
+   MASTER EXCLUSIVE 1MM TOP & BOTTOM FULL SCREEN LAYOUT FOR PDF MODAL
+   ============================================================================= */
+#pdfModal,
+html body #pdfModal,
+html body #pdfModal.popupOverlay,
+#popupPdfModelsModal,
+html body #popupPdfModelsModal,
+html body #popupPdfModelsModal.popupOverlay {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  padding: 1mm !important;
+  padding-top: 1mm !important;
+  padding-bottom: 1mm !important;
+  padding-left: 1mm !important;
+  padding-right: 1mm !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  z-index: 100000000 !important;
+}
+
+#pdfModal .popupBox,
+html body #pdfModal .popupBox,
+#popupPdfModelsModal .popupBox,
+html body #popupPdfModelsModal .popupBox {
+  width: 780px !important;
+  max-width: calc(100vw - 2mm) !important;
+  height: calc(100vh - 2mm) !important;
+  height: calc(100dvh - 2mm) !important;
+  min-height: calc(100vh - 2mm) !important;
+  min-height: calc(100dvh - 2mm) !important;
+  max-height: calc(100vh - 2mm) !important;
+  max-height: calc(100dvh - 2mm) !important;
+  margin: 1mm auto !important;
+  margin-top: 1mm !important;
+  margin-bottom: 1mm !important;
+  border-radius: 0px !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+#pdfDocumentContent,
+html body #pdfDocumentContent {
+  flex: 1 1 auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 1mm 10px !important;
+  background: #f8fafc !important;
+  box-sizing: border-box !important;
+}
+
+#pdfModal .pdf-paper,
+html body #pdfModal .pdf-paper {
+  padding: 1mm 20px !important;
+  box-sizing: border-box !important;
 }

@@ -1081,26 +1081,10 @@ function loadNotificationList() {
         <div style="font-size: 12.5px; font-weight: ${isRead ? '500' : '700'}; color: var(--text-main); line-height: 1.4;">
           ${n.message}
         </div>
-                                        <table class="pdf-info-table" style="width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 20px; font-size: 12px; background: transparent; border: none;">
-          <tr>
-            <td style="padding: 4px 0; width: 85px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap;">NO SURAT</td>
-            <td style="padding: 4px 12px 4px 8px; width: 14px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
-            <td style="padding: 4px 20px 4px 0; width: 100%; font-weight: 800; color: #0284c7; border: none; letter-spacing: 0.2px;">${req.noSurat}</td>
-            
-            <td style="padding: 4px 0; width: 75px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">TANGGAL</td>
-            <td style="padding: 4px 12px 4px 8px; width: 14px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
-            <td style="padding: 4px 0; width: 105px; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">${(typeof formatDateDDMMYYYYString === 'function') ? formatDateDDMMYYYYString(req.tanggal) : (req.tanggal || '-')}</td>
-          </tr>
-          <tr>
-            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; white-space: nowrap;">TOKO</td>
-            <td style="padding: 4px 12px 4px 8px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
-            <td style="padding: 4px 20px 4px 0; font-weight: 800; color: #0f172a; border: none; text-transform: uppercase;">${req.toko}</td>
-            
-            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; white-space: nowrap; text-align: left;">JENIS</td>
-            <td style="padding: 4px 12px 4px 8px; font-weight: 800; color: #0f172a; border: none; text-align: center;">:</td>
-            <td style="padding: 4px 0; font-weight: 800; color: #0f172a; border: none; text-transform: uppercase; white-space: nowrap; text-align: left;">${req.jenis || 'DEFAULT'}</td>
-          </tr>
-        </table>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+          ${n.time || ''}
+        </div>
+      </div>
       ${!isRead ? `<div style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; margin-top: 6px; flex-shrink: 0;"></div>` : ''}
     `;
     container.appendChild(item);
@@ -1858,6 +1842,41 @@ function startFirebaseRealtimeRequestsListener() {
 }
 window.startFirebaseRealtimeRequestsListener = startFirebaseRealtimeRequestsListener;
 
+
+let unsubscribeFirestoreUsers = null;
+function startFirebaseRealtimeUsersListener() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+  if (!dbFirestore && typeof firebase.firestore === 'function') {
+    try { dbFirestore = firebase.firestore(); } catch(e) {}
+  }
+  if (!dbFirestore) return;
+
+  if (unsubscribeFirestoreUsers) {
+    try { unsubscribeFirestoreUsers(); } catch(e) {}
+  }
+
+  try {
+    unsubscribeFirestoreUsers = dbFirestore.collection('users')
+      .onSnapshot(snapshot => {
+        if (!snapshot || !snapshot.docChanges || snapshot.docChanges().length === 0) return;
+        snapshot.docChanges().forEach(change => {
+          const u = change.doc.data();
+          if (!u) return;
+          if (change.type === 'added' || change.type === 'modified') {
+            handleRealtimeUserChange({ eventType: 'UPDATE', new: u });
+          } else if (change.type === 'removed') {
+            handleRealtimeUserChange({ eventType: 'DELETE', old: { id: u.id, username: u.username || change.doc.id } });
+          }
+        });
+      }, err => {
+        console.warn('[FIRESTORE USERS LISTENER]:', err);
+      });
+  } catch (e) {}
+}
+window.startFirebaseRealtimeUsersListener = startFirebaseRealtimeUsersListener;
+
+
+
 function initFirebaseDB() {
   try {
     if (typeof firebase !== 'undefined') {
@@ -1885,6 +1904,8 @@ function initFirebaseDB() {
           startFirebaseRealtimeNotifListener();
           startFirebaseRealtimeAppSettingsListener();
           startFirebaseRealtimeRequestsListener();
+          startFirebaseRealtimeUsersListener();
+          startFirebaseRealtimeChatListener();
         } catch (e) {
           console.warn('[FIRESTORE INIT NOTICE]:', e);
         }
@@ -2004,12 +2025,24 @@ async function initSupabaseRealtimeEngine() {
       .on(
         'broadcast',
         { event: 'user_data_changed' },
-        async () => {
+        async (event) => {
+          if (event && event.payload && event.payload.user) {
+            handleRealtimeUserChange({ eventType: 'UPDATE', new: event.payload.user });
+          }
           if (typeof syncSupabaseUsersToLocalCache === 'function') {
             await syncSupabaseUsersToLocalCache();
           }
           if (typeof loadUsersManagement === 'function') {
             loadUsersManagement();
+          }
+        }
+      )
+      .on(
+        'broadcast',
+        { event: 'chat_message' },
+        (event) => {
+          if (event && event.payload && event.payload.chat) {
+            handleRealtimeChatMessage({ eventType: 'INSERT', new: event.payload.chat });
           }
         }
       )
@@ -2548,11 +2581,15 @@ function handleRealtimeUserChange(payload) {
       appStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
       try { localStorage.setItem(USERS_DB_KEY, JSON.stringify(users)); } catch(e) {}
 
-      if (currentUser && ((formatted.id && currentUser.id === formatted.id) || (formatted.username && currentUser.username.toUpperCase() === formatted.username.toUpperCase()))) {
+      if (currentUser && (
+        (formatted.id && currentUser.id && String(currentUser.id) === String(formatted.id)) ||
+        (formatted.username && currentUser.username && String(currentUser.username).toUpperCase() === String(formatted.username).toUpperCase())
+      )) {
         currentUser = { ...currentUser, ...formatted };
         appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
         try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch(e) {}
-        // UPDATE REAL-TIME POPUP AKUN & HEADER
+
+        // UPDATE REAL-TIME POPUP AKUN & HEADER & WELCOME CARD
         const elNama = document.getElementById('akunNama');
         if (elNama) elNama.value = currentUser.fullName || '';
         const elHP = document.getElementById('akunHP');
@@ -2567,6 +2604,10 @@ function handleRealtimeUserChange(payload) {
         if (welcomeUser) welcomeUser.textContent = currentUser.fullName || currentUser.username;
         const displayNama = document.getElementById('displayUserFullName');
         if (displayNama) displayNama.textContent = currentUser.fullName || currentUser.username;
+        const userDisplay = document.getElementById('userDisplay');
+        if (userDisplay) userDisplay.textContent = currentUser.fullName || currentUser.username;
+        const profileUserName = document.getElementById('profileUserName');
+        if (profileUserName) profileUserName.textContent = currentUser.fullName || currentUser.username;
       }
 
       if (typeof loadDashboard === 'function') loadDashboard();
@@ -2870,7 +2911,7 @@ async function syncSupabaseUsersToLocalCache() {
 
         if (mergedMap.has(key)) {
           const localObj = mergedMap.get(key);
-          mergedMap.set(key, { ...supaObj, ...localObj, ttd: localObj.ttd || supaObj.ttd || '' });
+          mergedMap.set(key, { ...localObj, ...supaObj, ttd: supaObj.ttd || localObj.ttd || '' });
         } else {
           mergedMap.set(key, supaObj);
         }
@@ -2888,6 +2929,32 @@ async function syncSupabaseUsersToLocalCache() {
 
         appStorage.setItem(USERS_DB_KEY, JSON.stringify(formatted));
         try { localStorage.setItem(USERS_DB_KEY, JSON.stringify(formatted)); } catch(e) {}
+
+        // SINKRONKAN SESI LOGIN AKTIF (currentUser) JIKA DIEDIT DARI ADMIN DI PERANGKAT LAIN
+        if (currentUser) {
+          const matchingCurrent = formatted.find(u => u && (
+            (u.id && currentUser.id && String(u.id) === String(currentUser.id)) ||
+            (u.username && currentUser.username && String(u.username).toUpperCase() === String(currentUser.username).toUpperCase())
+          ));
+          if (matchingCurrent) {
+            currentUser = { ...currentUser, ...matchingCurrent };
+            appStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+            try { localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser)); } catch(e) {}
+
+            const elNama = document.getElementById('akunNama');
+            if (elNama) elNama.value = currentUser.fullName || '';
+            const elHP = document.getElementById('akunHP');
+            if (elHP) elHP.value = currentUser.phone || '-';
+            const elArea = document.getElementById('akunArea');
+            if (elArea) elArea.value = `${currentUser.area} - ${AREA_MAP[currentUser.area] || currentUser.area}`;
+            const headerUser = document.getElementById('headerUser');
+            if (headerUser) headerUser.textContent = currentUser.fullName || currentUser.username;
+            const welcomeUser = document.getElementById('welcomeUser');
+            if (welcomeUser) welcomeUser.textContent = currentUser.fullName || currentUser.username;
+            const displayNama = document.getElementById('displayUserFullName');
+            if (displayNama) displayNama.textContent = currentUser.fullName || currentUser.username;
+          }
+        }
       }
     }
   } catch (err) {
@@ -9390,7 +9457,7 @@ function bukaPdfModal(noSurat, includePhotos = null) {
   }
 
   pdfContainer.innerHTML = `
-    <div class="pdf-paper" style="min-height: 680px; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; color: #0f172a; background: #ffffff; font-family: 'Poppins', sans-serif; box-sizing: border-box;">
+    <div class="pdf-paper" style="min-height: 680px; display: flex; flex-direction: column; justify-content: space-between; padding: 1mm 20px; color: #0f172a; background: #ffffff; font-family: 'Poppins', sans-serif; box-sizing: border-box;">
       <div>
         ${headerTitleHtml}
 
@@ -10888,7 +10955,7 @@ function kirimPesanChat() {
 
   // 1. LOCAL STORAGE UPDATE & REFRESH UI INSTAN (0 ms)
   const allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
-  const rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
+  let rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
 
   allChats.push(newChatEntry);
 
@@ -10917,16 +10984,47 @@ function kirimPesanChat() {
   }
 
   appStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats));
+  try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats)); } catch(e) {}
   appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms));
+  try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms)); } catch(e) {}
 
   txt.value = '';
+
+  // RENDER INSTAN DI LAYAR (0 MS)
   if (isAdminChat) {
-    if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
+    if (typeof loadChatAdmin === 'function') loadChatAdmin(roomTarget);
   } else {
-    if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
+    if (typeof loadChatUser === 'function') loadChatUser();
   }
 
-  // 2. KIRIM KE FIREBASE FIRESTORE SECARA REAL-TIME (<100 ms)
+  // 2. BROADCAST REAL-TIME VIA SUPABASE CHANNEL (<50 ms)
+  if (supabaseRealtimeChannel) {
+    try {
+      supabaseRealtimeChannel.send({
+        type: 'broadcast',
+        event: 'chat_message',
+        payload: { chat: newChatEntry, room: roomTarget, timestamp: Date.now() }
+      });
+    } catch(e) {}
+  }
+
+  // 3. KIRIM KE SUPABASE TABLE
+  if (typeof supabase !== 'undefined' && supabase) {
+    supabase.from('chat_messages').upsert({
+      id: newChatId,
+      room: roomTarget,
+      user: targetUser,
+      user_area: currentUser.area || 'BDG',
+      pengirim: pengirimType,
+      sender_id: senderId,
+      sender_username: senderUsername,
+      sender_name: newChatEntry.senderName,
+      pesan: pesan,
+      tanggal: timeStr
+    }).catch(e => console.warn(e));
+  }
+
+  // 4. KIRIM KE FIREBASE FIRESTORE SECARA REAL-TIME (<100 ms)
   if (typeof dbFirestore !== 'undefined' && dbFirestore) {
     try {
       dbFirestore.collection('chat_messages').doc(newChatId).set(newChatEntry).catch(e => console.warn('[FIRESTORE CHAT SAVE ERROR]:', e));
@@ -11599,6 +11697,15 @@ async function simpanUserData(btnElement = null) {
           users[idx].category = category;
           users[idx].area = area;
           saveUsersToDB(users, users[idx]);
+          if (supabaseRealtimeChannel) {
+            try {
+              supabaseRealtimeChannel.send({
+                type: 'broadcast',
+                event: 'user_data_changed',
+                payload: { user: users[idx], username: users[idx].username, timestamp: Date.now() }
+              });
+            } catch(e) {}
+          }
 
           // SINKRONISASI KE CURRENTUSER (SESI LOGIN AKTIF) JIKA USER YANG DIEDIT ADALAH USER YANG SEDANG LOGIN
           if (currentUser && (
