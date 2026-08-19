@@ -1322,26 +1322,21 @@ async function hapusSemuaNotifikasiSystem() {
     return;
   }
 
-  showConfirm('YAKIN INGIN MENGHAPUS SEMUA NOTIFIKASI DARI SISTEM & PENYIMPANAN?', function() {
+  showConfirm('YAKIN INGIN MENGHAPUS SEMUA NOTIFIKASI DARI SISTEM & SELURUH PERANGKAT LOKAL?', function() {
     showLoading('MENGHAPUS SEMUA NOTIFIKASI...');
     setTimeout(async () => {
       try {
-        const nowMs = Date.now();
-        const emptyNotifsPayload = {
-          clearedAt: nowMs,
-          items: []
-        };
-
-        // 1. KOSONGKAN PENYIMPANAN LOKAL METADATA & ITEMS
-        appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyNotifsPayload));
-        try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyNotifsPayload)); } catch(e) {}
-        try { localStorage.setItem('LAST_NOTIF_CLEARED_TIMESTAMP', String(nowMs)); } catch(e) {}
+        // 1. KOSONGKAN PENYIMPANAN LOKAL PERANGKAT INI TOTAL
+        appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify([]));
+        try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify([])); } catch(e) {}
+        try { localStorage.removeItem('LAST_NOTIF_CLEARED_TIMESTAMP'); } catch(e) {}
 
         // 2. KOSONGKAN DI FIREBASE FIRESTORE
-        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+        const fs = typeof getDbFirestore === 'function' ? getDbFirestore() : (typeof dbFirestore !== 'undefined' ? dbFirestore : null);
+        if (fs) {
           try {
-            const notifSnap = await dbFirestore.collection('notifications').get();
-            const batch = dbFirestore.batch();
+            const notifSnap = await fs.collection('notifications').get();
+            const batch = fs.batch();
             notifSnap.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
           } catch(err) {
@@ -1349,13 +1344,33 @@ async function hapusSemuaNotifikasiSystem() {
           }
         }
 
-        // 3. REFRESH TAMPILAN POPUP NOTIFIKASI & LONCENG SEKETIKA
+        // 3. KOSONGKAN DI FIREBASE REALTIME DATABASE
+        const rtdb = typeof getDbRealtime === 'function' ? getDbRealtime() : (typeof dbRealtime !== 'undefined' ? dbRealtime : null);
+        if (rtdb) {
+          try {
+            await rtdb.ref('notifications').remove();
+            await rtdb.ref('system_broadcast/notif_clear').set({ timestamp: Date.now() });
+          } catch(e) {}
+        }
+
+        // 4. SIARKAN KE SEMUA PERANGKAT LAIN VIA SUPABASE BROADCAST
+        if (supabaseRealtimeChannel) {
+          try {
+            supabaseRealtimeChannel.send({
+              type: 'broadcast',
+              event: 'notifications_cleared',
+              payload: { timestamp: Date.now() }
+            });
+          } catch(e) {}
+        }
+
+        // 5. REFRESH TAMPILAN POPUP NOTIFIKASI & LONCENG SEKETIKA
         if (typeof loadNotificationList === 'function') loadNotificationList();
         if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
         if (typeof updateNotifBadgeCount === 'function') updateNotifBadgeCount();
 
         hideLoading();
-        showNotif('SEMUA NOTIFIKASI BERHASIL DIHAPUS BERSIH!', 'success');
+        showNotif('SEMUA NOTIFIKASI BERHASIL DIHAPUS BERSIH DARI LOKAL & SEMUA PERANGKAT!', 'success');
       } catch (err) {
         hideLoading();
         showNotif('GAGAL MENGHAPUS NOTIFIKASI: ' + (err.message || err), 'danger');
@@ -1842,51 +1857,75 @@ let unsubscribeFirestoreChat = null;
 let unsubscribeFirestoreNotif = null;
 
 function startFirebaseRealtimeChatListener() {
-  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
-  if (!dbFirestore && typeof firebase.firestore === 'function') {
-    try { dbFirestore = firebase.firestore(); } catch(e) {}
-  }
-  if (!dbFirestore) return;
+  const fs = typeof getDbFirestore === 'function' ? getDbFirestore() : (typeof dbFirestore !== 'undefined' ? dbFirestore : null);
+  if (!fs) return;
 
   if (unsubscribeFirestoreChat) {
     try { unsubscribeFirestoreChat(); } catch(e) {}
   }
 
   try {
-    unsubscribeFirestoreChat = dbFirestore.collection('chat_messages')
+    unsubscribeFirestoreChat = fs.collection('chat_messages')
       .orderBy('timestamp', 'asc')
       .limitToLast(300)
       .onSnapshot(snapshot => {
         if (!snapshot || snapshot.empty) {
           appStorage.setItem(CHAT_DB_KEY, JSON.stringify([]));
           appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([]));
+          appStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([]));
           try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify([])); } catch(e) {}
           try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([])); } catch(e) {}
+          try { localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([])); } catch(e) {}
           if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
           if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
           if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
           return;
         }
+
         const remoteChats = [];
         snapshot.forEach(doc => {
           const data = doc.data();
           if (data && data.id) remoteChats.push(data);
         });
 
-        if (remoteChats.length > 0) {
-          const localChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
-          const localMap = new Map();
-          localChats.forEach(c => { if (c && c.id) localMap.set(c.id, c); });
-          remoteChats.forEach(c => { localMap.set(c.id, c); });
-          const merged = Array.from(localMap.values());
-          appStorage.setItem(CHAT_DB_KEY, JSON.stringify(merged));
+        // Mirror remote chats directly to local device cache (no ghost messages kept)
+        appStorage.setItem(CHAT_DB_KEY, JSON.stringify(remoteChats));
+        appStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(remoteChats));
+        try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify(remoteChats)); } catch(e) {}
+        try { localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify(remoteChats)); } catch(e) {}
 
-          if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
-          if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
-          if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
-          if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
-          if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
-        }
+        // Recompute active chat rooms dynamically from active remote chats
+        const roomMap = new Map();
+        remoteChats.forEach(c => {
+          if (c && c.room) {
+            const existing = roomMap.get(c.room) || {
+              room: c.room,
+              user: c.user || c.senderUsername || 'USER',
+              userName: c.senderName || c.userName || c.user || 'USER',
+              userArea: c.userArea || 'TSM',
+              last: `${c.pengirim === 'SERVICE' ? 'SERVICE' : (c.senderName || c.senderUsername || 'USER')}: ${c.pesan || ''}`,
+              lastTime: c.tanggal || '',
+              timestamp: c.timestamp || 0,
+              unreadAdmin: 0,
+              unreadUser: 0
+            };
+            if ((c.timestamp || 0) >= (existing.timestamp || 0)) {
+              existing.last = `${c.pengirim === 'SERVICE' ? 'SERVICE' : (c.senderName || c.senderUsername || 'USER')}: ${c.pesan || ''}`;
+              existing.lastTime = c.tanggal || '';
+              existing.timestamp = c.timestamp || 0;
+            }
+            roomMap.set(c.room, existing);
+          }
+        });
+        const recomputedRooms = Array.from(roomMap.values());
+        appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(recomputedRooms));
+        try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(recomputedRooms)); } catch(e) {}
+
+        if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
+        if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+        if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+        if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
+        if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
       }, err => {
         console.warn('[FIRESTORE CHAT REALTIME LISTENER]:', err);
       });
@@ -1897,28 +1936,25 @@ function startFirebaseRealtimeChatListener() {
 window.startFirebaseRealtimeChatListener = startFirebaseRealtimeChatListener;
 
 function startFirebaseRealtimeNotifListener() {
-  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
-  if (!dbFirestore && typeof firebase.firestore === 'function') {
-    try { dbFirestore = firebase.firestore(); } catch(e) {}
-  }
-  if (!dbFirestore) return;
+  const fs = typeof getDbFirestore === 'function' ? getDbFirestore() : (typeof dbFirestore !== 'undefined' ? dbFirestore : null);
+  if (!fs) return;
 
   if (unsubscribeFirestoreNotif) {
     try { unsubscribeFirestoreNotif(); } catch(e) {}
   }
 
   try {
-    unsubscribeFirestoreNotif = dbFirestore.collection('notifications')
+    unsubscribeFirestoreNotif = fs.collection('notifications')
       .orderBy('timestamp', 'desc')
       .limit(100)
       .onSnapshot(snapshot => {
         if (!snapshot || snapshot.empty) {
-          // KOSONGKAN JIKA DI DATABASE FIRESTORE SUDAH DIHAPUS
-          const emptyPayload = { clearedAt: Date.now(), items: [] };
+          const emptyPayload = [];
           appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyPayload));
           try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(emptyPayload)); } catch(e) {}
           if (typeof loadNotificationList === 'function') loadNotificationList();
           if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+          if (typeof updateNotifBadgeCount === 'function') updateNotifBadgeCount();
           return;
         }
 
@@ -1928,17 +1964,13 @@ function startFirebaseRealtimeNotifListener() {
           if (data && data.id) remoteNotifs.push(data);
         });
 
-        if (remoteNotifs.length > 0) {
-          const currentNotifs = getSystemNotifications();
-          const map = new Map();
-          currentNotifs.forEach(n => { if (n && n.id) map.set(n.id, n); });
-          remoteNotifs.forEach(n => { map.set(n.id, n); });
-          const merged = Array.from(map.values()).sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-          
-          appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(merged));
-          if (typeof loadNotificationList === 'function') loadNotificationList();
-          if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
-        }
+        // Mirror directly to local storage
+        appStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(remoteNotifs));
+        try { localStorage.setItem(NOTIFICATIONS_DB_KEY, JSON.stringify(remoteNotifs)); } catch(e) {}
+
+        if (typeof loadNotificationList === 'function') loadNotificationList();
+        if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+        if (typeof updateNotifBadgeCount === 'function') updateNotifBadgeCount();
       }, err => {
         console.warn('[FIRESTORE NOTIF REALTIME LISTENER]:', err);
       });
@@ -5256,6 +5288,19 @@ async function prosesLogin() {
       }
 
       catatLogLogin(user.username, user.fullName, user.area, 'BERHASIL');
+      
+      // SINKRONISASI KE DATABASE CLOUD HANYA KETIKA KLIK TOMBOL LOGIN BERHASIL
+      showLoading('MEMUAT DATA APLIKASI...');
+      try {
+        if (typeof syncAllDataToCache === 'function') {
+          await syncAllDataToCache();
+        }
+      } catch (e) {
+        console.warn('[LOGIN SYNC NOTICE]:', e);
+      } finally {
+        hideLoading();
+      }
+
       await bukaMainApp();
     } else {
       currentUser = null;
@@ -5372,37 +5417,11 @@ async function bukaMainApp() {
   const isAdmin = checkIsAdminUser();
   isAdminChat = isServiceTSMUser();
 
-  // 1. CEK PENYIMPANAN LOKAL DULU
-  const localRequests = getRequestsFromDB();
-  const hasLocalData = Array.isArray(localRequests) && localRequests.length > 0;
-
-  if (hasLocalData) {
-    // ----------------------------------------------------
-    // KONDISI A: DATA LOKAL ADA (0ms INSTANT LOAD, 0 KB BANDWIDTH)
-    // ----------------------------------------------------
-    pindahHalaman('dashboardPage');
-    if (typeof loadDashboard === 'function') loadDashboard();
-    if (typeof loadRiwayat === 'function') loadRiwayat();
-
-    // Jalankan Realtime Listener & Sinkronisasi Delta (updated_at) di latar belakang
-    initSupabaseRealtimeEngine();
-    syncSupabaseIncremental().catch(e => console.warn(e));
-  } else {
-    // ----------------------------------------------------
-    // KONDISI B: DATA LOKAL KOSONG (MISAL PERANGKAT BARU)
-    // ----------------------------------------------------
-    showLoading('MEMUAT DATA APLIKASI...');
-    try {
-      await syncAllDataToCache();
-    } catch (e) {}
-    hideLoading();
-
-    pindahHalaman('dashboardPage');
-    if (typeof loadDashboard === 'function') loadDashboard();
-    if (typeof loadRiwayat === 'function') loadRiwayat();
-
-    initSupabaseRealtimeEngine();
-  }
+  // 1. CEK SESI & PENYIMPANAN LOKAL (0ms INSTANT LOAD TANPA AMBIL DATABASE SAAT REFRESH)
+  pindahHalaman('dashboardPage');
+  if (typeof loadDashboard === 'function') loadDashboard();
+  if (typeof loadRiwayat === 'function') loadRiwayat();
+  if (typeof initSupabaseRealtimeEngine === 'function') initSupabaseRealtimeEngine();
 
   if (typeof setupBottomMenuAutoHide === 'function') {
     setupBottomMenuAutoHide();
@@ -11388,59 +11407,61 @@ async function hapusSemuaChatAdmin() {
       try { localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([])); } catch(e) {}
 
       // 2. KOSONGKAN DI FIREBASE FIRESTORE
-      if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+      const fs = typeof getDbFirestore === 'function' ? getDbFirestore() : (typeof dbFirestore !== 'undefined' ? dbFirestore : null);
+      if (fs) {
         try {
-          const chatSnap = await dbFirestore.collection('chat_messages').get();
-          const batch = dbFirestore.batch();
+          const chatSnap = await fs.collection('chat_messages').get();
+          const batch = fs.batch();
           chatSnap.forEach(doc => batch.delete(doc.ref));
-          const roomSnap = await dbFirestore.collection('chat_rooms').get();
+          const roomSnap = await fs.collection('chat_rooms').get();
           roomSnap.forEach(doc => batch.delete(doc.ref));
           await batch.commit();
 
-          await dbFirestore.collection('app_settings').doc('config').set({
+          await fs.collection('app_settings').doc('config').set({
             chatMessages: [],
             chatRooms: [],
             updatedAt: new Date().toISOString()
           }, { merge: true });
-        } catch(err) {
-          console.warn('[FIRESTORE DELETE ALL CHATS NOTICE]:', err);
+        } catch (err) {
+          console.warn('[FIRESTORE CLEAR CHATS ERROR]:', err);
         }
       }
 
-      // 3. KOSONGKAN DI FIREBASE REALTIME DATABASE & SIARKAN SINYAL HAPUS LOKAL
-      if (typeof dbRealtime !== 'undefined' && dbRealtime) {
+      // 3. KOSONGKAN DI FIREBASE REALTIME DATABASE
+      const rtdb = typeof getDbRealtime === 'function' ? getDbRealtime() : (typeof dbRealtime !== 'undefined' ? dbRealtime : null);
+      if (rtdb) {
         try {
-          await dbRealtime.ref('chat_messages').remove();
-          await dbRealtime.ref('chats').remove();
-          await dbRealtime.ref('chat_rooms').remove();
-          await dbRealtime.ref('system_broadcast/chat_clear').set({ timestamp: Date.now(), action: 'CLEAR_ALL_CHATS' });
+          await rtdb.ref('chat_messages').remove();
+          await rtdb.ref('chats').remove();
+          await rtdb.ref('chat_rooms').remove();
+          await rtdb.ref('system_broadcast/chat_clear').set({ timestamp: Date.now(), action: 'CLEAR_ALL_CHATS' });
         } catch(e) {
-          console.warn('[RTDB DELETE ALL CHATS NOTICE]:', e);
+          console.warn('[RTDB CLEAR CHATS ERROR]:', e);
         }
       }
 
-      // 4. SIARKAN REALTIME KE SEMUA PERANGKAT LAIN
+      // 4. SIARKAN REALTIME KE SEMUA PERANGKAT LAIN VIA SUPABASE BROADCAST
       if (supabaseRealtimeChannel) {
         try {
           supabaseRealtimeChannel.send({
             type: 'broadcast',
-            event: 'chat_cleared',
-            payload: { action: 'CLEAR_ALL_CHATS', timestamp: Date.now() }
+            event: 'all_chats_cleared',
+            payload: { timestamp: Date.now() }
           });
         } catch(e) {}
       }
 
-      // 5. REFRESH TAMPILAN CHAT DI PERANGKAT INI
+      // 5. REFRESH UI
       if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
       if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
       if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+      if (typeof loadDaftarChatAdmin === 'function') loadDaftarChatAdmin();
 
       hideLoading();
-      showNotif('SEMUA RIWAYAT CHAT BERHASIL DIHAPUS DARI DATABASE & SELURUH PERANGKAT LOKAL!', 'success');
-    } catch(err) {
+      showNotif('SELURUH CHAT BERHASIL DIHAPUS BERSIH DARI LOKAL & SEMUA PERANGKAT!', 'success');
+    } catch (err) {
       hideLoading();
-      console.error('[HAPUS SEMUA CHAT ERROR]:', err);
-      showNotif('GAGAL MENGHAPUS CHAT: ' + (err.message || err), 'danger');
+      showNotif('GAGAL MENGHAPUS SEMUA CHAT: ' + (err.message || err), 'error');
     }
   });
 }
@@ -11742,12 +11763,7 @@ async function hapusMultiUser(btnElement = null) {
               localStores = localStores.filter(s => s.id !== u.id && (safeFullName && s.fullName ? s.fullName.toUpperCase() !== safeFullName : true));
 
               if (u.id) {
-                if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-                  await dbFirestore.collection('stores').doc(u.id).delete().catch(e => console.warn(e));
-                }
-                if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-                  await dbRealtime.ref(`stores/${u.id}`).remove().catch(e => console.warn(e));
-                }
+                // Hapus selesai
               }
             }
           } catch (loopErr) {
@@ -12165,22 +12181,16 @@ async function simpanUserData(btnElement = null) {
             }
           }
 
-          if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-            dbFirestore.collection('users').doc(docId).set(users[idx], { merge: true }).catch(e => console.warn(e));
-          }
-          if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-            dbRealtime.ref(`users/${docId}`).set(users[idx]).catch(e => console.warn(e));
-          }
           if (supabaseRealtimeChannel) {
-          try {
-            supabaseRealtimeChannel.send({
-              type: 'broadcast',
-              event: 'data_changed',
-              payload: { action: 'BATCH_DELETE', noSuratList: noSuratList, timestamp: Date.now() }
-            });
-          } catch(e) {}
-        }
-        if (typeof pushCentralCloudDB === 'function') {
+            try {
+              supabaseRealtimeChannel.send({
+                type: 'broadcast',
+                event: 'user_data_changed',
+                payload: { user: users[idx], username: users[idx].username, timestamp: Date.now() }
+              });
+            } catch(e) {}
+          }
+          if (typeof pushCentralCloudDB === 'function') {
             pushCentralCloudDB();
           }
 
@@ -12294,22 +12304,17 @@ async function simpanUserData(btnElement = null) {
       if (typeof syncSupabaseStoresToLocalCache === 'function') {
         await syncSupabaseStoresToLocalCache();
       }
-      if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-        dbFirestore.collection('users').doc(docId).set(newUser).catch(e => console.warn(e));
-      }
-      if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-        dbRealtime.ref(`users/${docId}`).set(newUser).catch(e => console.warn(e));
-      }
+
       if (supabaseRealtimeChannel) {
-          try {
-            supabaseRealtimeChannel.send({
-              type: 'broadcast',
-              event: 'data_changed',
-              payload: { action: 'BATCH_DELETE', noSuratList: noSuratList, timestamp: Date.now() }
-            });
-          } catch(e) {}
-        }
-        if (typeof pushCentralCloudDB === 'function') {
+        try {
+          supabaseRealtimeChannel.send({
+            type: 'broadcast',
+            event: 'user_data_changed',
+            payload: { user: newUser, username: newUser.username, timestamp: Date.now() }
+          });
+        } catch(e) {}
+      }
+      if (typeof pushCentralCloudDB === 'function') {
         pushCentralCloudDB();
       }
 
@@ -13457,17 +13462,7 @@ async function simpanTokoBaru(btnElement = null) {
 
           if (typeof supabase !== 'undefined' && supabase) {
             try {
-              await supabase.from('users').upsert({
-                id: userObj.id,
-                username: userObj.username,
-                password: userObj.password,
-                full_name: userObj.fullName,
-                phone: userObj.phone || '-',
-                category: userObj.category || 'TOKO',
-                area: targetArea,
-                ttd: userObj.ttd || '',
-                created_at: userObj.createdAt || getFormattedDateDDMMYYYY()
-              });
+              if (typeof simpanUserKeSupabase === "function") await simpanUserKeSupabase(userObj);
             } catch (e) {}
           }
         }
@@ -13566,33 +13561,11 @@ async function simpanTokoBaru(btnElement = null) {
               area: newStore.area,
               created_by: newStore.createdBy
             });
-            if (newUserAcc) {
-              await supabase.from('users').upsert({
-                id: newUserAcc.id,
-                username: newUserAcc.username,
-                password: newUserAcc.password,
-                full_name: newUserAcc.fullName,
-                phone: newUserAcc.phone,
-                category: newUserAcc.category,
-                area: newUserAcc.area,
-                ttd: newUserAcc.ttd || '',
-                created_at: newUserAcc.createdAt
-              });
+            if (newUserAcc && typeof simpanUserKeSupabase === 'function') {
+              await simpanUserKeSupabase(newUserAcc);
             }
           } catch (sbErr) {
             console.warn('[SUPABASE STORE SAVE WARNING]:', sbErr);
-          }
-        }
-        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-          await dbFirestore.collection('stores').doc(newId).set(newStore).catch(e => console.warn(e));
-          if (newUserAcc) {
-            await dbFirestore.collection('users').doc(safeUsername).set(newUserAcc).catch(e => console.warn(e));
-          }
-        }
-        if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-          await dbRealtime.ref(`stores/${newId}`).set(newStore).catch(e => console.warn(e));
-          if (newUserAcc) {
-            await dbRealtime.ref(`users/${safeUsername}`).set(newUserAcc).catch(e => console.warn(e));
           }
         }
 
