@@ -1,24 +1,39 @@
 async function pullFirebaseMasterLookup() {
   try {
-    if (typeof dbFirestore !== 'undefined' && dbFirestore) {
-      const docSnap = await dbFirestore.collection('app_settings').doc('config').get();
+    const fs = typeof getDbFirestore === 'function' ? getDbFirestore() : (typeof dbFirestore !== 'undefined' ? dbFirestore : null);
+    if (fs) {
+      const docSnap = await fs.collection('app_settings').doc('config').get();
       if (docSnap && docSnap.exists) {
         const data = docSnap.data();
-        if (data && data.kodeUnitMap && typeof data.kodeUnitMap === 'object') {
-          const val = JSON.stringify(data.kodeUnitMap);
-          appStorage.setItem(KODE_UNIT_MAP_KEY, val);
-          try { localStorage.setItem(KODE_UNIT_MAP_KEY, val); } catch(e) {}
-          return;
+        if (data) {
+          if (data.kodeUnitMapJson && typeof data.kodeUnitMapJson === 'string') {
+            appStorage.setItem(KODE_UNIT_MAP_KEY, data.kodeUnitMapJson);
+            try { localStorage.setItem(KODE_UNIT_MAP_KEY, data.kodeUnitMapJson); } catch(e) {}
+            return;
+          }
+          if (data.kodeUnitMap && typeof data.kodeUnitMap === 'object') {
+            const val = JSON.stringify(data.kodeUnitMap);
+            appStorage.setItem(KODE_UNIT_MAP_KEY, val);
+            try { localStorage.setItem(KODE_UNIT_MAP_KEY, val); } catch(e) {}
+            return;
+          }
         }
       }
     }
-    if (typeof dbRealtime !== 'undefined' && dbRealtime) {
-      const snap = await dbRealtime.ref('app_settings/kodeUnitMap').once('value');
-      const val = snap.val();
-      if (val && typeof val === 'object') {
-        const valStr = JSON.stringify(val);
-        appStorage.setItem(KODE_UNIT_MAP_KEY, valStr);
-        try { localStorage.setItem(KODE_UNIT_MAP_KEY, valStr); } catch(e) {}
+    const rtdb = typeof getDbRealtime === 'function' ? getDbRealtime() : (typeof dbRealtime !== 'undefined' ? dbRealtime : null);
+    if (rtdb) {
+      const snapJson = await rtdb.ref('app_settings/kodeUnitMapJson').once('value');
+      const valJson = snapJson.val();
+      if (valJson && typeof valJson === 'string') {
+        appStorage.setItem(KODE_UNIT_MAP_KEY, valJson);
+        try { localStorage.setItem(KODE_UNIT_MAP_KEY, valJson); } catch(e) {}
+        return;
+      }
+      const snapMaster = await rtdb.ref('master_kode_unit_json').once('value');
+      const valMaster = snapMaster.val();
+      if (valMaster && typeof valMaster === 'string') {
+        appStorage.setItem(KODE_UNIT_MAP_KEY, valMaster);
+        try { localStorage.setItem(KODE_UNIT_MAP_KEY, valMaster); } catch(e) {}
       }
     }
   } catch(err) {
@@ -963,13 +978,20 @@ function tambahNotifikasiSistem(targetRoles, targetArea, message, noSurat = '') 
 
   if (typeof updateNotifBadgeCount === 'function') updateNotifBadgeCount();
 
-  // SYNC KE FIREBASE FIRESTORE SECARA REALTIME
-  if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+  // SYNC KE FIREBASE SECARA REALTIME (FIRESTORE & REALTIME DATABASE)
+  const fsNotif = getDbFirestore();
+  if (fsNotif) {
     try {
-      dbFirestore.collection('notifications').doc(newNotif.id).set(newNotif).catch(e => console.warn('[FIRESTORE NOTIF SAVE ERROR]:', e));
+      fsNotif.collection('notifications').doc(newNotif.id).set(newNotif).catch(e => console.warn('[FIRESTORE NOTIF SAVE ERROR]:', e));
     } catch(e) {
       console.warn('[FIRESTORE NOTIF EXCEPTION]:', e);
     }
+  }
+  const rtdbNotif = getDbRealtime();
+  if (rtdbNotif) {
+    try {
+      rtdbNotif.ref(`notifications/${newNotif.id}`).set(newNotif).catch(() => {});
+    } catch(e) {}
   }
 }
 
@@ -1205,7 +1227,7 @@ function markNotifAsRead(notifId, noSurat = '') {
           created_by: 'SYSTEM',
           created_at: new Date().toISOString()
         };
-        supabase.from('permintaan_toko').upsert(systemNotifRow).then(({ error }) => {
+        safeSupabaseUpsertPermintaan(systemNotifRow).then(({ error }) => {
           if (error) console.warn('[SUPABASE NOTIF SAVE NOTICE]:', error.message);
         });
       } catch(e) {}
@@ -1270,7 +1292,7 @@ function markAllNotifAsRead(silent = false) {
         created_by: 'SYSTEM',
         created_at: new Date().toISOString()
       };
-      supabase.from('permintaan_toko').upsert(systemNotifRow).then(({ error }) => {
+      safeSupabaseUpsertPermintaan(systemNotifRow).then(({ error }) => {
         if (error) console.warn('[SUPABASE NOTIF SAVE NOTICE]:', error.message);
       });
     } catch(e) {}
@@ -1603,6 +1625,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (typeof initDatabase === 'function') {
       initDatabase();
+    }
+    if (typeof initFirebaseDB === 'function') {
+      initFirebaseDB();
     } 
     if (typeof startCentralCloudSyncEngine === 'function') startCentralCloudSyncEngine();
     if (typeof startSupabaseKeepalive === 'function') startSupabaseKeepalive();
@@ -1744,15 +1769,16 @@ function bersihkanCacheAplikasiWeb() {
   }
 }
 
-// DEFAULT FIREBASE ONLINE CONFIGURATION (PERMINTAAN TOKO - CHAT & NOTIF REALTIME)
+// DEFAULT FIREBASE ONLINE CONFIGURATION (PERMINTAAN TOKO - CHAT, NOTIFIKASI & MASTER LOOKUP REALTIME)
 const DEFAULT_FIREBASE_CONFIG = {
   apiKey: "AIzaSyDTQdgmBi39SqLZ1j_aa8tj-mimCIXJTa0",
   authDomain: "permintaan-toko-e3b5d.firebaseapp.com",
+  databaseURL: "https://permintaan-toko-e3b5d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "permintaan-toko-e3b5d",
   storageBucket: "permintaan-toko-e3b5d.firebasestorage.app",
   messagingSenderId: "1072410401023",
-  appId: "1:1072410401023:web:465e23030d2259b56454ca",
-  measurementId: "G-KFHDYEP3VD"
+  appId: "1:1072410401023:web:1edf586afe845fb86454ca",
+  measurementId: "G-0QRN3MEFFG"
 };
 
 
@@ -1764,6 +1790,50 @@ let dbRealtime = null;
 function getActiveFirebaseConfig() {
   return DEFAULT_FIREBASE_CONFIG;
 }
+
+function getDbFirestore() {
+  if (dbFirestore) return dbFirestore;
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (!firebase.apps.length) {
+        firebaseApp = firebase.initializeApp(getActiveFirebaseConfig());
+      } else {
+        firebaseApp = firebase.app();
+      }
+      if (typeof firebase.firestore === 'function') {
+        dbFirestore = firebase.firestore();
+        window.dbFirestore = dbFirestore;
+        return dbFirestore;
+      }
+    } catch (e) {
+      console.warn('[GET FIRESTORE NOTICE]:', e);
+    }
+  }
+  return null;
+}
+window.getDbFirestore = getDbFirestore;
+
+function getDbRealtime() {
+  if (dbRealtime) return dbRealtime;
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (!firebase.apps.length) {
+        firebaseApp = firebase.initializeApp(getActiveFirebaseConfig());
+      } else {
+        firebaseApp = firebase.app();
+      }
+      if (typeof firebase.database === 'function') {
+        dbRealtime = firebase.database();
+        window.dbRealtime = dbRealtime;
+        return dbRealtime;
+      }
+    } catch (e) {
+      console.warn('[GET REALTIME NOTICE]:', e);
+    }
+  }
+  return null;
+}
+window.getDbRealtime = getDbRealtime;
 
 // ==========================================
 // FIREBASE FIRESTORE: REAL-TIME CHAT & NOTIFIKASI
@@ -1787,7 +1857,16 @@ function startFirebaseRealtimeChatListener() {
       .orderBy('timestamp', 'asc')
       .limitToLast(300)
       .onSnapshot(snapshot => {
-        if (!snapshot || snapshot.empty) return;
+        if (!snapshot || snapshot.empty) {
+          appStorage.setItem(CHAT_DB_KEY, JSON.stringify([]));
+          appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([]));
+          try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify([])); } catch(e) {}
+          try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([])); } catch(e) {}
+          if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
+          if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+          if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+          return;
+        }
         const remoteChats = [];
         snapshot.forEach(doc => {
           const data = doc.data();
@@ -1891,7 +1970,10 @@ function startFirebaseRealtimeAppSettingsListener() {
         if (!data) return;
 
         // 1. KODE UNIT MAP (EXCEL LOOKUP) -> SIMPAN KE LOKAL PENYIMPANAN
-        if (data.kodeUnitMap && typeof data.kodeUnitMap === 'object') {
+        if (data.kodeUnitMapJson && typeof data.kodeUnitMapJson === 'string') {
+          appStorage.setItem(KODE_UNIT_MAP_KEY, data.kodeUnitMapJson);
+          try { localStorage.setItem(KODE_UNIT_MAP_KEY, data.kodeUnitMapJson); } catch(e) {}
+        } else if (data.kodeUnitMap && typeof data.kodeUnitMap === 'object') {
           const val = JSON.stringify(data.kodeUnitMap);
           appStorage.setItem(KODE_UNIT_MAP_KEY, val);
           try { localStorage.setItem(KODE_UNIT_MAP_KEY, val); } catch(e) {}
@@ -2009,6 +2091,16 @@ function initFirebaseDB() {
         try {
           dbFirestore = firebase.firestore();
           window.dbFirestore = dbFirestore;
+        } catch(e) {}
+      }
+      if (typeof firebase.database === 'function') {
+        try {
+          dbRealtime = firebase.database();
+          window.dbRealtime = dbRealtime;
+        } catch(e) {}
+      }
+      if (dbFirestore || dbRealtime) {
+        try {
 
           const dot = document.getElementById('firebaseOnlineDot');
           if (dot) {
@@ -2021,9 +2113,14 @@ function initFirebaseDB() {
           startFirebaseRealtimeChatListener();
           startFirebaseRealtimeNotifListener();
           startFirebaseRealtimeAppSettingsListener();
-          startFirebaseRealtimeRequestsListener();
-          startFirebaseRealtimeUsersListener();
-          startFirebaseRealtimeChatListener();
+                              startFirebaseRealtimeChatListener();
+
+          // OTOMATIS SINKRONKAN SELURUH DATA LOKAL/SUPABASE KE FIREBASE SAAT AWAL BUKA
+          setTimeout(() => {
+            if (typeof pushCentralCloudDB === 'function') {
+              pushCentralCloudDB().catch(() => {});
+            }
+          }, 2000);
         } catch (e) {
           console.warn('[FIRESTORE INIT NOTICE]:', e);
         }
@@ -2165,6 +2262,11 @@ async function initSupabaseRealtimeEngine() {
         { event: 'config_change' },
         (event) => {
           if (event && event.payload) {
+            if (event.payload.kodeUnitMap && typeof event.payload.kodeUnitMap === 'object') {
+              const valStr = JSON.stringify(event.payload.kodeUnitMap);
+              appStorage.setItem(KODE_UNIT_MAP_KEY, valStr);
+              try { localStorage.setItem(KODE_UNIT_MAP_KEY, valStr); } catch(e) {}
+            }
             if (event.payload.featurePhotos !== undefined) {
               const valStr = String(event.payload.featurePhotos);
               appStorage.setItem(FEATURE_PHOTOS_KEY, valStr);
@@ -2198,6 +2300,42 @@ async function initSupabaseRealtimeEngine() {
         (event) => {
           if (event && event.payload && event.payload.chat) {
             handleRealtimeChatMessage({ eventType: 'INSERT', new: event.payload.chat });
+          }
+        }
+      )
+      .on(
+        'broadcast',
+        { event: 'chat_cleared' },
+        (event) => {
+          appStorage.setItem(CHAT_DB_KEY, JSON.stringify([]));
+          appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([]));
+          appStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([]));
+          try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify([])); } catch(e) {}
+          try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([])); } catch(e) {}
+          try { localStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([])); } catch(e) {}
+          if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
+          if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+          if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
+        }
+      )
+      .on(
+        'broadcast',
+        { event: 'chat_room_cleared' },
+        (event) => {
+          if (event && event.payload) {
+            const rTarget = String(event.payload.room || '').toUpperCase();
+            const uTarget = String(event.payload.user || '').toUpperCase();
+            let allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
+            let rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
+            allChats = allChats.filter(c => String(c.room||'').toUpperCase() !== rTarget && String(c.user||'').toUpperCase() !== uTarget);
+            rooms = rooms.filter(r => String(r.room||'').toUpperCase() !== rTarget && String(r.user||'').toUpperCase() !== uTarget);
+            appStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats));
+            appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms));
+            try { localStorage.setItem(CHAT_DB_KEY, JSON.stringify(allChats)); } catch(e) {}
+            try { localStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify(rooms)); } catch(e) {}
+            if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
+            if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+            if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
           }
         }
       )
@@ -3381,18 +3519,75 @@ async function safeSupabaseUpsertPermintaan(payload) {
     };
   });
 
-  // Tier 1: Try onConflict 'no_surat' (Matches PostgreSQL unique constraint "permintaan_toko_no_surat_key")
+  // TIER 1: UPSERT PRIMARY KEY (id) - Standar PostgreSQL Supabase (Bebas 409 Conflict)
   try {
-    const res1 = await supabase.from('permintaan_toko').upsert(preparedRows, { onConflict: 'no_surat' });
-    if (!res1.error) return res1;
-  } catch(e) {}
+    const { data: upsertData, error: upsertErr } = await supabase
+      .from('permintaan_toko')
+      .upsert(preparedRows, { onConflict: 'id' });
 
-  // Tier 2: Standard upsert (No on_conflict query param to avoid 400 Bad Request)
-  try {
-    return await supabase.from('permintaan_toko').upsert(preparedRows);
-  } catch(e) {
-    return { error: { message: String(e) } };
+    if (!upsertErr) {
+      return { data: upsertData, error: null };
+    }
+  } catch (eTier1) {}
+
+  // TIER 2: INDIVIDUAL UPDATE-FIRST FALLBACK
+  let lastError = null;
+  const results = [];
+
+  for (const row of preparedRows) {
+    const ns = row.no_surat;
+    const docId = row.id;
+    if (!ns && !docId) continue;
+
+    try {
+      // 1. Coba UPDATE langsung berdasarkan nomor surat atau ID
+      const { data: updData, error: updErr } = await supabase
+        .from('permintaan_toko')
+        .update(row)
+        .eq('no_surat', ns);
+
+      if (!updErr && updData && updData.length > 0) {
+        results.push(updData);
+        continue;
+      }
+
+      // 2. Jika tidak ada baris yang di-update, cek apakah ID sudah ada
+      const { data: existing } = await supabase
+        .from('permintaan_toko')
+        .select('id, no_surat')
+        .eq('id', docId)
+        .maybeSingle();
+
+      if (existing) {
+        // Update menggunakan ID
+        const { data: updIdData, error: updIdErr } = await supabase
+          .from('permintaan_toko')
+          .update(row)
+          .eq('id', docId);
+
+        if (!updIdErr) {
+          results.push(updIdData);
+        } else {
+          lastError = updIdErr;
+        }
+      } else {
+        // Upsert tunggal jika benar-benar baru
+        const { data: singleUpsert, error: singleErr } = await supabase
+          .from('permintaan_toko')
+          .upsert([row], { onConflict: 'id' });
+
+        if (!singleErr) {
+          results.push(singleUpsert);
+        } else {
+          lastError = singleErr;
+        }
+      }
+    } catch(err) {
+      lastError = err;
+    }
   }
+
+  return { data: results, error: lastError };
 }
 window.safeSupabaseUpsertPermintaan = safeSupabaseUpsertPermintaan;
 
@@ -3483,7 +3678,7 @@ async function pushCentralCloudDB(target = null) {
               created_at: new Date().toISOString()
             };
             try {
-              await supabase.from('permintaan_toko').upsert(systemUnitRow);
+              await safeSupabaseUpsertPermintaan(systemUnitRow);
             } catch(e) {}
           }
         }
@@ -3504,7 +3699,7 @@ async function pushCentralCloudDB(target = null) {
           created_by: 'SYSTEM',
           created_at: new Date().toISOString()
         };
-        await supabase.from('permintaan_toko').upsert(systemTtdRow);
+        await safeSupabaseUpsertPermintaan(systemTtdRow);
 
         const isPhotoEnabled = getFeaturePhotosEnabled();
         const photoFeatureVal = isPhotoEnabled ? 'true' : 'false';
@@ -3523,7 +3718,7 @@ async function pushCentralCloudDB(target = null) {
           created_by: 'SYSTEM',
           created_at: new Date().toISOString()
         };
-        await supabase.from('permintaan_toko').upsert(systemPhotoRow);
+        await safeSupabaseUpsertPermintaan(systemPhotoRow);
 
         const currentFonteToken = getFonteToken();
         if (currentFonteToken) {
@@ -3542,7 +3737,7 @@ async function pushCentralCloudDB(target = null) {
             created_by: 'SYSTEM',
             created_at: new Date().toISOString()
           };
-          await supabase.from('permintaan_toko').upsert(systemFonteRow);
+          await safeSupabaseUpsertPermintaan(systemFonteRow);
 
           try {
             await supabase.from('lookup').upsert({ key: 'fonteToken', value: currentFonteToken,
@@ -3556,79 +3751,57 @@ async function pushCentralCloudDB(target = null) {
       }
     }
 
-    if (dbFirestore) {
+    // FIREBASE KHUSUS: MASTER TYPE LOOKUP, CHAT SUPPORT & NOTIFIKASI
+    const fsPush = typeof getDbFirestore === 'function' ? getDbFirestore() : (typeof dbFirestore !== 'undefined' ? dbFirestore : null);
+    if (fsPush) {
       try {
-        // 1. PUSH REQUESTS
-        const reqBatch = dbFirestore.batch();
-        requests.forEach(r => {
-          if (r && r.noSurat) {
-            const docId = r.noSurat.replace(/[\/\.]/g, '_');
-            const docRef = dbFirestore.collection('requests').doc(docId);
-            reqBatch.set(docRef, r, { merge: true });
-          }
-        });
-        await reqBatch.commit();
-
-        // 2. PUSH USERS MASTER DATA
-        const users = getUsersFromDB();
-        const userBatch = dbFirestore.batch();
-        users.forEach(u => {
-          if (u && u.username) {
-            const docId = String(u.username).toUpperCase();
-            const docRef = dbFirestore.collection('users').doc(docId);
-            userBatch.set(docRef, u, { merge: true });
-          }
-        });
-        await userBatch.commit();
-
-        // 3. PUSH APP CONFIG, NOTIFICATIONS, CHAT MESSAGES, CHAT ROOMS, THEME, FONTE TOKEN, KODE UNIT MAP
         const notifs = getSystemNotifications();
         const chatMsgs = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
         const chatRooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
-        const theme = appStorage.getItem(THEME_KEY) || 'dark-mode';
-        const designMode = getSavedDesignMode();
-        const fonteToken = getFonteToken();
-        const featurePhotos = getFeaturePhotosEnabled();
-        const kodeUnitMap = getKodeUnitMap();
+        const kodeUnitMap = getKodeUnitMap() || {};
+        const mapJsonStr = JSON.stringify(kodeUnitMap);
 
-        const firebaseCfgStr = appStorage.getItem(FIREBASE_USER_CONFIG_KEY);
-        let parsedFbCfg = null;
-        try { if (firebaseCfgStr) parsedFbCfg = JSON.parse(firebaseCfgStr); } catch(e) {}
+        const cleanMap = {};
+        Object.keys(kodeUnitMap).forEach(k => {
+          if (k) cleanMap[String(k).replace(/[\/\.#$\[\]]/g, '_')] = kodeUnitMap[k];
+        });
 
-        await dbFirestore.collection('app_settings').doc('config').set({
+        await fsPush.collection('app_settings').doc('config').set({
           notifications: notifs,
           chatMessages: chatMsgs,
           chatRooms: chatRooms,
-          theme: theme,
-          designMode: designMode,
-          fonteToken: fonteToken,
-          featurePhotos: featurePhotos,
-          kodeUnitMap: kodeUnitMap,
-          firebaseConfig: parsedFbCfg,
+          kodeUnitMapJson: mapJsonStr,
+          totalMasterItems: Object.keys(kodeUnitMap).length,
           updatedAt: new Date().toISOString()
         }, { merge: true });
 
+        if (Object.keys(kodeUnitMap).length > 0) {
+          await fsPush.collection('master_lookup').doc('kode_unit_map').set({
+            data: cleanMap,
+            dataJson: mapJsonStr,
+            totalItems: Object.keys(kodeUnitMap).length,
+            updatedAt: new Date().toISOString()
+          }, { merge: true });
+        }
       } catch (err) {
         console.warn("[FIREBASE PUSH NOTICE]:", err.message);
       }
     }
 
-    if (dbRealtime) {
+    const rtdbPush = typeof getDbRealtime === 'function' ? getDbRealtime() : (typeof dbRealtime !== 'undefined' ? dbRealtime : null);
+    if (rtdbPush) {
       try {
-        const requests = getRequestsFromDB();
-        const users = getUsersFromDB();
         const notifs = getSystemNotifications();
         const chatMsgs = JSON.parse(appStorage.getItem(CHAT_MESSAGES_KEY) || '[]');
+        const kodeUnitMap = getKodeUnitMap() || {};
+        const mapJsonStr = JSON.stringify(kodeUnitMap);
 
-        dbRealtime.ref('requests').set(requests);
-        dbRealtime.ref('users').set(users);
-        dbRealtime.ref('notifications').set(notifs);
-        dbRealtime.ref('chat_messages').set(chatMsgs);
-        dbRealtime.ref('settings').set({
-          theme: appStorage.getItem(THEME_KEY) || 'dark-mode',
-          fonteToken: getFonteToken(),
-          featurePhotos: getFeaturePhotosEnabled()
-        });
+        rtdbPush.ref('notifications').set(notifs);
+        rtdbPush.ref('chat_messages').set(chatMsgs);
+        if (Object.keys(kodeUnitMap).length > 0) {
+          rtdbPush.ref('app_settings/kodeUnitMapJson').set(mapJsonStr);
+          rtdbPush.ref('master_kode_unit_json').set(mapJsonStr);
+        }
       } catch (err) {
         console.warn("[FIREBASE REALTIME PUSH NOTICE]:", err.message);
       }
@@ -4248,7 +4421,7 @@ async function simpanFonteToken() {
         created_by: (currentUser && currentUser.fullName ? currentUser.fullName : 'ADMIN') || 'ADMIN',
         created_at: new Date().toISOString()
       };
-      await supabase.from('permintaan_toko').upsert(systemFonteRow);
+      await safeSupabaseUpsertPermintaan(systemFonteRow);
     } catch (err) {
       console.warn('[SUPABASE SIMPAN FONTE TOKEN ERROR]:', err);
     }
@@ -4957,6 +5130,10 @@ async function clearLocalStorageKeepThemeAndTTD() {
 window.clearLocalStorageKeepThemeAndTTD = clearLocalStorageKeepThemeAndTTD;
 
 function loadRememberedCredentials() {
+  const uEl = document.getElementById('username');
+  const pEl = document.getElementById('password');
+  const remEl = document.getElementById('rememberLogin');
+
   let savedCredsStr = null;
   try {
     savedCredsStr = appStorage.getItem(STORE_REMEMBER_LOGIN_CREDS_KEY);
@@ -11022,15 +11199,16 @@ function kirimPesanChat() {
 
 
 
-  // 4. KIRIM KE FIREBASE FIRESTORE SECARA REAL-TIME (<100 ms)
-  if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+  // 4. KIRIM KE FIREBASE SECARA REAL-TIME (FIRESTORE & REALTIME DATABASE)
+  const fsChat = getDbFirestore();
+  if (fsChat) {
     try {
-      dbFirestore.collection('chat_messages').doc(newChatId).set(newChatEntry).catch(e => console.warn('[FIRESTORE CHAT SAVE ERROR]:', e));
-      dbFirestore.collection('chat_rooms').doc(roomTarget).set({
+      fsChat.collection('chat_messages').doc(newChatId).set(newChatEntry).catch(e => console.warn('[FIRESTORE CHAT SAVE ERROR]:', e));
+      fsChat.collection('chat_rooms').doc(roomTarget).set({
         room: roomTarget,
         user: targetUser,
         userName: currentUser.fullName || targetUser,
-        userArea: currentUser.area || 'BDG',
+        userArea: currentUser.area || 'TSM',
         last: `${pengirimType === 'SERVICE' ? 'SERVICE' : (currentUser.fullName || currentUser.username)}: ${pesan}`,
         lastTime: timeStr,
         timestamp: Date.now()
@@ -11038,6 +11216,22 @@ function kirimPesanChat() {
     } catch(e) {
       console.warn('[FIRESTORE CHAT SEND EXCEPTION]:', e);
     }
+  }
+
+  const rtdbChat = getDbRealtime();
+  if (rtdbChat) {
+    try {
+      rtdbChat.ref(`chat_messages/${newChatId}`).set(newChatEntry).catch(() => {});
+      rtdbChat.ref(`chat_rooms/${roomTarget}`).set({
+        room: roomTarget,
+        user: targetUser,
+        userName: currentUser.fullName || targetUser,
+        userArea: currentUser.area || 'TSM',
+        last: `${pengirimType === 'SERVICE' ? 'SERVICE' : (currentUser.fullName || currentUser.username)}: ${pesan}`,
+        lastTime: timeStr,
+        timestamp: Date.now()
+      }).catch(() => {});
+    } catch(e) {}
   }
 }
 
@@ -11091,10 +11285,10 @@ async function hapusChatRoom(roomTarget, userTarget) {
   const roomUpper = String(roomTarget || '').toUpperCase();
   const userUpper = String(userTarget || '').toUpperCase();
 
-  showConfirm(`HAPUS RIWAYAT CHAT ROOM '${userTarget || roomTarget}' DARI LOKAL & FIREBASE?`, async () => {
-    showLoading('MENGHAPUS CHAT ROOM DARI LOKAL & FIREBASE...');
+  showConfirm(`HAPUS RIWAYAT CHAT ROOM '${userTarget || roomTarget}' DARI LOKAL, FIREBASE & SEMUA PERANGKAT?`, async () => {
+    showLoading('MENGHAPUS CHAT ROOM...');
     try {
-      // 1. KOSONGKAN DI PENYIMPANAN LOKAL
+      // 1. KOSONGKAN DI PENYIMPANAN LOKAL PERANGKAT INI
       let allChats = JSON.parse(appStorage.getItem(CHAT_DB_KEY) || '[]');
       let rooms = JSON.parse(appStorage.getItem(CHAT_ROOM_DB_KEY) || '[]');
 
@@ -11140,18 +11334,28 @@ async function hapusChatRoom(roomTarget, userTarget) {
           if (roomTarget) await dbRealtime.ref(`chat_rooms/${roomTarget}`).remove().catch(() => {});
           if (roomTarget) await dbRealtime.ref(`chat_messages/${roomTarget}`).remove().catch(() => {});
           if (roomTarget) await dbRealtime.ref(`chats/${roomTarget}`).remove().catch(() => {});
+          await dbRealtime.ref('system_broadcast/chat_room_clear').set({ timestamp: Date.now(), room: roomTarget, user: userTarget });
         } catch(e) {}
       }
 
-      // 4. REFRESH TAMPILAN
-      if (typeof renderUserList === 'function') renderUserList();
-      if (typeof renderChatBoxAdmin === 'function') renderChatBoxAdmin();
-      if (typeof renderChatBoxUser === 'function') renderChatBoxUser();
-      if (typeof loadDaftarChatAdmin === 'function') loadDaftarChatAdmin();
-      if (typeof updateChatBadge === 'function') updateChatBadge();
+      // 4. SIARKAN REALTIME KE SEMUA PERANGKAT LAIN
+      if (supabaseRealtimeChannel) {
+        try {
+          supabaseRealtimeChannel.send({
+            type: 'broadcast',
+            event: 'chat_room_cleared',
+            payload: { room: roomTarget, user: userTarget, timestamp: Date.now() }
+          });
+        } catch(e) {}
+      }
+
+      // 5. REFRESH UI
+      if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
+      if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+      if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
 
       hideLoading();
-      showNotif(`CHAT ROOM '${userTarget || roomTarget}' BERHASIL DIHAPUS!`, 'success');
+      showNotif(`CHAT ROOM '${userTarget || roomTarget}' BERHASIL DIHAPUS DARI DATABASE & SEMUA PERANGKAT!`, 'success');
     } catch(err) {
       hideLoading();
       console.error('[HAPUS CHAT ROOM ERROR]:', err);
@@ -11162,10 +11366,20 @@ async function hapusChatRoom(roomTarget, userTarget) {
 window.hapusChatRoom = hapusChatRoom;
 
 async function hapusSemuaChatAdmin() {
-  showConfirm('YAKIN INGIN MENGHAPUS SELURUH RIWAYAT CHAT DARI PENYIMPANAN LOKAL & FIREBASE?', async () => {
-    showLoading('MENGHAPUS SEMUA CHAT DARI LOKAL & FIREBASE...');
+  const isSysAdmin = currentUser && (
+    String(currentUser.category || currentUser.kategori || '').toUpperCase() === 'ADMIN' ||
+    String(currentUser.role || '').toUpperCase() === 'ADMIN' ||
+    String(currentUser.username || '').toUpperCase() === 'ADMIN'
+  );
+  if (!isSysAdmin) {
+    showNotif('HANYA ADMIN YANG DIIZINKAN MENGHAPUS SEMUA CHAT!', 'warning');
+    return;
+  }
+
+  showConfirm('YAKIN INGIN MENGHAPUS SELURUH RIWAYAT CHAT DARI DATABASE FIREBASE & PENYIMPANAN LOKAL SEMUA PERANGKAT?', async () => {
+    showLoading('MENGHAPUS SEMUA CHAT DARI DATABASE & SEMUA PERANGKAT...');
     try {
-      // 1. KOSONGKAN PENYIMPANAN LOKAL
+      // 1. KOSONGKAN PENYIMPANAN LOKAL PERANGKAT INI
       appStorage.setItem(CHAT_DB_KEY, JSON.stringify([]));
       appStorage.setItem(CHAT_ROOM_DB_KEY, JSON.stringify([]));
       appStorage.setItem(CHAT_MESSAGES_KEY, JSON.stringify([]));
@@ -11193,12 +11407,13 @@ async function hapusSemuaChatAdmin() {
         }
       }
 
-      // 3. KOSONGKAN DI FIREBASE REALTIME DATABASE
+      // 3. KOSONGKAN DI FIREBASE REALTIME DATABASE & SIARKAN SINYAL HAPUS LOKAL
       if (typeof dbRealtime !== 'undefined' && dbRealtime) {
         try {
           await dbRealtime.ref('chat_messages').remove();
           await dbRealtime.ref('chats').remove();
           await dbRealtime.ref('chat_rooms').remove();
+          await dbRealtime.ref('system_broadcast/chat_clear').set({ timestamp: Date.now(), action: 'CLEAR_ALL_CHATS' });
         } catch(e) {
           console.warn('[RTDB DELETE ALL CHATS NOTICE]:', e);
         }
@@ -11216,22 +11431,16 @@ async function hapusSemuaChatAdmin() {
       }
 
       // 5. REFRESH TAMPILAN CHAT DI PERANGKAT INI
-      const chatContainer = document.getElementById('chatMessagesContainer');
-      if (chatContainer) chatContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted); font-size: 12px; font-weight: 600;">Belum ada riwayat pesan chat.</div>';
-      
-      const adminChatList = document.getElementById('adminChatRoomList');
-      if (adminChatList) adminChatList.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted); font-size: 12px; font-weight: 600;">Belum ada room chat.</div>';
-
-      if (typeof updateChatUnreadBadge === 'function') updateChatUnreadBadge();
-      if (typeof renderUserList === 'function') renderUserList();
-      if (typeof loadDaftarChatAdmin === 'function') loadDaftarChatAdmin();
+      if (typeof refreshActiveChatUI === 'function') refreshActiveChatUI();
+      if (typeof cekUnreadNotif === 'function') cekUnreadNotif();
+      if (typeof updateNotifBellCounter === 'function') updateNotifBellCounter();
 
       hideLoading();
-      showNotif('SELURUH RIWAYAT CHAT BERHASIL DIHAPUS DARI PENYIMPANAN LOKAL & FIREBASE!', 'success');
+      showNotif('SEMUA RIWAYAT CHAT BERHASIL DIHAPUS DARI DATABASE & SELURUH PERANGKAT LOKAL!', 'success');
     } catch(err) {
       hideLoading();
       console.error('[HAPUS SEMUA CHAT ERROR]:', err);
-      showNotif('GAGAL MENGHAPUS RIWAYAT CHAT: ' + (err.message || err), 'danger');
+      showNotif('GAGAL MENGHAPUS CHAT: ' + (err.message || err), 'danger');
     }
   });
 }
@@ -12651,26 +12860,43 @@ function prosesUploadExcelLookup(event) {
         try { localStorage.setItem(KODE_UNIT_MAP_KEY, mapJsonStr); } catch(e) {}
 
         // 2. SIMPAN & SINKRONKAN KHUSUS KE FIREBASE ONLINE (FIRESTORE & REALTIME DATABASE)
-        if (typeof dbFirestore !== 'undefined' && dbFirestore) {
+        const mapJsonStrForCloud = JSON.stringify(updatedMap);
+        const fs = getDbFirestore();
+        const rtdb = getDbRealtime();
+
+        // A. FIREBASE FIRESTORE
+        if (fs) {
           try {
-            await dbFirestore.collection('app_settings').doc('config').set({
-              kodeUnitMap: updatedMap,
+            // Bersihkan key object jika ada karakter slash untuk doc field
+            const cleanMap = {};
+            Object.keys(updatedMap).forEach(k => {
+              if (k) cleanMap[k.replace(/[\/\.#$\[\]]/g, '_')] = updatedMap[k];
+            });
+
+            await fs.collection('app_settings').doc('config').set({
+              kodeUnitMapJson: mapJsonStrForCloud,
+              totalMasterItems: Object.keys(updatedMap).length,
               updatedAt: new Date().toISOString()
             }, { merge: true });
-            await dbFirestore.collection('master_lookup').doc('kode_unit_map').set({
-              data: updatedMap,
-              totalItems: count,
+
+            await fs.collection('master_lookup').doc('kode_unit_map').set({
+              data: cleanMap,
+              dataJson: mapJsonStrForCloud,
+              totalItems: Object.keys(updatedMap).length,
               updatedAt: new Date().toISOString()
             }, { merge: true });
+            console.log('[FIREBASE] Master lookup uploaded successfully to Firestore.');
           } catch(e) {
             console.warn('[FIRESTORE LOOKUP SYNC]:', e);
           }
         }
 
-        if (typeof dbRealtime !== 'undefined' && dbRealtime) {
+        // B. FIREBASE REALTIME DATABASE
+        if (rtdb) {
           try {
-            await dbRealtime.ref('app_settings/kodeUnitMap').set(updatedMap);
-            await dbRealtime.ref('master_kode_unit').set(updatedMap);
+            await rtdb.ref('app_settings/kodeUnitMapJson').set(mapJsonStrForCloud);
+            await rtdb.ref('master_kode_unit_json').set(mapJsonStrForCloud);
+            console.log('[FIREBASE] Master lookup uploaded successfully to Realtime DB.');
           } catch(e) {
             console.warn('[RTDB LOOKUP SYNC]:', e);
           }
@@ -16263,3 +16489,8 @@ window.showNotif = showNotif;
 window.closePopup = closePopup;
 window.showLoading = showLoading;
 window.hideLoading = hideLoading;
+
+// AUTO-INITIALIZE FIREBASE ENGINE IMMEDIATELY ON SCRIPT LOAD
+if (typeof initFirebaseDB === 'function') {
+  try { initFirebaseDB(); } catch(e) {}
+}
