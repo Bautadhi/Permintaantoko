@@ -296,6 +296,8 @@ body {
 
 /* 1. Scenic Landscape Image (Pemandangan Bulan, Gunung & Danau) */
 .aesthetic-bg-image {
+  transform: translateZ(0);
+  backface-visibility: hidden;
   position: absolute;
   inset: 0;
   width: 100%;
@@ -306,7 +308,7 @@ body {
   background-repeat: no-repeat;
   opacity: var(--bg-opacity-val, 0.48) !important;
   filter: saturate(1.15) contrast(1.05) blur(1px);
-  transition: opacity 0.3s ease, background-image 0.3s ease, filter 0.3s ease;
+  transition: background-image 0.3s ease, filter 0.3s ease;
   will-change: opacity, background-image;
 }
 
@@ -314,6 +316,8 @@ body.light-mode .aesthetic-bg-image,
 body.classic-mode .aesthetic-bg-image,
 body.forest-mode .aesthetic-bg-image,
 body.sunset-mode .aesthetic-bg-image {
+  transform: translateZ(0);
+  backface-visibility: hidden;
   opacity: var(--bg-opacity-val, 0.38) !important;
   filter: saturate(1.1) contrast(1.0) blur(1px);
 }

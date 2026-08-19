@@ -652,24 +652,35 @@ function applyAdaptiveTextColors(numVal) {
   }
 }
 
+let bgOpacityRaf = null;
+let bgOpacityDebounceSave = null;
+
 function ubahTransparansiBackground(val) {
   const numVal = parseFloat(val) || 0;
   const opacityFloat = (numVal / 100).toFixed(2);
-  document.documentElement.style.setProperty('--bg-opacity-val', opacityFloat);
   
-  const bgEl = document.querySelector('.aesthetic-bg-image');
-  if (bgEl) {
-    bgEl.style.setProperty('opacity', opacityFloat, 'important');
-  }
-
+  // 1. Instan update teks persentase
   const valText = document.getElementById('bgOpacityValText');
   if (valText) valText.textContent = `${val}%`;
 
-  applyAdaptiveTextColors(numVal);
+  // 2. Ultra-cepat via requestAnimationFrame untuk 60/120 FPS GPU sync
+  if (bgOpacityRaf) cancelAnimationFrame(bgOpacityRaf);
+  bgOpacityRaf = requestAnimationFrame(() => {
+    document.documentElement.style.setProperty('--bg-opacity-val', opacityFloat);
+    const bgEl = document.querySelector('.aesthetic-bg-image');
+    if (bgEl) {
+      bgEl.style.setProperty('opacity', opacityFloat, 'important');
+    }
+    applyAdaptiveTextColors(numVal);
+  });
 
-  try {
-    localStorage.setItem(BG_OPACITY_KEY, val);
-  } catch(e) {}
+  // 3. Debounce simpan ke localStorage agar tidak lag saat digeser cepat
+  if (bgOpacityDebounceSave) clearTimeout(bgOpacityDebounceSave);
+  bgOpacityDebounceSave = setTimeout(() => {
+    try {
+      localStorage.setItem(BG_OPACITY_KEY, val);
+    } catch(e) {}
+  }, 150);
 }
 
 function loadSavedBgOpacity() {
